@@ -1,0 +1,2007 @@
+
+<!doctype html>
+<html>
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MYZ7PRBQPT"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-MYZ7PRBQPT');
+    </script>
+
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link type="image/png" sizes="32x32" rel="icon" href="https://storage.googleapis.com/openf1-public/images/favicon.png">
+
+        <meta
+            name="description"
+            content="OpenF1 - Documentation"
+        >
+  
+    <title>OpenF1 API | Real-time and historical Formula 1 data</title>
+    <meta name="description" content="Dive into race analytics, lap timings, car telemetry, and more. Data is accessible for free in both JSON and CSV formats.">
+    <link rel="canonical" href="https://openf1.org" />
+    <meta name="robots" content="index, follow">
+
+    <style media="screen">
+      .highlight table td { padding: 5px; }
+.highlight table pre { margin: 0; }
+.highlight .gh {
+  color: #999999;
+}
+.highlight .sr {
+  color: #f6aa11;
+}
+.highlight .go {
+  color: #888888;
+}
+.highlight .gp {
+  color: #555555;
+}
+.highlight .gs {
+}
+.highlight .gu {
+  color: #aaaaaa;
+}
+.highlight .nb {
+  color: #f6aa11;
+}
+.highlight .cm {
+  color: #75715e;
+}
+.highlight .cp {
+  color: #75715e;
+}
+.highlight .c1 {
+  color: #75715e;
+}
+.highlight .cs {
+  color: #75715e;
+}
+.highlight .c, .highlight .ch, .highlight .cd, .highlight .cpf {
+  color: #75715e;
+}
+.highlight .err {
+  color: #960050;
+}
+.highlight .gr {
+  color: #960050;
+}
+.highlight .gt {
+  color: #960050;
+}
+.highlight .gd {
+  color: #49483e;
+}
+.highlight .gi {
+  color: #49483e;
+}
+.highlight .ge {
+  color: #49483e;
+}
+.highlight .kc {
+  color: #66d9ef;
+}
+.highlight .kd {
+  color: #66d9ef;
+}
+.highlight .kr {
+  color: #66d9ef;
+}
+.highlight .no {
+  color: #66d9ef;
+}
+.highlight .kt {
+  color: #66d9ef;
+}
+.highlight .mf {
+  color: #ae81ff;
+}
+.highlight .mh {
+  color: #ae81ff;
+}
+.highlight .il {
+  color: #ae81ff;
+}
+.highlight .mi {
+  color: #ae81ff;
+}
+.highlight .mo {
+  color: #ae81ff;
+}
+.highlight .m, .highlight .mb, .highlight .mx {
+  color: #ae81ff;
+}
+.highlight .sc {
+  color: #ae81ff;
+}
+.highlight .se {
+  color: #ae81ff;
+}
+.highlight .ss {
+  color: #ae81ff;
+}
+.highlight .sd {
+  color: #e6db74;
+}
+.highlight .s2 {
+  color: #e6db74;
+}
+.highlight .sb {
+  color: #e6db74;
+}
+.highlight .sh {
+  color: #e6db74;
+}
+.highlight .si {
+  color: #e6db74;
+}
+.highlight .sx {
+  color: #e6db74;
+}
+.highlight .s1 {
+  color: #e6db74;
+}
+.highlight .s, .highlight .sa, .highlight .dl {
+  color: #e6db74;
+}
+.highlight .na {
+  color: #a6e22e;
+}
+.highlight .nc {
+  color: #a6e22e;
+}
+.highlight .nd {
+  color: #a6e22e;
+}
+.highlight .ne {
+  color: #a6e22e;
+}
+.highlight .nf, .highlight .fm {
+  color: #a6e22e;
+}
+.highlight .vc {
+  color: #ffffff;
+}
+.highlight .nn {
+  color: #ffffff;
+}
+.highlight .ni {
+  color: #ffffff;
+}
+.highlight .bp {
+  color: #ffffff;
+}
+.highlight .vg {
+  color: #ffffff;
+}
+.highlight .vi {
+  color: #ffffff;
+}
+.highlight .nv, .highlight .vm {
+  color: #ffffff;
+}
+.highlight .w {
+  color: #ffffff;
+}
+.highlight {
+  color: #ffffff;
+}
+.highlight .n, .highlight .py, .highlight .nx {
+  color: #ffffff;
+}
+.highlight .nl {
+  color: #f92672;
+}
+.highlight .ow {
+  color: #f92672;
+}
+.highlight .nt {
+  color: #f92672;
+}
+.highlight .k, .highlight .kv {
+  color: #f92672;
+}
+.highlight .kn {
+  color: #f92672;
+}
+.highlight .kp {
+  color: #f92672;
+}
+.highlight .o {
+  color: #f92672;
+}
+    </style>
+    <style media="print">
+      * {
+        -webkit-transition:none!important;
+        transition:none!important;
+      }
+      .highlight table td { padding: 5px; }
+.highlight table pre { margin: 0; }
+.highlight, .highlight .w {
+  color: #586e75;
+}
+.highlight .err {
+  color: #002b36;
+  background-color: #dc322f;
+}
+.highlight .c, .highlight .ch, .highlight .cd, .highlight .cm, .highlight .cpf, .highlight .c1, .highlight .cs {
+  color: #657b83;
+}
+.highlight .cp {
+  color: #b58900;
+}
+.highlight .nt {
+  color: #b58900;
+}
+.highlight .o, .highlight .ow {
+  color: #93a1a1;
+}
+.highlight .p, .highlight .pi {
+  color: #93a1a1;
+}
+.highlight .gi {
+  color: #859900;
+}
+.highlight .gd {
+  color: #dc322f;
+}
+.highlight .gh {
+  color: #268bd2;
+  background-color: #002b36;
+  font-weight: bold;
+}
+.highlight .k, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kv {
+  color: #6c71c4;
+}
+.highlight .kc {
+  color: #cb4b16;
+}
+.highlight .kt {
+  color: #cb4b16;
+}
+.highlight .kd {
+  color: #cb4b16;
+}
+.highlight .s, .highlight .sb, .highlight .sc, .highlight .dl, .highlight .sd, .highlight .s2, .highlight .sh, .highlight .sx, .highlight .s1 {
+  color: #859900;
+}
+.highlight .sa {
+  color: #6c71c4;
+}
+.highlight .sr {
+  color: #2aa198;
+}
+.highlight .si {
+  color: #d33682;
+}
+.highlight .se {
+  color: #d33682;
+}
+.highlight .nn {
+  color: #b58900;
+}
+.highlight .nc {
+  color: #b58900;
+}
+.highlight .no {
+  color: #b58900;
+}
+.highlight .na {
+  color: #268bd2;
+}
+.highlight .m, .highlight .mb, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .il, .highlight .mo, .highlight .mx {
+  color: #859900;
+}
+.highlight .ss {
+  color: #859900;
+}
+    </style>
+    <link href="stylesheets/screen-3adc62ae.css" rel="stylesheet" media="screen" />
+    <link href="stylesheets/print-966d6edc.css" rel="stylesheet" media="print" />
+      <script src="javascripts/all-f36e5d3b.js"></script>
+
+  </head>
+
+  <body class="index" data-languages="[&quot;shell&quot;,&quot;python&quot;,&quot;r&quot;,&quot;javascript&quot;]">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="images/navbar-cad8cdcb.png" alt="" />
+      </span>
+    </a>
+    <div class="toc-wrapper">
+      <a href="/">
+        <img src="images/logo-5882a735.png" class="logo" alt="" />
+      </a>
+        <div class="lang-selector">
+              <a href="#" data-language-name="shell">shell</a>
+              <a href="#" data-language-name="python">python</a>
+              <a href="#" data-language-name="r">r</a>
+              <a href="#" data-language-name="javascript">javascript</a>
+        </div>
+        <div class="search">
+          <input type="text" class="search" id="input-search" placeholder="Search">
+        </div>
+        <ul class="search-results"></ul>
+      <ul id="toc" class="toc-list-h1">
+          <li>
+            <a href="#introduction" class="toc-h1 toc-link" data-title="Introduction">Introduction</a>
+          </li>
+          <li>
+            <a href="#api-methods" class="toc-h1 toc-link" data-title="API methods">API methods</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#car-data" class="toc-h2 toc-link" data-title="Car data">Car data</a>
+                  </li>
+                  <li>
+                    <a href="#drivers" class="toc-h2 toc-link" data-title="Drivers">Drivers</a>
+                  </li>
+                  <li>
+                    <a href="#intervals" class="toc-h2 toc-link" data-title="Intervals">Intervals</a>
+                  </li>
+                  <li>
+                    <a href="#laps" class="toc-h2 toc-link" data-title="Laps">Laps</a>
+                  </li>
+                  <li>
+                    <a href="#location" class="toc-h2 toc-link" data-title="Location">Location</a>
+                  </li>
+                  <li>
+                    <a href="#meetings" class="toc-h2 toc-link" data-title="Meetings">Meetings</a>
+                  </li>
+                  <li>
+                    <a href="#pit" class="toc-h2 toc-link" data-title="Pit">Pit</a>
+                  </li>
+                  <li>
+                    <a href="#position" class="toc-h2 toc-link" data-title="Position">Position</a>
+                  </li>
+                  <li>
+                    <a href="#race-control" class="toc-h2 toc-link" data-title="Race control">Race control</a>
+                  </li>
+                  <li>
+                    <a href="#sessions" class="toc-h2 toc-link" data-title="Sessions">Sessions</a>
+                  </li>
+                  <li>
+                    <a href="#stints" class="toc-h2 toc-link" data-title="Stints">Stints</a>
+                  </li>
+                  <li>
+                    <a href="#team-radio" class="toc-h2 toc-link" data-title="Team radio">Team radio</a>
+                  </li>
+                  <li>
+                    <a href="#weather" class="toc-h2 toc-link" data-title="Weather">Weather</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#data-filtering" class="toc-h1 toc-link" data-title="Data filtering">Data filtering</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#time-based-filtering" class="toc-h2 toc-link" data-title="Time-Based Filtering">Time-Based Filtering</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#csv-format" class="toc-h1 toc-link" data-title="CSV Format">CSV Format</a>
+          </li>
+          <li>
+            <a href="#system-architecture" class="toc-h1 toc-link" data-title="System architecture">System architecture</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#ingestor" class="toc-h2 toc-link" data-title="Ingestor">Ingestor</a>
+                  </li>
+                  <li>
+                    <a href="#database" class="toc-h2 toc-link" data-title="Database">Database</a>
+                  </li>
+                  <li>
+                    <a href="#query-api" class="toc-h2 toc-link" data-title="Query API">Query API</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#faq" class="toc-h1 toc-link" data-title="FAQ">FAQ</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#what-39-s-the-delay-between-live-events-and-api-updates" class="toc-h2 toc-link" data-title="What's the delay between live events and API updates?">What's the delay between live events and API updates?</a>
+                  </li>
+                  <li>
+                    <a href="#is-there-a-query-timeout" class="toc-h2 toc-link" data-title="Is there a query timeout?">Is there a query timeout?</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#community-and-support" class="toc-h1 toc-link" data-title="Community and Support">Community and Support</a>
+          </li>
+          <li>
+            <a href="#roadmap" class="toc-h1 toc-link" data-title="Roadmap">Roadmap</a>
+          </li>
+          <li>
+            <a href="#usage-guidelines" class="toc-h1 toc-link" data-title="Usage Guidelines">Usage Guidelines</a>
+          </li>
+          <li>
+            <a href="#acknowledgments" class="toc-h1 toc-link" data-title="Acknowledgments">Acknowledgments</a>
+          </li>
+      </ul>
+        <ul class="toc-footer">
+            <li><a href="https://github.com/br-g/openf1" class="footer_button" id="github_button" target="_blank">
+    <img src="https://storage.googleapis.com/openf1-public/images/github.png">
+    br-g/openf1
+</a>
+</li>
+            <li><a href="https://twitter.com/brgodefroy" class="footer_button" id="twitter_button" target="_blank">
+    <img src="https://storage.googleapis.com/openf1-public/images/twitter.png">
+    @brgodefroy
+</a>
+</li>
+            <li><a href="https://www.buymeacoffee.com/openf1" class="footer_button" id="bmec_button" target="_blank">
+    <img src="https://storage.googleapis.com/openf1-public/images/bmec.png">
+    Buy me a coffee
+</a>
+</li>
+            <li><p id="footer_text">
+    <a href="https://form.typeform.com/to/lCYUbpPz" target="_blank">Contact</a>&nbsp;&nbsp;|&nbsp;&nbsp;Made in Paris, France <img src="https://storage.googleapis.com/openf1-public/images/france_flag.png">
+</p>
+</li>
+        </ul>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id='introduction'>Introduction</h1>
+<p>OpenF1 is a free and open-source API that provides real-time and historical Formula 1 data, for non-commercial use only.</p>
+
+<p>The API offers a wealth of information, including lap timings, car telemetry, weather conditions, radio communications, and more. Whether you&#39;re looking to create interactive dashboards, dive deep into race analysis, or even develop connected objects that light up every time your favorite driver takes the lead, OpenF1 makes it all possible.</p>
+
+<p>Data can be accessed in either JSON or CSV formats, making it user-friendly for both developers and non-developers alike.
+For a quick start, you can access the API through your web browser. A sample URL is provided for each method for easy reference.</p>
+
+<aside class="notice">
+OpenF1 is an unofficial project and is not associated in any way with the Formula 1 companies. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trade marks of Formula One Licensing B.V.
+</aside>
+<h1 id='api-methods'>API methods</h1><h2 id='car-data'>Car data</h2>
+<p>Some data about each car, at a sample rate of about 3.7 Hz.</p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/car_data?driver_number=55&amp;session_key=9159&amp;speed&gt;=315"</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/car_data?driver_number=55&amp;session_key=9159&amp;speed&gt;=315'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
+# import pandas as pd
+# df = pd.DataFrame(data)
+</span></code></pre></div><div class="highlight"><pre class="highlight r tab-r"><code><span class="c1"># If needed, install libraries</span><span class="w">
+</span><span class="c1"># install.packages('httr')</span><span class="w">
+</span><span class="c1"># install.packages('jsonlite')</span><span class="w">
+
+</span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
+
+</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/car_data?driver_number=55&amp;session_key=9159&amp;speed&gt;=315'</span><span class="p">)</span><span class="w">
+</span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
+</span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># If you want, you can import the results in a DataFrame</span><span class="w">
+</span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
+</span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
+</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.openf1.org/v1/car_data?driver_number=55&amp;session_key=9159&amp;speed&gt;=315</span><span class="dl">'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">jsonContent</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
+</code></pre></div>
+<blockquote>
+<p>Output:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"brake"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-09-15T13:08:19.923000+00:00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">55</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"drs"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1219</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"n_gear"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"rpm"</span><span class="p">:</span><span class="w"> </span><span class="mi">11141</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9159</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"speed"</span><span class="p">:</span><span class="w"> </span><span class="mi">315</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"throttle"</span><span class="p">:</span><span class="w"> </span><span class="mi">99</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"brake"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-09-15T13:35:41.808000+00:00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">55</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"drs"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1219</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"n_gear"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"rpm"</span><span class="p">:</span><span class="w"> </span><span class="mi">11023</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9159</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"speed"</span><span class="p">:</span><span class="w"> </span><span class="mi">315</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"throttle"</span><span class="p">:</span><span class="w"> </span><span class="mi">57</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div><h3 id='http-request'>HTTP Request</h3>
+<p><code>GET https://api.openf1.org/v1/car_data</code></p>
+<h3 id='sample-url'>Sample URL</h3>
+<p><a href="https://api.openf1.org/v1/car_data?driver_number=55&amp;session_key=9159&amp;speed&gt;=315" target="_blank">https://api.openf1.org/v1/car_data?driver_number=55&amp;session_key=9159&amp;speed&gt;=315</a></p>
+<h3 id='attributes'>Attributes</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>brake</td>
+<td>Whether the brake pedal is pressed (<code>100</code>) or not (<code>0</code>).</td>
+</tr>
+<tr>
+<td>date</td>
+<td>The date and time, in ISO 8601 format.</td>
+</tr>
+<tr>
+<td>driver_number</td>
+<td>The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).</td>
+</tr>
+<tr>
+<td>drs</td>
+<td>The Drag Reduction System (DRS) status (see mapping table below).</td>
+</tr>
+<tr>
+<td>meeting_key</td>
+<td>The unique identifier for the meeting. Use <code>latest</code> to identify the latest or current meeting.</td>
+</tr>
+<tr>
+<td>n_gear</td>
+<td>Current gear selection, ranging from 1 to 8. <code>0</code> indicates neutral or no gear engaged.</td>
+</tr>
+<tr>
+<td>rpm</td>
+<td>Revolutions per minute of the engine.</td>
+</tr>
+<tr>
+<td>session_key</td>
+<td>The unique identifier for the session. Use <code>latest</code> to identify the latest or current session.</td>
+</tr>
+<tr>
+<td>speed</td>
+<td>Velocity of the car in km/h.</td>
+</tr>
+<tr>
+<td>throttle</td>
+<td>Percentage of maximum engine power being used.</td>
+</tr>
+</tbody></table>
+
+<p><br /><br /></p>
+
+<p>Below is a table that correlates DRS values to its supposed interpretation
+            (from <a href="https://github.com/theOehrly/Fast-F1/blob/317bacf8c61038d7e8d0f48165330167702b349f/fastf1/_api.py#L863" target="_blank">FastF1</a>). </p>
+
+<p><table id="drs_values">
+                <thead>
+                    <tr>
+                    <th>DRS value</th>
+                    <th>Interpretation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <td>0</td>
+                    <td>DRS off</td>
+                    </tr>
+                    <tr>
+                    <td>1</td>
+                    <td>DRS off</td>
+                    </tr>
+                    <tr>
+                    <td>2</td>
+                    <td>?</td>
+                    </tr>
+                    <tr>
+                    <td>3</td>
+                    <td>?</td>
+                    </tr>
+                    <tr>
+                    <td>8</td>
+                    <td>Detected, eligible once in activation zone</td>
+                    </tr>
+                    <tr>
+                    <td>9</td>
+                    <td>?</td>
+                    </tr>
+                    <tr>
+                    <td>10</td>
+                    <td>DRS on</td>
+                    </tr>
+                    <tr>
+                    <td>12</td>
+                    <td>DRS on</td>
+                    </tr>
+                    <tr>
+                    <td>14</td>
+                    <td>DRS on</td>
+                    </tr>
+                </tbody>
+            </table></p>
+<h2 id='drivers'>Drivers</h2>
+<p>Provides information about drivers for each session.</p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/drivers?driver_number=1&amp;session_key=9158"</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/drivers?driver_number=1&amp;session_key=9158'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
+# import pandas as pd
+# df = pd.DataFrame(data)
+</span></code></pre></div><div class="highlight"><pre class="highlight r tab-r"><code><span class="c1"># If needed, install libraries</span><span class="w">
+</span><span class="c1"># install.packages('httr')</span><span class="w">
+</span><span class="c1"># install.packages('jsonlite')</span><span class="w">
+
+</span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
+
+</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/drivers?driver_number=1&amp;session_key=9158'</span><span class="p">)</span><span class="w">
+</span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
+</span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># If you want, you can import the results in a DataFrame</span><span class="w">
+</span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
+</span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
+</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.openf1.org/v1/drivers?driver_number=1&amp;session_key=9158</span><span class="dl">'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">jsonContent</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
+</code></pre></div>
+<blockquote>
+<p>Output:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"broadcast_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"M VERSTAPPEN"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"country_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NED"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Max"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"full_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Max VERSTAPPEN"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"headshot_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://www.formula1.com/content/dam/fom-website/drivers/M/MAXVER01_Max_Verstappen/maxver01.png.transform/1col/image.png"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Verstappen"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1219</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"name_acronym"</span><span class="p">:</span><span class="w"> </span><span class="s2">"VER"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9158</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"team_colour"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3671C6"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"team_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Red Bull Racing"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div><h3 id='http-request-2'>HTTP Request</h3>
+<p><code>GET https://api.openf1.org/v1/drivers</code></p>
+<h3 id='sample-url-2'>Sample URL</h3>
+<p><a href="https://api.openf1.org/v1/drivers?driver_number=1&amp;session_key=9158" target="_blank">https://api.openf1.org/v1/drivers?driver_number=1&amp;session_key=9158</a></p>
+<h3 id='attributes-2'>Attributes</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>broadcast_name</td>
+<td>The driver&#39;s name, as displayed on TV.</td>
+</tr>
+<tr>
+<td>country_code</td>
+<td>A code that uniquely identifies the country.</td>
+</tr>
+<tr>
+<td>driver_number</td>
+<td>The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).</td>
+</tr>
+<tr>
+<td>first_name</td>
+<td>The driver&#39;s first name.</td>
+</tr>
+<tr>
+<td>full_name</td>
+<td>The driver&#39;s full name.</td>
+</tr>
+<tr>
+<td>headshot_url</td>
+<td>URL of the driver&#39;s face photo.</td>
+</tr>
+<tr>
+<td>last_name</td>
+<td>The driver&#39;s last name.</td>
+</tr>
+<tr>
+<td>meeting_key</td>
+<td>The unique identifier for the meeting. Use <code>latest</code> to identify the latest or current meeting.</td>
+</tr>
+<tr>
+<td>name_acronym</td>
+<td>Three-letter acronym of the driver&#39;s name.</td>
+</tr>
+<tr>
+<td>session_key</td>
+<td>The unique identifier for the session. Use <code>latest</code> to identify the latest or current session.</td>
+</tr>
+<tr>
+<td>team_colour</td>
+<td>The hexadecimal color value (RRGGBB) of the driver&#39;s team.</td>
+</tr>
+<tr>
+<td>team_name</td>
+<td>Name of the driver&#39;s team.</td>
+</tr>
+</tbody></table>
+<h2 id='intervals'>Intervals</h2>
+<p>Fetches real-time interval data between drivers and their gap to the race leader.<br>
+            Available during races only, with updates approximately every 4 seconds.</p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/intervals?session_key=9165&amp;interval&lt;0.005"</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/intervals?session_key=9165&amp;interval&lt;0.005'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
+# import pandas as pd
+# df = pd.DataFrame(data)
+</span></code></pre></div><div class="highlight"><pre class="highlight r tab-r"><code><span class="c1"># If needed, install libraries</span><span class="w">
+</span><span class="c1"># install.packages('httr')</span><span class="w">
+</span><span class="c1"># install.packages('jsonlite')</span><span class="w">
+
+</span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
+
+</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/intervals?session_key=9165&amp;interval&lt;0.005'</span><span class="p">)</span><span class="w">
+</span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
+</span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># If you want, you can import the results in a DataFrame</span><span class="w">
+</span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
+</span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
+</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.openf1.org/v1/intervals?session_key=9165&amp;interval&lt;0.005</span><span class="dl">'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">jsonContent</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
+</code></pre></div>
+<blockquote>
+<p>Output:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-09-17T13:31:02.395000+00:00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"gap_to_leader"</span><span class="p">:</span><span class="w"> </span><span class="mf">41.019</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"interval"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.003</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1219</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9165</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div><h3 id='http-request-3'>HTTP Request</h3>
+<p><code>GET https://api.openf1.org/v1/intervals</code></p>
+<h3 id='sample-url-3'>Sample URL</h3>
+<p><a href="https://api.openf1.org/v1/intervals?session_key=9165&amp;interval&lt;0.005" target="_blank">https://api.openf1.org/v1/intervals?session_key=9165&amp;interval&lt;0.005</a></p>
+<h3 id='attributes-3'>Attributes</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>date</td>
+<td>The date and time, in ISO 8601 format.</td>
+</tr>
+<tr>
+<td>driver_number</td>
+<td>The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).</td>
+</tr>
+<tr>
+<td>gap_to_leader</td>
+<td>The time difference to the race leader, in seconds.</td>
+</tr>
+<tr>
+<td>interval</td>
+<td>The time difference to the car ahead, in seconds.</td>
+</tr>
+<tr>
+<td>meeting_key</td>
+<td>The unique identifier for the meeting. Use <code>latest</code> to identify the latest or current meeting.</td>
+</tr>
+<tr>
+<td>session_key</td>
+<td>The unique identifier for the session. Use <code>latest</code> to identify the latest or current session.</td>
+</tr>
+</tbody></table>
+<h2 id='laps'>Laps</h2>
+<p>Provides detailed information about individual laps.</p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/laps?session_key=9161&amp;driver_number=63&amp;lap_number=8"</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/laps?session_key=9161&amp;driver_number=63&amp;lap_number=8'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
+# import pandas as pd
+# df = pd.DataFrame(data)
+</span></code></pre></div><div class="highlight"><pre class="highlight r tab-r"><code><span class="c1"># If needed, install libraries</span><span class="w">
+</span><span class="c1"># install.packages('httr')</span><span class="w">
+</span><span class="c1"># install.packages('jsonlite')</span><span class="w">
+
+</span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
+
+</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/laps?session_key=9161&amp;driver_number=63&amp;lap_number=8'</span><span class="p">)</span><span class="w">
+</span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
+</span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># If you want, you can import the results in a DataFrame</span><span class="w">
+</span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
+</span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
+</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.openf1.org/v1/laps?session_key=9161&amp;driver_number=63&amp;lap_number=8</span><span class="dl">'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">jsonContent</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
+</code></pre></div>
+<blockquote>
+<p>Output:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"date_start"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-09-16T13:59:07.606000+00:00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">63</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"duration_sector_1"</span><span class="p">:</span><span class="w"> </span><span class="mf">26.966</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"duration_sector_2"</span><span class="p">:</span><span class="w"> </span><span class="mf">38.657</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"duration_sector_3"</span><span class="p">:</span><span class="w"> </span><span class="mf">26.12</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"i1_speed"</span><span class="p">:</span><span class="w"> </span><span class="mi">307</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"i2_speed"</span><span class="p">:</span><span class="w"> </span><span class="mi">277</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"is_pit_out_lap"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lap_duration"</span><span class="p">:</span><span class="w"> </span><span class="mf">91.743</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lap_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1219</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"segments_sector_1"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="mi">2049</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2049</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2049</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2051</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2049</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2051</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2049</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2049</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"segments_sector_2"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="mi">2049</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2049</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2049</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2049</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2049</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2049</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2049</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2049</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"segments_sector_3"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="mi">2048</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2048</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2048</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2048</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2048</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2064</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2064</span><span class="p">,</span><span class="w">
+      </span><span class="mi">2064</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9161</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"st_speed"</span><span class="p">:</span><span class="w"> </span><span class="mi">298</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div><h3 id='http-request-4'>HTTP Request</h3>
+<p><code>GET https://api.openf1.org/v1/laps</code></p>
+<h3 id='sample-url-4'>Sample URL</h3>
+<p><a href="https://api.openf1.org/v1/laps?session_key=9161&amp;driver_number=63&amp;lap_number=8" target="_blank">https://api.openf1.org/v1/laps?session_key=9161&amp;driver_number=63&amp;lap_number=8</a></p>
+<h3 id='attributes-4'>Attributes</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>date_start</td>
+<td>The starting date and time, in ISO 8601 format.</td>
+</tr>
+<tr>
+<td>driver_number</td>
+<td>The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).</td>
+</tr>
+<tr>
+<td>duration_sector_1</td>
+<td>The time taken, in seconds, to complete the first sector of the lap.</td>
+</tr>
+<tr>
+<td>duration_sector_2</td>
+<td>The time taken, in seconds, to complete the second sector of the lap.</td>
+</tr>
+<tr>
+<td>duration_sector_3</td>
+<td>The time taken, in seconds, to complete the third sector of the lap.</td>
+</tr>
+<tr>
+<td>i1_speed</td>
+<td>The speed of the car, in km/h, at the first intermediate point on the track.</td>
+</tr>
+<tr>
+<td>i2_speed</td>
+<td>The speed of the car, in km/h, at the second intermediate point on the track.</td>
+</tr>
+<tr>
+<td>is_pit_out_lap</td>
+<td>A boolean value indicating whether the lap is an &quot;out lap&quot; from the pit (<code>true</code> if it is, <code>false</code> otherwise).</td>
+</tr>
+<tr>
+<td>lap_duration</td>
+<td>The total time taken, in seconds, to complete the entire lap.</td>
+</tr>
+<tr>
+<td>lap_number</td>
+<td>The sequential number of the lap within the session (starts at 1).</td>
+</tr>
+<tr>
+<td>meeting_key</td>
+<td>The unique identifier for the meeting. Use <code>latest</code> to identify the latest or current meeting.</td>
+</tr>
+<tr>
+<td>segments_sector_1</td>
+<td>A list of values representing the &quot;mini-sectors&quot; within the first sector (see mapping table below).</td>
+</tr>
+<tr>
+<td>segments_sector_2</td>
+<td>A list of values representing the &quot;mini-sectors&quot; within the second sector (see mapping table below).</td>
+</tr>
+<tr>
+<td>segments_sector_3</td>
+<td>A list of values representing the &quot;mini-sectors&quot; within the third sector (see mapping table below).</td>
+</tr>
+<tr>
+<td>session_key</td>
+<td>The unique identifier for the session. Use <code>latest</code> to identify the latest or current session.</td>
+</tr>
+<tr>
+<td>st_speed</td>
+<td>The speed of the car, in km/h, at the speed trap, which is a specific point on the track where the highest speeds are usually recorded.</td>
+</tr>
+</tbody></table>
+
+<p><br /><br /></p>
+
+<p>Below is a table that correlates segment values to the colors displayed on TV broadcasts.    </p>
+
+<p><table id="segment_mapping">
+                <thead>
+                    <tr>
+                    <th>Value</th>
+                    <th>Color</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <td>0</td>
+                    <td>not available</td>
+                    </tr>
+                    <tr>
+                    <td><span style="color: #fdde00;">2048</span></td>
+                    <td><span style="color: #fdde00;">yellow</span></td>
+                    </tr>
+                    <tr>
+                    <td><span style="color: #4bdd49;">2049</span></td>
+                    <td><span style="color: #4bdd49;">green</span></td>
+                    </tr>
+                    <tr>
+                    <td>2050</td>
+                    <td>?</td>
+                    </tr>
+                    <tr>
+                    <td><span style="color: #c92cd5;">2051</span></td>
+                    <td><span style="color: #c92cd5;">purple</span></td>
+                    </tr>
+                    <tr>
+                    <td>2052</td>
+                    <td>?</td>
+                    </tr>
+                    <tr>
+                    <td>2064</td>
+                    <td>?</td>
+                    </tr>
+                    <tr>
+                    <td>2068</td>
+                    <td>?</td>
+                    </tr>
+                </tbody>
+            </table></p>
+
+<p>Segments are not available during races.
+            Also, The segment values may not always align perfectly with the colors shown on TV, for unknown reasons.</p>
+<h2 id='location'>Location</h2>
+<p>The approximate location of the cars on the circuit, at a sample rate of about 3.7 Hz.<br>
+            Useful for gauging their progress along the track, but lacks details about lateral placement — i.e. whether
+            the car is on the left or right side of the track. The origin point (0, 0, 0) appears to be arbitrary
+            and not tied to any specific location on the track.</p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/location?session_key=9161&amp;driver_number=81&amp;date&gt;2023-09-16T13:03:35.200&amp;date&lt;2023-09-16T13:03:35.800"</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/location?session_key=9161&amp;driver_number=81&amp;date&gt;2023-09-16T13:03:35.200&amp;date&lt;2023-09-16T13:03:35.800'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
+# import pandas as pd
+# df = pd.DataFrame(data)
+</span></code></pre></div><div class="highlight"><pre class="highlight r tab-r"><code><span class="c1"># If needed, install libraries</span><span class="w">
+</span><span class="c1"># install.packages('httr')</span><span class="w">
+</span><span class="c1"># install.packages('jsonlite')</span><span class="w">
+
+</span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
+
+</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/location?session_key=9161&amp;driver_number=81&amp;date&gt;2023-09-16T13:03:35.200&amp;date&lt;2023-09-16T13:03:35.800'</span><span class="p">)</span><span class="w">
+</span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
+</span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># If you want, you can import the results in a DataFrame</span><span class="w">
+</span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
+</span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
+</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.openf1.org/v1/location?session_key=9161&amp;driver_number=81&amp;date&gt;2023-09-16T13:03:35.200&amp;date&lt;2023-09-16T13:03:35.800</span><span class="dl">'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">jsonContent</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
+</code></pre></div>
+<blockquote>
+<p>Output:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-09-16T13:03:35.292000+00:00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">81</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1219</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9161</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">567</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">3195</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"z"</span><span class="p">:</span><span class="w"> </span><span class="mi">187</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-09-16T13:03:35.752000+00:00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">81</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1219</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9161</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">489</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">3403</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"z"</span><span class="p">:</span><span class="w"> </span><span class="mi">186</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div><h3 id='http-request-5'>HTTP Request</h3>
+<p><code>GET https://api.openf1.org/v1/location</code></p>
+<h3 id='sample-url-5'>Sample URL</h3>
+<p><a href="https://api.openf1.org/v1/location?session_key=9161&amp;driver_number=81&amp;date&gt;2023-09-16T13:03:35.200&amp;date&lt;2023-09-16T13:03:35.800" target="_blank">https://api.openf1.org/v1/location?session_key=9161&amp;driver_number=81&amp;date&gt;2023-09-16T13:03:35.200&amp;date&lt;2023-09-16T13:03:35.800</a></p>
+<h3 id='attributes-5'>Attributes</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>date</td>
+<td>The date and time, in ISO 8601 format.</td>
+</tr>
+<tr>
+<td>driver_number</td>
+<td>The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).</td>
+</tr>
+<tr>
+<td>meeting_key</td>
+<td>The unique identifier for the meeting. Use <code>latest</code> to identify the latest or current meeting.</td>
+</tr>
+<tr>
+<td>session_key</td>
+<td>The unique identifier for the session. Use <code>latest</code> to identify the latest or current session.</td>
+</tr>
+<tr>
+<td>x</td>
+<td>The &#39;x&#39; value in a 3D Cartesian coordinate system representing the current approximate location of the car on the track.</td>
+</tr>
+<tr>
+<td>y</td>
+<td>The &#39;y&#39; value in a 3D Cartesian coordinate system representing the current approximate location of the car on the track.</td>
+</tr>
+<tr>
+<td>z</td>
+<td>The &#39;z&#39; value in a 3D Cartesian coordinate system representing the current approximate location of the car on the track.</td>
+</tr>
+</tbody></table>
+<h2 id='meetings'>Meetings</h2>
+<p>Provides information about meetings.<br>
+            A meeting refers to a Grand Prix or testing weekend and usually includes multiple sessions (practice, qualifying, race, ...).</p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/meetings?year=2023&amp;country_name=Singapore"</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/meetings?year=2023&amp;country_name=Singapore'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
+# import pandas as pd
+# df = pd.DataFrame(data)
+</span></code></pre></div><div class="highlight"><pre class="highlight r tab-r"><code><span class="c1"># If needed, install libraries</span><span class="w">
+</span><span class="c1"># install.packages('httr')</span><span class="w">
+</span><span class="c1"># install.packages('jsonlite')</span><span class="w">
+
+</span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
+
+</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/meetings?year=2023&amp;country_name=Singapore'</span><span class="p">)</span><span class="w">
+</span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
+</span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># If you want, you can import the results in a DataFrame</span><span class="w">
+</span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
+</span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
+</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.openf1.org/v1/meetings?year=2023&amp;country_name=Singapore</span><span class="dl">'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">jsonContent</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
+</code></pre></div>
+<blockquote>
+<p>Output:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"circuit_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">61</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"circuit_short_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Singapore"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"country_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SGP"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"country_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">157</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"country_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Singapore"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"date_start"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-09-15T09:30:00+00:00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"gmt_offset"</span><span class="p">:</span><span class="w"> </span><span class="s2">"08:00:00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"location"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Marina Bay"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1219</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Singapore Grand Prix"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_official_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FORMULA 1 SINGAPORE AIRLINES SINGAPORE GRAND PRIX 2023"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"year"</span><span class="p">:</span><span class="w"> </span><span class="mi">2023</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div><h3 id='http-request-6'>HTTP Request</h3>
+<p><code>GET https://api.openf1.org/v1/meetings</code></p>
+<h3 id='sample-url-6'>Sample URL</h3>
+<p><a href="https://api.openf1.org/v1/meetings?year=2023&amp;country_name=Singapore" target="_blank">https://api.openf1.org/v1/meetings?year=2023&amp;country_name=Singapore</a></p>
+<h3 id='attributes-6'>Attributes</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>circuit_key</td>
+<td>The unique identifier for the circuit where the event takes place.</td>
+</tr>
+<tr>
+<td>circuit_short_name</td>
+<td>The short or common name of the circuit where the event takes place.</td>
+</tr>
+<tr>
+<td>country_code</td>
+<td>A code that uniquely identifies the country.</td>
+</tr>
+<tr>
+<td>country_key</td>
+<td>The unique identifier for the country where the event takes place.</td>
+</tr>
+<tr>
+<td>country_name</td>
+<td>The full name of the country where the event takes place.</td>
+</tr>
+<tr>
+<td>date_start</td>
+<td>The starting date and time, in ISO 8601 format.</td>
+</tr>
+<tr>
+<td>gmt_offset</td>
+<td>The difference in hours and minutes between local time at the location of the event and Greenwich Mean Time (GMT).</td>
+</tr>
+<tr>
+<td>location</td>
+<td>The city or geographical location where the event takes place.</td>
+</tr>
+<tr>
+<td>meeting_key</td>
+<td>The unique identifier for the meeting. Use <code>latest</code> to identify the latest or current meeting.</td>
+</tr>
+<tr>
+<td>meeting_name</td>
+<td>The name of the meeting.</td>
+</tr>
+<tr>
+<td>meeting_official_name</td>
+<td>The official name of the meeting.</td>
+</tr>
+<tr>
+<td>year</td>
+<td>The year the event takes place.</td>
+</tr>
+</tbody></table>
+<h2 id='pit'>Pit</h2>
+<p>Provides information about cars going through the pit lane.</p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/pit?session_key=9158&amp;pit_duration&lt;31"</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/pit?session_key=9158&amp;pit_duration&lt;31'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
+# import pandas as pd
+# df = pd.DataFrame(data)
+</span></code></pre></div><div class="highlight"><pre class="highlight r tab-r"><code><span class="c1"># If needed, install libraries</span><span class="w">
+</span><span class="c1"># install.packages('httr')</span><span class="w">
+</span><span class="c1"># install.packages('jsonlite')</span><span class="w">
+
+</span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
+
+</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/pit?session_key=9158&amp;pit_duration&lt;31'</span><span class="p">)</span><span class="w">
+</span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
+</span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># If you want, you can import the results in a DataFrame</span><span class="w">
+</span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
+</span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
+</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.openf1.org/v1/pit?session_key=9158&amp;pit_duration&lt;31</span><span class="dl">'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">jsonContent</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
+</code></pre></div>
+<blockquote>
+<p>Output:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-09-15T09:38:23.038000+00:00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">63</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lap_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1219</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"pit_duration"</span><span class="p">:</span><span class="w"> </span><span class="mf">24.5</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9158</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-09-15T10:05:01.229000+00:00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">81</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lap_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1219</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"pit_duration"</span><span class="p">:</span><span class="w"> </span><span class="mf">30.8</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9158</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div><h3 id='http-request-7'>HTTP Request</h3>
+<p><code>GET https://api.openf1.org/v1/pit</code></p>
+<h3 id='sample-url-7'>Sample URL</h3>
+<p><a href="https://api.openf1.org/v1/pit?session_key=9158&amp;pit_duration&lt;31" target="_blank">https://api.openf1.org/v1/pit?session_key=9158&amp;pit_duration&lt;31</a></p>
+<h3 id='attributes-7'>Attributes</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>date</td>
+<td>The date and time, in ISO 8601 format.</td>
+</tr>
+<tr>
+<td>driver_number</td>
+<td>The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).</td>
+</tr>
+<tr>
+<td>lap_number</td>
+<td>The sequential number of the lap within the session (starts at 1).</td>
+</tr>
+<tr>
+<td>meeting_key</td>
+<td>The unique identifier for the meeting. Use <code>latest</code> to identify the latest or current meeting.</td>
+</tr>
+<tr>
+<td>pit_duration</td>
+<td>The time spent in the pit, from entering to leaving the pit lane, in seconds.</td>
+</tr>
+<tr>
+<td>session_key</td>
+<td>The unique identifier for the session. Use <code>latest</code> to identify the latest or current session.</td>
+</tr>
+</tbody></table>
+<h2 id='position'>Position</h2>
+<p>Provides driver positions throughout a session, including initial
+            placement and subsequent changes.</p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/position?meeting_key=1217&amp;driver_number=40&amp;position&lt;=3"</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/position?meeting_key=1217&amp;driver_number=40&amp;position&lt;=3'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
+# import pandas as pd
+# df = pd.DataFrame(data)
+</span></code></pre></div><div class="highlight"><pre class="highlight r tab-r"><code><span class="c1"># If needed, install libraries</span><span class="w">
+</span><span class="c1"># install.packages('httr')</span><span class="w">
+</span><span class="c1"># install.packages('jsonlite')</span><span class="w">
+
+</span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
+
+</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/position?meeting_key=1217&amp;driver_number=40&amp;position&lt;=3'</span><span class="p">)</span><span class="w">
+</span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
+</span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># If you want, you can import the results in a DataFrame</span><span class="w">
+</span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
+</span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
+</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.openf1.org/v1/position?meeting_key=1217&amp;driver_number=40&amp;position&lt;=3</span><span class="dl">'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">jsonContent</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
+</code></pre></div>
+<blockquote>
+<p>Output:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-08-26T09:30:47.199000+00:00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">40</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1217</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9144</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-08-26T09:35:51.477000+00:00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">40</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1217</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9144</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div><h3 id='http-request-8'>HTTP Request</h3>
+<p><code>GET https://api.openf1.org/v1/position</code></p>
+<h3 id='sample-url-8'>Sample URL</h3>
+<p><a href="https://api.openf1.org/v1/position?meeting_key=1217&amp;driver_number=40&amp;position&lt;=3" target="_blank">https://api.openf1.org/v1/position?meeting_key=1217&amp;driver_number=40&amp;position&lt;=3</a></p>
+<h3 id='attributes-8'>Attributes</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>date</td>
+<td>The date and time, in ISO 8601 format.</td>
+</tr>
+<tr>
+<td>driver_number</td>
+<td>The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).</td>
+</tr>
+<tr>
+<td>meeting_key</td>
+<td>The unique identifier for the meeting. Use <code>latest</code> to identify the latest or current meeting.</td>
+</tr>
+<tr>
+<td>position</td>
+<td>Position of the driver (starts at 1).</td>
+</tr>
+<tr>
+<td>session_key</td>
+<td>The unique identifier for the session. Use <code>latest</code> to identify the latest or current session.</td>
+</tr>
+</tbody></table>
+<h2 id='race-control'>Race control</h2>
+<p>Provides information about race control (racing incidents, flags, safety car, ...).</p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/race_control?flag=BLACK AND WHITE&amp;driver_number=1&amp;date&gt;=2023-01-01&amp;date&lt;2023-09-01"</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/race_control?flag=BLACK AND WHITE&amp;driver_number=1&amp;date&gt;=2023-01-01&amp;date&lt;2023-09-01'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
+# import pandas as pd
+# df = pd.DataFrame(data)
+</span></code></pre></div><div class="highlight"><pre class="highlight r tab-r"><code><span class="c1"># If needed, install libraries</span><span class="w">
+</span><span class="c1"># install.packages('httr')</span><span class="w">
+</span><span class="c1"># install.packages('jsonlite')</span><span class="w">
+
+</span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
+
+</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/race_control?flag=BLACK AND WHITE&amp;driver_number=1&amp;date&gt;=2023-01-01&amp;date&lt;2023-09-01'</span><span class="p">)</span><span class="w">
+</span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
+</span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># If you want, you can import the results in a DataFrame</span><span class="w">
+</span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
+</span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
+</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.openf1.org/v1/race_control?flag=BLACK AND WHITE&amp;driver_number=1&amp;date&gt;=2023-01-01&amp;date&lt;2023-09-01</span><span class="dl">'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">jsonContent</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
+</code></pre></div>
+<blockquote>
+<p>Output:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"category"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Flag"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-06-04T14:21:01+00:00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"flag"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BLACK AND WHITE"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lap_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">59</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1211</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BLACK AND WHITE FLAG FOR CAR 1 (VER) - TRACK LIMITS"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Driver"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"sector"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9102</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div><h3 id='http-request-9'>HTTP Request</h3>
+<p><code>GET https://api.openf1.org/v1/race_control</code></p>
+<h3 id='sample-url-9'>Sample URL</h3>
+<p><a href="https://api.openf1.org/v1/race_control?flag=BLACK AND WHITE&amp;driver_number=1&amp;date&gt;=2023-01-01&amp;date&lt;2023-09-01" target="_blank">https://api.openf1.org/v1/race_control?flag=BLACK AND WHITE&amp;driver_number=1&amp;date&gt;=2023-01-01&amp;date&lt;2023-09-01</a></p>
+<h3 id='attributes-9'>Attributes</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>category</td>
+<td>The category of the event (<code>CarEvent</code>, <code>Drs</code>, <code>Flag</code>, <code>SafetyCar</code>, ...).</td>
+</tr>
+<tr>
+<td>date</td>
+<td>The date and time, in ISO 8601 format.</td>
+</tr>
+<tr>
+<td>driver_number</td>
+<td>The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).</td>
+</tr>
+<tr>
+<td>flag</td>
+<td>Type of flag displayed (<code>GREEN</code>, <code>YELLOW</code>, <code>DOUBLE YELLOW</code>, <code>CHEQUERED</code>, ...).</td>
+</tr>
+<tr>
+<td>lap_number</td>
+<td>The sequential number of the lap within the session (starts at 1).</td>
+</tr>
+<tr>
+<td>meeting_key</td>
+<td>The unique identifier for the meeting. Use <code>latest</code> to identify the latest or current meeting.</td>
+</tr>
+<tr>
+<td>message</td>
+<td>Description of the event or action.</td>
+</tr>
+<tr>
+<td>scope</td>
+<td>The scope of the event (<code>Track</code>, <code>Driver</code>, <code>Sector</code>, ...).</td>
+</tr>
+<tr>
+<td>sector</td>
+<td>Segment (&quot;mini-sector&quot;) of the track where the event occurred? (starts at 1).</td>
+</tr>
+<tr>
+<td>session_key</td>
+<td>The unique identifier for the session. Use <code>latest</code> to identify the latest or current session.</td>
+</tr>
+</tbody></table>
+<h2 id='sessions'>Sessions</h2>
+<p>Provides information about sessions.<br>
+            A session refers to a distinct period of track activity during a Grand Prix or testing weekend (practice, qualifying, sprint, race, ...).</p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint&amp;year=2023"</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint&amp;year=2023'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
+# import pandas as pd
+# df = pd.DataFrame(data)
+</span></code></pre></div><div class="highlight"><pre class="highlight r tab-r"><code><span class="c1"># If needed, install libraries</span><span class="w">
+</span><span class="c1"># install.packages('httr')</span><span class="w">
+</span><span class="c1"># install.packages('jsonlite')</span><span class="w">
+
+</span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
+
+</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint&amp;year=2023'</span><span class="p">)</span><span class="w">
+</span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
+</span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># If you want, you can import the results in a DataFrame</span><span class="w">
+</span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
+</span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
+</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint&amp;year=2023</span><span class="dl">'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">jsonContent</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
+</code></pre></div>
+<blockquote>
+<p>Output:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"circuit_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"circuit_short_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Spa-Francorchamps"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"country_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BEL"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"country_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"country_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Belgium"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"date_end"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-07-29T15:35:00+00:00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"date_start"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-07-29T15:05:00+00:00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"gmt_offset"</span><span class="p">:</span><span class="w"> </span><span class="s2">"02:00:00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"location"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Spa-Francorchamps"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1216</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9140</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sprint"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Race"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"year"</span><span class="p">:</span><span class="w"> </span><span class="mi">2023</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div><h3 id='http-request-10'>HTTP Request</h3>
+<p><code>GET https://api.openf1.org/v1/sessions</code></p>
+<h3 id='sample-url-10'>Sample URL</h3>
+<p><a href="https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint&amp;year=2023" target="_blank">https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint&amp;year=2023</a></p>
+<h3 id='attributes-10'>Attributes</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>circuit_key</td>
+<td>The unique identifier for the circuit where the event takes place.</td>
+</tr>
+<tr>
+<td>circuit_short_name</td>
+<td>The short or common name of the circuit where the event takes place.</td>
+</tr>
+<tr>
+<td>country_code</td>
+<td>A code that uniquely identifies the country.</td>
+</tr>
+<tr>
+<td>country_key</td>
+<td>The unique identifier for the country where the event takes place.</td>
+</tr>
+<tr>
+<td>country_name</td>
+<td>The full name of the country where the event takes place.</td>
+</tr>
+<tr>
+<td>date_end</td>
+<td>The ending date and time, in ISO 8601 format.</td>
+</tr>
+<tr>
+<td>date_start</td>
+<td>The starting date and time, in ISO 8601 format.</td>
+</tr>
+<tr>
+<td>gmt_offset</td>
+<td>The difference in hours and minutes between local time at the location of the event and Greenwich Mean Time (GMT).</td>
+</tr>
+<tr>
+<td>location</td>
+<td>The city or geographical location where the event takes place.</td>
+</tr>
+<tr>
+<td>meeting_key</td>
+<td>The unique identifier for the meeting. Use <code>latest</code> to identify the latest or current meeting.</td>
+</tr>
+<tr>
+<td>session_key</td>
+<td>The unique identifier for the session. Use <code>latest</code> to identify the latest or current session.</td>
+</tr>
+<tr>
+<td>session_name</td>
+<td>The name of the session (<code>Practice 1</code>, <code>Qualifying</code>, <code>Race</code>, ...).</td>
+</tr>
+<tr>
+<td>session_type</td>
+<td>The type of the session (<code>Practice</code>, <code>Qualifying</code>, <code>Race</code>, ...).</td>
+</tr>
+<tr>
+<td>year</td>
+<td>The year the event takes place.</td>
+</tr>
+</tbody></table>
+<h2 id='stints'>Stints</h2>
+<p>Provides information about individual stints.<br>
+            A stint refers to a period of continuous driving by a driver during a session.</p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/stints?session_key=9165&amp;tyre_age_at_start&gt;=3"</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/stints?session_key=9165&amp;tyre_age_at_start&gt;=3'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
+# import pandas as pd
+# df = pd.DataFrame(data)
+</span></code></pre></div><div class="highlight"><pre class="highlight r tab-r"><code><span class="c1"># If needed, install libraries</span><span class="w">
+</span><span class="c1"># install.packages('httr')</span><span class="w">
+</span><span class="c1"># install.packages('jsonlite')</span><span class="w">
+
+</span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
+
+</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/stints?session_key=9165&amp;tyre_age_at_start&gt;=3'</span><span class="p">)</span><span class="w">
+</span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
+</span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># If you want, you can import the results in a DataFrame</span><span class="w">
+</span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
+</span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
+</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.openf1.org/v1/stints?session_key=9165&amp;tyre_age_at_start&gt;=3</span><span class="dl">'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">jsonContent</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
+</code></pre></div>
+<blockquote>
+<p>Output:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"compound"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SOFT"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lap_end"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lap_start"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1219</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9165</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"stint_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"tyre_age_at_start"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"compound"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SOFT"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lap_end"</span><span class="p">:</span><span class="w"> </span><span class="mi">62</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lap_start"</span><span class="p">:</span><span class="w"> </span><span class="mi">44</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1219</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9165</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"stint_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"tyre_age_at_start"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div><h3 id='http-request-11'>HTTP Request</h3>
+<p><code>GET https://api.openf1.org/v1/stints</code></p>
+<h3 id='sample-url-11'>Sample URL</h3>
+<p><a href="https://api.openf1.org/v1/stints?session_key=9165&amp;tyre_age_at_start&gt;=3" target="_blank">https://api.openf1.org/v1/stints?session_key=9165&amp;tyre_age_at_start&gt;=3</a></p>
+<h3 id='attributes-11'>Attributes</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>compound</td>
+<td>The specific compound of tyre used during the stint (<code>SOFT</code>, <code>MEDIUM</code>, <code>HARD</code>, ...).</td>
+</tr>
+<tr>
+<td>driver_number</td>
+<td>The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).</td>
+</tr>
+<tr>
+<td>lap_end</td>
+<td>Number of the last completed lap in this stint.</td>
+</tr>
+<tr>
+<td>lap_start</td>
+<td>Number of the initial lap in this stint (starts at 1).</td>
+</tr>
+<tr>
+<td>meeting_key</td>
+<td>The unique identifier for the meeting. Use <code>latest</code> to identify the latest or current meeting.</td>
+</tr>
+<tr>
+<td>session_key</td>
+<td>The unique identifier for the session. Use <code>latest</code> to identify the latest or current session.</td>
+</tr>
+<tr>
+<td>stint_number</td>
+<td>The sequential number of the stint within the session (starts at 1).</td>
+</tr>
+<tr>
+<td>tyre_age_at_start</td>
+<td>The age of the tyres at the start of the stint, in laps completed.</td>
+</tr>
+</tbody></table>
+<h2 id='team-radio'>Team radio</h2>
+<p>Provides a collection of radio exchanges between Formula 1 drivers and their respective teams during sessions.<br>
+            Please note that only a limited selection of communications are included, not the complete record of radio interactions.</p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/team_radio?session_key=9158&amp;driver_number=11"</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/team_radio?session_key=9158&amp;driver_number=11'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
+# import pandas as pd
+# df = pd.DataFrame(data)
+</span></code></pre></div><div class="highlight"><pre class="highlight r tab-r"><code><span class="c1"># If needed, install libraries</span><span class="w">
+</span><span class="c1"># install.packages('httr')</span><span class="w">
+</span><span class="c1"># install.packages('jsonlite')</span><span class="w">
+
+</span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
+
+</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/team_radio?session_key=9158&amp;driver_number=11'</span><span class="p">)</span><span class="w">
+</span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
+</span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># If you want, you can import the results in a DataFrame</span><span class="w">
+</span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
+</span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
+</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.openf1.org/v1/team_radio?session_key=9158&amp;driver_number=11</span><span class="dl">'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">jsonContent</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
+</code></pre></div>
+<blockquote>
+<p>Output:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-09-15T09:40:43.005000"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1219</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"recording_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://livetiming.formula1.com/static/2023/2023-09-17_Singapore_Grand_Prix/2023-09-15_Practice_1/TeamRadio/SERPER01_11_20230915_104008.mp3"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9158</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-09-15T10:32:47.325000"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1219</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"recording_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://livetiming.formula1.com/static/2023/2023-09-17_Singapore_Grand_Prix/2023-09-15_Practice_1/TeamRadio/SERPER01_11_20230915_113201.mp3"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9158</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div><h3 id='http-request-12'>HTTP Request</h3>
+<p><code>GET https://api.openf1.org/v1/team_radio</code></p>
+<h3 id='sample-url-12'>Sample URL</h3>
+<p><a href="https://api.openf1.org/v1/team_radio?session_key=9158&amp;driver_number=11" target="_blank">https://api.openf1.org/v1/team_radio?session_key=9158&amp;driver_number=11</a></p>
+<h3 id='attributes-12'>Attributes</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>date</td>
+<td>The date and time, in ISO 8601 format.</td>
+</tr>
+<tr>
+<td>driver_number</td>
+<td>The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).</td>
+</tr>
+<tr>
+<td>meeting_key</td>
+<td>The unique identifier for the meeting. Use <code>latest</code> to identify the latest or current meeting.</td>
+</tr>
+<tr>
+<td>recording_url</td>
+<td>URL of the radio recording.</td>
+</tr>
+<tr>
+<td>session_key</td>
+<td>The unique identifier for the session. Use <code>latest</code> to identify the latest or current session.</td>
+</tr>
+</tbody></table>
+<h2 id='weather'>Weather</h2>
+<p>The weather over the track, updated every minute.</p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/weather?meeting_key=1208&amp;wind_direction&gt;=130&amp;track_temperature&gt;=52"</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/weather?meeting_key=1208&amp;wind_direction&gt;=130&amp;track_temperature&gt;=52'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
+# import pandas as pd
+# df = pd.DataFrame(data)
+</span></code></pre></div><div class="highlight"><pre class="highlight r tab-r"><code><span class="c1"># If needed, install libraries</span><span class="w">
+</span><span class="c1"># install.packages('httr')</span><span class="w">
+</span><span class="c1"># install.packages('jsonlite')</span><span class="w">
+
+</span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
+
+</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/weather?meeting_key=1208&amp;wind_direction&gt;=130&amp;track_temperature&gt;=52'</span><span class="p">)</span><span class="w">
+</span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
+</span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># If you want, you can import the results in a DataFrame</span><span class="w">
+</span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
+</span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
+</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://api.openf1.org/v1/weather?meeting_key=1208&amp;wind_direction&gt;=130&amp;track_temperature&gt;=52</span><span class="dl">'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">jsonContent</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
+</code></pre></div>
+<blockquote>
+<p>Output:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"air_temperature"</span><span class="p">:</span><span class="w"> </span><span class="mf">27.8</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-05-07T18:42:25.233000+00:00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"humidity"</span><span class="p">:</span><span class="w"> </span><span class="mi">58</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1208</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"pressure"</span><span class="p">:</span><span class="w"> </span><span class="mf">1018.7</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"rainfall"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9078</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"track_temperature"</span><span class="p">:</span><span class="w"> </span><span class="mf">52.5</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"wind_direction"</span><span class="p">:</span><span class="w"> </span><span class="mi">136</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"wind_speed"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.4</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div><h3 id='http-request-13'>HTTP Request</h3>
+<p><code>GET https://api.openf1.org/v1/weather</code></p>
+<h3 id='sample-url-13'>Sample URL</h3>
+<p><a href="https://api.openf1.org/v1/weather?meeting_key=1208&amp;wind_direction&gt;=130&amp;track_temperature&gt;=52" target="_blank">https://api.openf1.org/v1/weather?meeting_key=1208&amp;wind_direction&gt;=130&amp;track_temperature&gt;=52</a></p>
+<h3 id='attributes-13'>Attributes</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>air_temperature</td>
+<td>Air temperature (°C).</td>
+</tr>
+<tr>
+<td>date</td>
+<td>The date and time, in ISO 8601 format.</td>
+</tr>
+<tr>
+<td>humidity</td>
+<td>Relative humidity (%).</td>
+</tr>
+<tr>
+<td>meeting_key</td>
+<td>The unique identifier for the meeting. Use <code>latest</code> to identify the latest or current meeting.</td>
+</tr>
+<tr>
+<td>pressure</td>
+<td>Air pressure (mbar).</td>
+</tr>
+<tr>
+<td>rainfall</td>
+<td>Whether there is rainfall.</td>
+</tr>
+<tr>
+<td>session_key</td>
+<td>The unique identifier for the session. Use <code>latest</code> to identify the latest or current session.</td>
+</tr>
+<tr>
+<td>track_temperature</td>
+<td>Track temperature (°C).</td>
+</tr>
+<tr>
+<td>wind_direction</td>
+<td>Wind direction (°), from 0° to 359°.</td>
+</tr>
+<tr>
+<td>wind_speed</td>
+<td>Wind speed (m/s).</td>
+</tr>
+</tbody></table>
+<h1 id='data-filtering'>Data filtering</h1>
+<p>Refine your query by including parameters directly in the URL.<br>
+Results can be filtered by any attribute, except arrays.</p>
+
+<p><strong>Example</strong><br>
+To fetch pit-out laps for driver number 55 (Carlos Sainz) that last at least 2 minutes, use:
+<a href="https://api.openf1.org/v1/laps?driver_number=55&amp;is_pit_out_lap=true&amp;lap_duration%3E%3D120" target="_blank">https://api.openf1.org/v1/laps?driver_number=55&amp;is_pit_out_lap=true&amp;lap_duration&gt;=120</a></p>
+<h2 id='time-based-filtering'>Time-Based Filtering</h2>
+<p>You can narrow down your results using time ranges.</p>
+
+<p><strong>Example</strong><br>
+To get all sessions in September 2023, use:
+<a href="https://api.openf1.org/v1/sessions?date_start%3E%3D2023-09-01&amp;date_end%3C%3D2023-09-30" target="_blank">https://api.openf1.org/v1/sessions?date_start&gt;=2023-09-01&amp;date_end&lt;=2023-09-30</a></p>
+
+<p>The API supports a wide range of date formats (those compatible with Python&#39;s <code>dateutil.parser.parse</code> method). Examples include:<br>
+<ul>
+  <li>&quot;2021-09-10&quot;</li>
+  <li>&quot;2021-09-10T14:30:20&quot;</li>
+  <li>&quot;2021-09-10T14:30:20+00:00&quot;</li>
+  <li>&quot;09/10/2021&quot;</li>
+  <li>&quot;09-10-2021&quot;</li>
+  <li>&quot;Fri Sep 10 14:30:20 2021&quot;</li>
+  <li>&quot;10 September 2021&quot;</li>
+  <li>&quot;Sep 10, 2021&quot;</li>
+  <li>&quot;2021-09-10 14:30:20 UTC&quot;</li>
+  <li>&quot;2021-09-10 14:30:20+00:00&quot;</li>
+  <li>&quot;2021-09-10 14:30:20 EST&quot;</li>
+  <li>...and many more.</li>
+</ul></p>
+
+<aside class="notice">
+If you include the <code>+</code> character to specify a timezone in the URL, make sure to URL-encode it as <code>%2B</code> to ensure proper parsing.
+</aside>
+<h1 id='csv-format'>CSV Format</h1>
+<p>To receive your query results in CSV format instead of the default JSON, simply append the query parameter <code>csv=true</code> to your URL. This feature is particularly handy to import the data into spreadsheet software like Microsoft Excel.</p>
+
+<p><strong>Example</strong><br>
+To get all sessions for the year 2023 in CSV format, use the following URL:
+<a href="https://api.openf1.org/v1/sessions?year=2023&csv=true" target="_blank">https://api.openf1.org/v1/sessions?year=2023&amp;csv=true</a></p>
+<h1 id='system-architecture'>System architecture</h1>
+<p>Our architecture is serverless, optimized for resilience, cost-efficiency and scalability.</p>
+
+<p><img src="https://storage.googleapis.com/openf1-public/images/archi.png" alt="architecture schema" style="
+    max-width: 220px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 35px;
+    margin-bottom: 45px;
+"></p>
+<h3 id='ingestor'>Ingestor</h3>
+<p>The data ingestor runs every 5 minutes to check for new real-time data. During live sessions, at least two instances are active at any time to ensure reliable data recording. The ingestor also performs basic data normalization for efficient database indexing.</p>
+<h3 id='database'>Database</h3>
+<p>We use a MongoDB database with indexes for each collection, enabling faster query responses. The data is stored in JSON format. Direct database queries are also possible; the connection string can be found <a href="https://github.com/br-g/openf1/blob/d91a5a1b8fdf2e48fbbf579fe3b5bdfba1179817/query_api/db.py#L9" target="_blank">here</a>.</p>
+<h3 id='query-api'>Query API</h3>
+<p>The Query API serves as the intermediary between the user and the database. It processes user queries, fetches the relevant data from the database, and returns it in the requested format.</p>
+<h1 id='faq'>FAQ</h1><h3 id='what-39-s-the-delay-between-live-events-and-api-updates'>What&#39;s the delay between live events and API updates?</h3>
+<p>The API typically updates about 3 seconds after a live event.
+However, this time could be extended due to factors like serverless cold starts, which occur when the service is scaling up.<br>
+As a point of reference, F1 TV typically has a 5-second delay.</p>
+<h3 id='is-there-a-query-timeout'>Is there a query timeout?</h3>
+<p>Queries are limited to a 1-minute timeout. If your request takes too long, consider breaking it down into smaller queries and then combining the results.</p>
+<h1 id='community-and-support'>Community and Support</h1>
+<p>For community-driven questions or feedback, we encourage you to participate in our <a href="https://github.com/br-g/openf1/discussions" target="_blank">Github Discussions</a>. If you encounter any bugs or issues, please report them by creating a new issue on <a href="https://github.com/br-g/openf1/issues" target="_blank">our Github repository</a>. We&#39;re always open to contributions that enhance the project!</p>
+
+<p>For specialized inquiries, feel free to <a href="https://form.typeform.com/to/lCYUbpPz?typeform-source=openf1.org" target="_blank">reach out to me directly</a>. However, for general support questions, please use the <a href="https://github.com/br-g/openf1/discussions" target="_blank">Github Discussions</a> platform to ensure that the entire community can benefit from the answers.</p>
+
+<p>Additionally, I offer freelance data science and data engineering services. Whether your project is in the realm of motorsports or spans other domains, you can count on me for high-quality, efficient coding solutions. If you&#39;re interested in collaborating, please <a href="https://form.typeform.com/to/lCYUbpPz?typeform-source=openf1.org" target="_blank">contact me here</a>.</p>
+<h1 id='roadmap'>Roadmap</h1>
+<p>We have several exciting updates planned, including:<br>
+<ul>
+  <li>Adding data from previous years (2018-2022)</li>
+  <li>Releasing a Python wrapper</li>
+  <li>Introducing new API methods.</li>
+</ul></p>
+
+<p>We welcome your ideas and suggestions for OpenF1&#39;s future. Please share them on our <a href="https://github.com/br-g/openf1/discussions" target="_blank">Github Discussions page</a>.</p>
+<h1 id='usage-guidelines'>Usage Guidelines</h1>
+<p>The OpenF1 API is an open-source service available for non-commercial purposes only. We&#39;ve opted for a no-authentication, no-rate-limit approach to make the API as accessible as possible. However, we kindly ask that you use the service responsibly to conserve computational resources. If you find the API useful, please consider <a href="https://www.buymeacoffee.com/openf1" target="_blank">donating</a> to support the long-term sustainability of the project.</p>
+
+<p>The creators of OpenF1 disclaim any liability for losses or damages incurred through the use of this API. We cannot guarantee the API&#39;s continuous availability or the accuracy of its data.</p>
+<h1 id='acknowledgments'>Acknowledgments</h1>
+<p>Special thanks to <a href="https://github.com/theOehrly" target="_blank">Philipp Schaefer (theOehrly)</a> for his contributions to the <a href="https://github.com/theOehrly/Fast-F1" target="_blank">FastF1</a> Python package, which has greatly inspired OpenF1. The SignalR data recorder used in OpenF1 is also sourced from the <a href="https://github.com/theOehrly/Fast-F1" target="_blank">FastF1</a> package.</p>
+
+      </div>
+      <div class="dark-box">
+          <div class="lang-selector">
+                <a href="#" data-language-name="shell">shell</a>
+                <a href="#" data-language-name="python">python</a>
+                <a href="#" data-language-name="r">r</a>
+                <a href="#" data-language-name="javascript">javascript</a>
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

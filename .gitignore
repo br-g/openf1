@@ -1,9 +1,0 @@
-*.pyc
-*.egg-info
-.DS_Store
-.env
-gcp_credentials.json
-google_credentials.json
-backend-sa-key.json
-_NOTES.md
-documentation/build/
