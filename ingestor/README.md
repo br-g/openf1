@@ -1,11 +1,11 @@
 # Ingestor
 
-The Data Ingestor is a cloud-based service designed to efficiently ingest real-time and historical data. It ensures reliable data recording with automated checks running every 5 minutes. The service is hosted on Google Cloud Run and uses Python 3.9 and Flask.
+The Data Ingestor is a cloud-based service designed to efficiently ingest real-time and historical data. The service is hosted on Google Cloud Run and uses Python 3.9 and Flask.
 
 
 ## Features
 
-- **Real-time data ingestion**: automatically checks for new data every 5 minutes.
+- **Real-time data ingestion**: captures and processes data streams in real-time, providing low-latency data availability.
 - **Redundancy**: maintains at least two instances during live sessions to ensure data reliability.
 - **Data normalization**: performs basic data normalization for efficient database indexing.
 - **Historical data**: supports ingestion of past events using a separate script (`ingest_history.py`).
