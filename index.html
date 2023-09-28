@@ -1962,7 +1962,7 @@ To get all sessions for the year 2023 in CSV format, use the following URL:
 <h3 id='ingestor'>Ingestor</h3>
 <p>The data ingestor runs every 5 minutes to check for new real-time data. During live sessions, at least two instances are active at any time to ensure reliable data recording. The ingestor also performs basic data normalization for efficient database indexing.</p>
 <h3 id='database'>Database</h3>
-<p>We use a MongoDB database with indexes for each collection, enabling faster query responses. The data is stored in JSON format. Direct database queries are also possible; the connection string can be found <a href="https://github.com/br-g/openf1/blob/d91a5a1b8fdf2e48fbbf579fe3b5bdfba1179817/query_api/db.py#L9" target="_blank">here</a>.</p>
+<p>We use a MongoDB database with indexes for each collection, enabling faster query responses. The data is stored in JSON format. Direct database queries are also possible; the connection string can be found <a href="https://github.com/br-g/openf1/blob/46d5a3dbdc3128bffc1a0946e5d3e46ef6784aac/query_api/db.py#L9" target="_blank">here</a>.</p>
 <h3 id='query-api'>Query API</h3>
 <p>The Query API serves as the intermediary between the user and the database. It processes user queries, fetches the relevant data from the database, and returns it in the requested format.</p>
 <h1 id='faq'>FAQ</h1><h3 id='what-39-s-the-delay-between-live-events-and-api-updates'>What&#39;s the delay between live events and API updates?</h3>
