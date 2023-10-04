@@ -407,6 +407,9 @@
             <a href="#faq" class="toc-h1 toc-link" data-title="FAQ">FAQ</a>
               <ul class="toc-list-h2">
                   <li>
+                    <a href="#can-i-access-past-data-from-an-ongoing-session" class="toc-h2 toc-link" data-title="Can I access past data from an ongoing session?">Can I access past data from an ongoing session?</a>
+                  </li>
+                  <li>
                     <a href="#what-39-s-the-delay-between-live-events-and-api-updates" class="toc-h2 toc-link" data-title="What's the delay between live events and API updates?">What's the delay between live events and API updates?</a>
                   </li>
                   <li>
@@ -453,9 +456,9 @@
       <div class="dark-box"></div>
       <div class="content">
         <h1 id='introduction'>Introduction</h1>
-<p>OpenF1 is a free and open-source API that provides real-time and historical Formula 1 data, for non-commercial use only.</p>
+<p>OpenF1 is a free and open-source API that provides real-time and historical Formula 1 data.</p>
 
-<p>The API offers a wealth of information, including lap timings, car telemetry, weather conditions, radio communications, and more. Whether you&#39;re looking to create interactive dashboards, dive deep into race analysis, or even develop connected objects that light up every time your favorite driver takes the lead, OpenF1 makes it all possible.</p>
+<p>The API offers a wealth of information, including lap timings, car telemetry, radio communications, and more. Whether you&#39;re looking to create interactive dashboards, dive deep into race analysis, or even develop connected objects that light up every time your favorite driver takes the lead, OpenF1 makes it all possible.</p>
 
 <p>Data can be accessed in either JSON or CSV formats, making it user-friendly for both developers and non-developers alike.
 For a quick start, you can access the API through your web browser. A sample URL is provided for each method for easy reference.</p>
@@ -1965,10 +1968,12 @@ To get all sessions for the year 2023 in CSV format, use the following URL:
 <p>We use a MongoDB database with indexes for each collection, enabling faster query responses. The data is stored in JSON format. Direct database queries are also possible; the connection string can be found <a href="https://github.com/br-g/openf1/blob/46d5a3dbdc3128bffc1a0946e5d3e46ef6784aac/query_api/db.py#L9" target="_blank">here</a>.</p>
 <h3 id='query-api'>Query API</h3>
 <p>The Query API serves as the intermediary between the user and the database. It processes user queries, fetches the relevant data from the database, and returns it in the requested format.</p>
-<h1 id='faq'>FAQ</h1><h3 id='what-39-s-the-delay-between-live-events-and-api-updates'>What&#39;s the delay between live events and API updates?</h3>
+<h1 id='faq'>FAQ</h1><h3 id='can-i-access-past-data-from-an-ongoing-session'>Can I access past data from an ongoing session?</h3>
+<p>Yes, real-time storage allows for instant access to past and current session data.</p>
+<h3 id='what-39-s-the-delay-between-live-events-and-api-updates'>What&#39;s the delay between live events and API updates?</h3>
 <p>The API typically updates about 3 seconds after a live event.
 However, this time could be extended due to factors like serverless cold starts, which occur when the service is scaling up.<br>
-As a point of reference, F1 TV typically has a 5-second delay.</p>
+As a point of reference, F1 TV typically has a 6-second delay.</p>
 <h3 id='is-there-a-query-timeout'>Is there a query timeout?</h3>
 <p>Queries are limited to a 1-minute timeout. If your request takes too long, consider breaking it down into smaller queries and then combining the results.</p>
 <h1 id='community-and-support'>Community and Support</h1>
@@ -1987,7 +1992,7 @@ As a point of reference, F1 TV typically has a 5-second delay.</p>
 
 <p>We welcome your ideas and suggestions for OpenF1&#39;s future. Please share them on our <a href="https://github.com/br-g/openf1/discussions" target="_blank">Github Discussions page</a>.</p>
 <h1 id='usage-guidelines'>Usage Guidelines</h1>
-<p>The OpenF1 API is an open-source service available for non-commercial purposes only. We&#39;ve opted for a no-authentication, no-rate-limit approach to make the API as accessible as possible. However, we kindly ask that you use the service responsibly to conserve computational resources. If you find the API useful, please consider <a href="https://www.buymeacoffee.com/openf1" target="_blank">donating</a> to support the long-term sustainability of the project.</p>
+<p>The OpenF1 API is an open-source service designed to be easily accessible, requiring no authentication and imposing no rate limits. We kindly ask that you use the service responsibly to conserve computational resources. If you find the API useful, please consider <a href="https://www.buymeacoffee.com/openf1" target="_blank">donating</a> to support the long-term sustainability of the project.</p>
 
 <p>The creators of OpenF1 disclaim any liability for losses or damages incurred through the use of this API. We cannot guarantee the API&#39;s continuous availability or the accuracy of its data.</p>
 <h1 id='acknowledgments'>Acknowledgments</h1>
