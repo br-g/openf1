@@ -1,5 +1,5 @@
 # OpenF1 API
-OpenF1 is a free and open-source API that provides real-time and historical Formula 1 data, for non-commercial use only.    
+OpenF1 is a free and open-source API that provides real-time and historical Formula 1 data.    
 For more information, please check <a href="https://openf1.org" target="_blank">openf1.org</a>.
 
 
