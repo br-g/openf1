@@ -68,7 +68,7 @@ ATTRIBUTES_DESCRIPTIONS = {
     'scope': 'The scope of the event (`Track`, `Driver`, `Sector`, ...).',
     'sector': 'Segment ("mini-sector") of the track where the event occurred? (starts at 1).',
     'position': 'Position of the driver (starts at 1).',
-    'gap_to_leader': 'The time difference to the race leader, in seconds.',
-    'interval': 'The time difference to the car ahead, in seconds.',
+    'gap_to_leader': 'The time gap to the race leader in seconds, `+1 LAP` if lapped, or `null` for the race leader.',
+    'interval': 'The time gap to the car ahead in seconds, `+1 LAP` if lapped, or `null` for the race leader.',
     'pit_duration': 'The time spent in the pit, from entering to leaving the pit lane, in seconds.',
 }

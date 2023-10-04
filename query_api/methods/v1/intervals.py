@@ -62,18 +62,21 @@ class Method(BaseMethod):
         return docs
 
 
-def _parse_time_delta(time_delta: Optional[Union[str, float]]) -> Optional[float]:
+def _parse_time_delta(time_delta: Optional[Union[str, float]]) -> Optional[Union[float, str]]:
     if not time_delta:
         return None
 
     # Handle leader
-    if str(time_delta).upper().startswith('LAP'):
-        return 0.
+    if str(time_delta).startswith('LAP'):
+        return None
     
-    # Handle case where `time_delta` >= 60 seconds
+    # Handle case where `time_delta` >= 60 seconds or `time_delta` >= 1 lap
     if str(time_delta).startswith('+'):
-        minutes, seconds = map(float, time_delta.split(':'))
-        return minutes * 60 + seconds
+        if 'LAP' in str(time_delta):  # lapped car
+            return time_delta
+        else:  # `time_delta` >= 60 seconds
+            minutes, seconds = map(float, time_delta.split(':'))
+            return round(minutes * 60 + seconds, 3)
     
     else:
         assert isinstance(time_delta, float), \
