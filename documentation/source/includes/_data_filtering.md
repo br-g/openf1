@@ -5,7 +5,7 @@ Results can be filtered by any attribute, except arrays.
 
 **Example**    
 To fetch pit-out laps for driver number 55 (Carlos Sainz) that last at least 2 minutes, use:
-<a href="https://api.openf1.org/v1/laps?driver_number=55&amp;is_pit_out_lap=true&amp;lap_duration%3E%3D120" target="_blank">https://api.openf1.org/v1/laps?driver_number=55&amp;is_pit_out_lap=true&amp;lap_duration&gt;=120</a>
+<a href="https://api.openf1.org/v1/laps?session_key=9222&amp;driver_number=55&amp;is_pit_out_lap=true&amp;lap_duration%3E%3D120" target="_blank">https://api.openf1.org/v1/laps?session_key=9222&amp;driver_number=55&amp;is_pit_out_lap=true&amp;lap_duration&gt;=120</a>
 
 ## Time-Based Filtering
 You can narrow down your results using time ranges.
