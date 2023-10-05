@@ -29,7 +29,3 @@ The API supports a wide range of date formats (those compatible with Python's <c
   <li>"2021-09-10 14:30:20 EST"</li>
   <li>...and many more.</li>
 </ul>
-
-<aside class="notice">
-If you include the <code>+</code> character to specify a timezone in the URL, make sure to URL-encode it as <code>%2B</code> to ensure proper parsing.
-</aside>

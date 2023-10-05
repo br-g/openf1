@@ -1,12 +1,13 @@
 from typing import List, Dict, Union
 import importlib
 from functools import lru_cache
+import re
 import csv
 import requests
 import io
 import traceback
 from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import JSONResponse, PlainTextResponse, HTMLResponse, Response
+from fastapi.responses import PlainTextResponse, HTMLResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 from logger import logger
 from filters import parse_query_filters
@@ -71,6 +72,10 @@ def _process_api_query(request: Request, path: str) -> Union[List, Response]:
                 filters.append(f'{key}={value}')
             else:
                 filters.append(key)
+
+            # Handle the '+' character used to set timezone
+            if 'date' in filters[-1] and re.search(r' \d{2}:\d{2}$', filters[-1]):
+                filters[-1] = '+'.join(filters[-1].rsplit(' ', 1))
     filters = parse_query_filters(filters=filters)
 
     # Determine output format - JSON (default) or CSV
@@ -119,7 +124,7 @@ async def catch_all(request: Request, path: str):
             return _get_favicon()
         else:
             return _process_api_query(request, path)
-        
+
     except Exception as e:
         stack_trace = traceback.format_exc()
         error_msg = f'<h1>An error occurred</h1><pre>{stack_trace}</pre>'
