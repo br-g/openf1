@@ -159,19 +159,23 @@ def _process_stints(docs: List[Dict]) -> Iterator[Dict]:
     docs_by_stint = list(_group_docs_by_stint(docs))
 
     lap_start = [1]
-    for stint_number, docs in enumerate(docs_by_stint):
+    for i, docs in enumerate(docs_by_stint):
         n_laps = _count_laps(
             docs=docs,
-            is_first_stint=stint_number == 0,
-            is_last_stint=stint_number == len(docs_by_stint)-1,
+            is_first_stint=i == 0,
+            is_last_stint=i == len(docs_by_stint)-1,
         )
         lap_start.append(lap_start[-1] + n_laps)
 
+    stint_number = 1
     for i, docs in enumerate(docs_by_stint):
+        if lap_start[i] == lap_start[i+1]:  # stint has not yet started
+            continue
+
         yield {
             'meeting_key': do_try(lambda: docs[0]['meeting_key']),
             'session_key': do_try(lambda: docs[0]['session_key']),
-            'stint_number': i + 1,
+            'stint_number': stint_number,
             'driver_number': do_try(lambda: docs[0]['driver_number']),
             'lap_start': lap_start[i],
             'lap_end': lap_start[i+1] - 1,
@@ -179,3 +183,4 @@ def _process_stints(docs: List[Dict]) -> Iterator[Dict]:
             'tyre_age_at_start': do_try(lambda: [e.get('tyre_age') for e in docs if e.get('tyre_age') is not None][0]),
             'time': do_try(lambda: docs[0]['time']),
         }
+        stint_number += 1
