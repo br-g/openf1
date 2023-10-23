@@ -473,6 +473,7 @@ html, body {
 
     &.warning {
       background-color: $aside-warning-bg;
+      margin-top: 0px;
     }
 
     &.success {
@@ -795,6 +796,12 @@ a#github_button:hover, a#twitter_button:hover, a#bmec_button:hover {
 
 .content aside.notice:before {
   content: "\e602";
+  padding-right: 0px;
+  vertical-align: -1px;
+  margin-right: -0.5px;
+}
+
+.content aside.warning:before {
   padding-right: 0px;
   vertical-align: -1px;
   margin-right: -0.5px;
