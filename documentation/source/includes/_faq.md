@@ -1,6 +1,6 @@
 # FAQ
 
-### Can I access past data from an ongoing session?
+### Can I access past data during an ongoing session?
 Yes, real-time storage allows for instant access to past and current session data.
 
 ### What's the delay between live events and API updates?

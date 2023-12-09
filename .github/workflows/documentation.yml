@@ -1,0 +1,30 @@
+name: 'Deploy documentation'
+on:
+  push:
+  pull_request:
+
+jobs:
+  update_documentation:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./documentation
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+  
+    - name: Build Slate documentation
+      env:
+        MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING_READ }}
+      run: |
+        (pip install -r ../query_api/requirements.txt && python generate.py)
+        docker run --rm --name slate -v $(pwd)/build:/srv/slate/build -v $(pwd)/source:/srv/slate/source slatedocs/slate build
+
+    - name: Deploy documentation to Github Pages
+      uses: JamesIves/github-pages-deploy-action@v4
+      if: github.ref == 'refs/heads/main'
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages
+        FOLDER: $(pwd)/../documentation/build
+        CLEAN: true

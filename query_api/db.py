@@ -1,4 +1,5 @@
 from typing import List, Dict, Tuple, Optional, Iterator, Iterable, Optional
+import os
 from copy import deepcopy
 from datetime import datetime, timedelta
 from pymongo import MongoClient
@@ -6,7 +7,7 @@ from filters import OPERATORS_MAP
 from util import timed_cache
 
 # Public and read only
-client = MongoClient("mongodb+srv://public:nomikeyno@prod-eu.s4ponkq.mongodb.net")
+client = MongoClient(os.getenv('MONGO_CONNECTION_STRING'))
 db = client['raw']
 
 

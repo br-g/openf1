@@ -2,8 +2,8 @@
 
 
 ATTRIBUTES_DESCRIPTIONS = {
-    'date_start': 'The starting date and time, in ISO 8601 format.',
-    'date_end': 'The ending date and time, in ISO 8601 format.',
+    'date_start': 'The UTC starting date and time, in ISO 8601 format.',
+    'date_end': 'The UTC ending date and time, in ISO 8601 format.',
     'driver_number': 'The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).',
     'duration_sector_1': 'The time taken, in seconds, to complete the first sector of the lap.',
     'duration_sector_2': 'The time taken, in seconds, to complete the second sector of the lap.',
@@ -19,7 +19,7 @@ ATTRIBUTES_DESCRIPTIONS = {
     'segments_sector_3': 'A list of values representing the "mini-sectors" within the third sector (see mapping table below).',
     'session_key': 'The unique identifier for the session. Use `latest` to identify the latest or current session.',
     'st_speed': 'The speed of the car, in km/h, at the speed trap, which is a specific point on the track where the highest speeds are usually recorded.',
-    'date': 'The date and time, in ISO 8601 format.',
+    'date': 'The UTC date and time, in ISO 8601 format.',
     'x': "The 'x' value in a 3D Cartesian coordinate system representing the current approximate location of the car on the track.",
     'y': "The 'y' value in a 3D Cartesian coordinate system representing the current approximate location of the car on the track.",
     'z': "The 'z' value in a 3D Cartesian coordinate system representing the current approximate location of the car on the track.",

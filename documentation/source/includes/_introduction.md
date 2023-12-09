@@ -1,9 +1,3 @@
-<aside class="warning">
-The API is currently on hold.       
-For additional information, reach out to me <a href="https://form.typeform.com/to/lCYUbpPz?typeform-source=openf1.org" target="_blank">here</a>.
-</aside>
-
-
 # Introduction
 
 OpenF1 is a free and open-source API that provides real-time and historical <span style="white-space: nowrap;">Formula 1</span> data.
