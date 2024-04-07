@@ -59,7 +59,7 @@ def parse_topic(session_path: str, topic_filename: str, session_key: Optional[in
 
     raw = _download_topic(session_path=session_path, filename=topic_filename)
     if '<Error><Code>NoSuchKey</Code>' in raw:
-        raise SystemError(f'Topic not found at `{session_path}`.')
+        raise SystemError(f'Topic not found at `{session_path}{topic_filename}`.')
 
     for line in raw.split('\n'):
         if not line:
