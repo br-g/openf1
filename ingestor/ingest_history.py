@@ -18,15 +18,19 @@ from util import to_timedelta
 BASE_API_URL = 'https://livetiming.formula1.com/static'
 
 
+def join(*args) -> str:
+    """Joins the arguments with a forward slash"""
+    return "/".join([e.strip("/") for e in args if e is not None and e.strip("/") != ""])
+
 def _download_topic(session_path: str, filename: str) -> str:
     """Downloads raw data for a specific topic"""
-    url = os.path.join(BASE_API_URL, session_path, filename)
+    url = join(BASE_API_URL, session_path, filename)
     return requests.get(url).text
 
 
 def _get_schedule(year: int) -> Dict:
     """Returns data about all the past sessions for a specific year"""
-    url = os.path.join(BASE_API_URL, f'{year}/Index.json')
+    url = join(BASE_API_URL, f'{year}/Index.json')
     return json.loads(requests.get(url).content)
 
 
@@ -115,7 +119,7 @@ def estimate_t0(session_path: str) -> datetime:
 
 def _get_topic_api_filenames(session_path: str) -> Iterator[str]:
     """Yields all the available raw data files for the session"""
-    url = os.path.join(BASE_API_URL, session_path, 'Index.json')
+    url = join(BASE_API_URL, session_path, 'Index.json')
     content = json.loads(requests.get(url).content)
     for vals in content['Feeds'].values():
         yield vals['StreamPath']
