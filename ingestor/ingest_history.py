@@ -1,18 +1,20 @@
 """Script for parsing and saving raw historical F1 data to database."""
 
-from typing import Tuple, Dict, Optional, List, Iterator
+import asyncio
+import json
 import os
 import re
-import json
 from collections import defaultdict
-import requests
 from datetime import datetime, timedelta
-import asyncio
+from typing import Dict, Iterator, List, Optional, Tuple
+
 import click
+import requests
 from tqdm import tqdm
-from parsing import parse_line
-from db import insert_data_async, get_mongo_db
+
+from db import get_mongo_db, insert_data_async
 from logger import logger
+from parsing import parse_line
 from util import to_timedelta
 
 BASE_API_URL = 'https://livetiming.formula1.com/static'
