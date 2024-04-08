@@ -5,3 +5,4 @@ pytest==7.4.2
 python-dateutil==2.8.2
 pytz==2023.3
 requests==2.31.0
+uvicorn[standard]==0.29.0
