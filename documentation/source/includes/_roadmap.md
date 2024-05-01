@@ -1,13 +1,9 @@
 # Roadmap
 
-### Short term (early 2024)
 <ul>
-  <li>Add data from previous seasons (2018-2022)</li>
+  <li>Improve data quality, cost efficiency, and open-source collaboration</li>
   <li>Race and championship standings, schedules, and starting grids.</li>
-</ul>
-
-### Long term
-<ul>
+  <li>Add data from previous seasons (2018-2022)</li>
   <li>AI radio transcriptions</li>
   <li>More precise pit-stop duration</li>
   <li>Overtakes, undercuts/overcuts data, tyre statistics...</li>
