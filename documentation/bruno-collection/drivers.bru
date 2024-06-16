@@ -1,0 +1,31 @@
+meta {
+  name: drivers
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/drivers?driver_number=4&meeting_key={{MEETING_KEY}}&session_key=latest
+  body: none
+  auth: none
+}
+
+query {
+  driver_number: 4
+  meeting_key: {{MEETING_KEY}}
+  session_key: latest
+  ~broadcast_name: 
+  ~country_code: 
+  ~first_name: 
+  ~full_name: 
+  ~headshot_url: 
+  ~last_name: 
+  ~name_acronym: 
+  ~team_colour: 
+  ~team_name: 
+}
+
+docs {
+  Provides information about drivers for each session.
+  
+}

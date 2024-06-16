@@ -1,0 +1,28 @@
+meta {
+  name: race_control
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{base_url}}/race_control?meeting_key={{MEETING_KEY}}&scope=Driver&session_key=latest
+  body: none
+  auth: none
+}
+
+query {
+  meeting_key: {{MEETING_KEY}}
+  scope: Driver
+  session_key: latest
+  ~category: 
+  ~date: 
+  ~driver_number: 4
+  ~flag: 
+  ~lap_number: 
+  ~message: 
+  ~sector: 
+}
+
+docs {
+  Provides information about race control (racing incidents, flags, safety car, ...).
+}

@@ -1,0 +1,24 @@
+meta {
+  name: position
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{base_url}}/position?driver_number=4&meeting_key={{MEETING_KEY}}&session_key=latest
+  body: none
+  auth: none
+}
+
+query {
+  driver_number: 4
+  meeting_key: {{MEETING_KEY}}
+  session_key: latest
+  ~date: 
+  ~position: 
+}
+
+docs {
+  Provides driver positions throughout a session, including initial placement and subsequent changes.
+  
+}

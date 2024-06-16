@@ -1,0 +1,25 @@
+meta {
+  name: team_radio
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{base_url}}/team_radio?driver_number=4&meeting_key={{MEETING_KEY}}&session_key=latest
+  body: none
+  auth: none
+}
+
+query {
+  driver_number: 4
+  meeting_key: {{MEETING_KEY}}
+  session_key: latest
+  ~date: 
+  ~recording_url: 
+}
+
+docs {
+  Provides a collection of radio exchanges between Formula 1 drivers and their respective teams during sessions.
+  
+  Please note that only a limited selection of communications are included, not the complete record of radio interactions.
+}

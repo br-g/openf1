@@ -1,0 +1,33 @@
+meta {
+  name: meetings
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{base_url}}/meetings?year=2024&meeting_key=1237
+  body: none
+  auth: none
+}
+
+query {
+  year: 2024
+  meeting_key: 1237
+  ~meeting_key: {{MEETING_KEY}}
+  ~circuit_key: 
+  ~circuit_short_name: 
+  ~country_code: 
+  ~country_key: 
+  ~country_name: 
+  ~date_start: 
+  ~gmt_offset: 
+  ~location: 
+  ~meeting_name: 
+  ~meeting_official_name: 
+}
+
+docs {
+  Provides information about meetings.
+  
+  A meeting refers to a Grand Prix or testing weekend and usually includes multiple sessions (practice, qualifying, race, ...).
+}

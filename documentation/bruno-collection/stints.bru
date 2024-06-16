@@ -1,0 +1,27 @@
+meta {
+  name: stints
+  type: http
+  seq: 12
+}
+
+get {
+  url: {{base_url}}/stints?driver_number=4&meeting_key={{MEETING_KEY}}&session_key=latest
+  body: none
+  auth: none
+}
+
+query {
+  driver_number: 4
+  meeting_key: {{MEETING_KEY}}
+  session_key: latest
+  ~compound: 
+  ~lap_end: 
+  ~lap_start: 
+  ~stint_number: 
+  ~tyre_age_at_start: 
+}
+
+docs {
+  Provides information about individual stints.
+  A stint refers to a period of continuous driving by a driver during a session.
+}

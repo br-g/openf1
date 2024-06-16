@@ -1,0 +1,34 @@
+meta {
+  name: sessions
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{base_url}}/sessions?meeting_key={{MEETING_KEY}}
+  body: none
+  auth: none
+}
+
+query {
+  meeting_key: {{MEETING_KEY}}
+  ~circuit_key: 
+  ~circuit_short_name: 
+  ~country_code: 
+  ~country_key: 
+  ~country_name: 
+  ~date_start: 
+  ~gmt_offset: 
+  ~location: 
+  ~session_key: 
+  ~session_name: 
+  ~session_type: 
+  ~year: 
+  ~date_end: 
+}
+
+docs {
+  Provides information about sessions.
+  A session refers to a distinct period of track activity during a Grand Prix or testing weekend (practice, qualifying, sprint, race, ...).
+  
+}

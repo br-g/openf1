@@ -1,0 +1,30 @@
+meta {
+  name: car_data
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/car_data?driver_number=4&meeting_key={{MEETING_KEY}}&session_key=latest&speed>=300
+  body: none
+  auth: none
+}
+
+query {
+  driver_number: 4
+  meeting_key: {{MEETING_KEY}}
+  session_key: latest
+  speed>: 300
+  ~brake: 
+  ~date: 
+  ~drs: 
+  ~n_gear: 
+  ~rpm: 
+  ~speed: 
+  ~throttle: 
+}
+
+docs {
+  Some data about each car, at a sample rate of about 3.7 Hz.
+  
+}

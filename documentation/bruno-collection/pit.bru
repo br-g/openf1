@@ -1,0 +1,25 @@
+meta {
+  name: pit
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{base_url}}/pit?driver_number=4&meeting_key={{MEETING_KEY}}&session_key=latest
+  body: none
+  auth: none
+}
+
+query {
+  driver_number: 4
+  meeting_key: {{MEETING_KEY}}
+  session_key: latest
+  ~date: 
+  ~lap_number: 
+  ~pit_duration: 
+}
+
+docs {
+  Provides information about cars going through the pit lane.
+  
+}

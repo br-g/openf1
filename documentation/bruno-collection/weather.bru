@@ -1,0 +1,29 @@
+meta {
+  name: weather
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{base_url}}/weather?meeting_key={{MEETING_KEY}}&session_key=latest
+  body: none
+  auth: none
+}
+
+query {
+  meeting_key: {{MEETING_KEY}}
+  session_key: latest
+  ~air_temperature: 
+  ~date: 
+  ~humidity: 
+  ~pressure: 
+  ~rainfall: 
+  ~track_temperature: 
+  ~wind_direction: 
+  ~wind_speed: 
+}
+
+docs {
+  The weather over the track, updated every minute.
+  
+}

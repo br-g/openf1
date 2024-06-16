@@ -1,0 +1,13 @@
+{
+  "version": "1",
+  "name": "openf1",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ],
+  "presets": {
+    "requestType": "http",
+    "requestUrl": "{{base_url}}/"
+  }
+}

@@ -1,0 +1,27 @@
+meta {
+  name: intervals
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/intervals?driver_number=4&meeting_key={{MEETING_KEY}}&session_key=latest
+  body: none
+  auth: none
+}
+
+query {
+  driver_number: 4
+  meeting_key: {{MEETING_KEY}}
+  session_key: latest
+  ~date: 
+  ~gap_to_leader: 
+  ~interval: 
+}
+
+docs {
+  Fetches real-time interval data between drivers and their gap to the race leader.
+  
+  Available during races only, with updates approximately every 4 seconds.
+  
+}

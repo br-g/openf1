@@ -1,0 +1,35 @@
+meta {
+  name: laps
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/laps?driver_number=4&meeting_key={{MEETING_KEY}}&session_key=latest
+  body: none
+  auth: none
+}
+
+query {
+  driver_number: 4
+  meeting_key: {{MEETING_KEY}}
+  session_key: latest
+  ~date_start: 
+  ~duration_sector_1: 
+  ~duration_sector_2: 
+  ~duration_sector_3: 
+  ~i1_speed: 
+  ~i2_speed: 
+  ~is_pit_out_lap: 
+  ~lap_duration: 
+  ~lap_number: 
+  ~segments_sector_1: 
+  ~segments_sector_2: 
+  ~segments_sector_3: 
+  ~st_speed: 
+}
+
+docs {
+  Provides detailed information about individual laps.
+  
+}

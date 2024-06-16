@@ -1,0 +1,29 @@
+meta {
+  name: location
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{base_url}}/location?driver_number=4&meeting_key={{MEETING_KEY}}&session_key=latest&date>=2024-06-09T17:19:35.037&date<=2024-06-09T17:19:51.777
+  body: none
+  auth: none
+}
+
+query {
+  driver_number: 4
+  meeting_key: {{MEETING_KEY}}
+  session_key: latest
+  date>: 2024-06-09T17:19:35.037
+  date<: 2024-06-09T17:19:51.777
+  ~x: 
+  ~y: 
+  ~z: 
+  ~date: 
+}
+
+docs {
+  The approximate location of the cars on the circuit, at a sample rate of about 3.7 Hz.
+  
+  Useful for gauging their progress along the track, but lacks details about lateral placement — i.e. whether the car is on the left or right side of the track. The origin point (0, 0, 0) appears to be arbitrary and not tied to any specific location on the track.
+}
