@@ -18,7 +18,7 @@ class Method(BaseMethod):
     @staticproperty
     def additional_info(cls) -> str:
         return '''
-            Below is a table that correlates segment values to the colors displayed on TV broadcasts.    
+            Below is a table that correlates segment values to their meaning.    
 
             <table id="segment_mapping">
                 <thead>
@@ -34,11 +34,11 @@ class Method(BaseMethod):
                     </tr>
                     <tr>
                     <td><span style="color: #fdde00;">2048</span></td>
-                    <td><span style="color: #fdde00;">yellow</span></td>
+                    <td><span style="color: #fdde00;">yellow sector</span></td>
                     </tr>
                     <tr>
                     <td><span style="color: #4bdd49;">2049</span></td>
-                    <td><span style="color: #4bdd49;">green</span></td>
+                    <td><span style="color: #4bdd49;">green sector</span></td>
                     </tr>
                     <tr>
                     <td>2050</td>
@@ -46,7 +46,7 @@ class Method(BaseMethod):
                     </tr>
                     <tr>
                     <td><span style="color: #c92cd5;">2051</span></td>
-                    <td><span style="color: #c92cd5;">purple</span></td>
+                    <td><span style="color: #c92cd5;">purple sector</span></td>
                     </tr>
                     <tr>
                     <td>2052</td>
@@ -54,7 +54,7 @@ class Method(BaseMethod):
                     </tr>
                     <tr>
                     <td>2064</td>
-                    <td>?</td>
+                    <td>pitlane</td>
                     </tr>
                     <tr>
                     <td>2068</td>
