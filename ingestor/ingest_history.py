@@ -75,7 +75,15 @@ def parse_topic(session_path: str, topic_filename: str, session_key: Optional[in
         )
         # Group data by collection for faster addition to the database
         for collection, vals in parsed.items():
-            res[collection] += vals
+            # Loop over the existing data and update it with the new data
+            # if the data was not found, add it to the list
+            for new_data in vals:
+                for data in res[collection]:
+                    if ("_idx" in data and new_data["_idx"] == data["_idx"]) or ("_key" in data and new_data['_key'] == data['_key']):
+                        data.update(new_data)
+                        break
+                else:
+                    res[collection].append(new_data)
 
     return dict(res)
 
