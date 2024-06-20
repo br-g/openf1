@@ -1,32 +1,38 @@
 """Script for parsing and saving raw historical F1 data to database."""
 
-from typing import Tuple, Dict, Optional, List, Iterator
+import asyncio
+import json
 import os
 import re
-import json
 from collections import defaultdict
-import requests
 from datetime import datetime, timedelta
-import asyncio
+from typing import Dict, Iterator, List, Optional, Tuple
+
 import click
+import requests
 from tqdm import tqdm
-from parsing import parse_line
-from db import insert_data_async, get_mongo_db
+
+from db import get_mongo_db, insert_data_async
 from logger import logger
+from parsing import parse_line
 from util import to_timedelta
 
 BASE_API_URL = 'https://livetiming.formula1.com/static'
 
 
+def join(*args) -> str:
+    """Joins the arguments with a forward slash"""
+    return "/".join([e.strip("/") for e in args if e is not None and e.strip("/") != ""])
+
 def _download_topic(session_path: str, filename: str) -> str:
     """Downloads raw data for a specific topic"""
-    url = os.path.join(BASE_API_URL, session_path, filename)
+    url = join(BASE_API_URL, session_path, filename)
     return requests.get(url).text
 
 
 def _get_schedule(year: int) -> Dict:
     """Returns data about all the past sessions for a specific year"""
-    url = os.path.join(BASE_API_URL, f'{year}/Index.json')
+    url = join(BASE_API_URL, f'{year}/Index.json')
     return json.loads(requests.get(url).content)
 
 
@@ -59,7 +65,7 @@ def parse_topic(session_path: str, topic_filename: str, session_key: Optional[in
 
     raw = _download_topic(session_path=session_path, filename=topic_filename)
     if '<Error><Code>NoSuchKey</Code>' in raw:
-        raise SystemError(f'Topic not found at `{session_path}`.')
+        raise SystemError(f'Topic not found at `{session_path}{topic_filename}`.')
 
     for line in raw.split('\n'):
         if not line:
@@ -115,7 +121,7 @@ def estimate_t0(session_path: str) -> datetime:
 
 def _get_topic_api_filenames(session_path: str) -> Iterator[str]:
     """Yields all the available raw data files for the session"""
-    url = os.path.join(BASE_API_URL, session_path, 'Index.json')
+    url = join(BASE_API_URL, session_path, 'Index.json')
     content = json.loads(requests.get(url).content)
     for vals in content['Feeds'].values():
         yield vals['StreamPath']
