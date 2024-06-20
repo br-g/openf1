@@ -7,7 +7,7 @@ import requests
 import io
 import traceback
 from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import PlainTextResponse, HTMLResponse, Response
+from fastapi.responses import PlainTextResponse, HTMLResponse, JSONResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 from logger import logger
 from filters import parse_query_filters
@@ -108,7 +108,7 @@ def _process_api_query(request: Request, path: str) -> Union[List, Response]:
 
     # Return results
     if not use_csv:
-        return results
+        return JSONResponse(content=results, media_type="application/json; charset=utf-8")
     else:
         return _results_to_csv(
             results,
