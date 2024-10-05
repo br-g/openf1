@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=40.8.0", "wheel>=0.42.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openf1"
+version = "1.0.0"
+authors = [
+  { name="Bruno Godefroy" }
+]
+description = "OpenF1 API - Real-time and historical Formula 1 data"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dynamic = ["dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
