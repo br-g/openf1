@@ -1,0 +1,13 @@
+fastapi>=0.115.0
+fastf1_livetiming @ git+https://github.com/br-g/fastf1-livetiming.git#egg=fastf1_livetiming
+google-cloud-storage>=2.18.2
+loguru>=0.7.2
+motor>=3.6.0
+pydantic>=2.8.2
+pymongo>=4.9
+python-dateutil>=2.9.0.post0
+pytz>=2024.2
+requests>=2.32.3
+tqdm>=4.66.5
+typer>=0.12.5
+uvicorn[standard]>=0.31.0
