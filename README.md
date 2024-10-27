@@ -30,7 +30,7 @@ For more detailed examples and documentation, visit the [API Documentation](http
 
 1. Install and start [MongoDB Community Server](https://www.mongodb.com/try/download/community) v7
 
-2. Install python>=3.10
+2. Install pip>=23 and python>=3.10
 
 3. Install the OpenF1 python package
 
