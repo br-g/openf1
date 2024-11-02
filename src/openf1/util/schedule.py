@@ -4,6 +4,7 @@ from functools import lru_cache
 
 import requests
 
+from openf1.util import join_url
 from openf1.util.db import get_latest_session_info
 
 
@@ -11,7 +12,7 @@ from openf1.util.db import get_latest_session_info
 def get_schedule(year: int) -> dict:
     """Fetches the Formula 1 race schedule for a specified year (past sessions only)"""
     BASE_URL = "https://livetiming.formula1.com/static"
-    url = os.path.join(BASE_URL, f"{year}/Index.json")
+    url = join_url(BASE_URL, f"{year}/Index.json")
     response = requests.get(url)
     content_json = response.content
     content_dict = json.loads(content_json)
