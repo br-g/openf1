@@ -52,6 +52,18 @@ export MONGO_CONNECTION_STRING="mongodb://localhost:27017"
 - Fetch and ingest data: [services/ingestor_livetiming/](src/openf1/services/ingestor_livetiming/README.md)
 - Start and query the API: [services/query_api/](src/openf1/services/query_api/README.md)
 
+## Development Environment
+
+A development environment is up to the developer to create. An example nix-shell
+environment is provided via the `shell.nix` file. To run this ensure you have
+nix installed on your system, then run:
+
+```bash
+nix-shell
+```
+
+This will use poetry to setup any dependancies and create a virtual environment.
+
 ## Supporting OpenF1
 
 If you find this project useful, consider supporting its long-term sustainability:

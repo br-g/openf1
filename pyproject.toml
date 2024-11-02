@@ -21,6 +21,9 @@ dynamic = ["dependencies"]
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
 
+# Poetry options for a python environment
+# These are managed seperately as a development environment only and are not
+# warranted to work in any production environment.
 [tool.poetry]
 name = "openf1"
 version = "1.0.0"
@@ -28,3 +31,20 @@ authors = [
   "Bruno Godefroy"
 ]
 description = "OpenF1 API - Real-time and historical Formula 1 data"
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+fastapi = ">=0.115.0"
+fastf1-livetiming = {git = "https://github.com/br-g/fastf1-livetiming.git"}
+google-cloud-storage = ">=2.18.2"
+loguru = ">=0.7.2"
+motor = ">=3.6.0"
+pydantic = ">=2.8.2"
+pymongo = ">=4.9"
+python-dateutil = ">=2.9.0.post0"
+pytz = ">=2024.2"
+requests = ">=2.32.3"
+tqdm = ">=4.66.5"
+typer = ">=0.12.5"
+uvicorn = {version = ">=0.31.0", extras = ["standard"]}
+
