@@ -20,3 +20,11 @@ dynamic = ["dependencies"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
+
+[tool.poetry]
+name = "openf1"
+version = "1.0.0"
+authors = [
+  "Bruno Godefroy"
+]
+description = "OpenF1 API - Real-time and historical Formula 1 data"
