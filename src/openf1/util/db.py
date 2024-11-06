@@ -6,9 +6,9 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from functools import lru_cache
 
+import pymongo
 from loguru import logger
 from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo import MongoClient, UpdateOne
 
 from openf1.util.misc import SingletonMeta, timed_cache
 
@@ -18,7 +18,7 @@ _MONGO_DATABASE = "openf1-livetiming"
 
 @lru_cache()
 def _get_mongo_db_sync():
-    client = MongoClient(_MONGO_CONNECTION_STRING)
+    client = pymongo.MongoClient(_MONGO_CONNECTION_STRING)
     db = client[_MONGO_DATABASE]
     return db
 
@@ -68,7 +68,7 @@ async def insert_data_async(
     collection = _get_mongo_db_async()[collection_name]
     try:
         operations = [
-            UpdateOne(filter={"_id": doc["_id"]}, update={"$set": doc}, upsert=True)
+            pymongo.UpdateOne(filter={"_id": doc["_id"]}, update={"$set": doc}, upsert=True)
             for doc in docs
         ]
         await collection.bulk_write(operations, ordered=False)
