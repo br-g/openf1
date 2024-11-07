@@ -17,7 +17,7 @@ from openf1.services.ingestor_livetiming.core.objects import (
     get_source_topics,
 )
 from openf1.services.ingestor_livetiming.core.processing.main import process_messages
-from openf1.util import join_url
+from openf1.util.misc import join_url
 from openf1.util.db import DbBatchIngestor
 from openf1.util.misc import json_serializer, to_datetime, to_timedelta
 from openf1.util.schedule import get_meeting_keys
