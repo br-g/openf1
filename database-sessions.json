@@ -1,0 +1,190 @@
+[{
+	"_id": "9532",
+	"circuit_key": 15,
+	"circuit_short_name": "Catalunya",
+	"country_code": "ESP",
+	"country_key": 1,
+	"country_name": "Spain",
+	"date_end": {
+		"$date": "2024-06-21T12:30:00Z"
+	},
+	"date_start": {
+		"$date": "2024-06-21T11:30:00Z"
+	},
+	"gmt_offset": "02:00:00",
+	"location": "Barcelona",
+	"meeting_key": 1238,
+	"session_key": 9532,
+	"session_name": "Practice 1",
+	"session_type": "Practice",
+	"year": 2024
+},
+{
+	"_id": "9533",
+	"circuit_key": 15,
+	"circuit_short_name": "Catalunya",
+	"country_code": "ESP",
+	"country_key": 1,
+	"country_name": "Spain",
+	"date_end": {
+		"$date": "2024-06-21T16:00:00Z"
+	},
+	"date_start": {
+		"$date": "2024-06-21T15:00:00Z"
+	},
+	"gmt_offset": "02:00:00",
+	"location": "Barcelona",
+	"meeting_key": 1238,
+	"session_key": 9533,
+	"session_name": "Practice 2",
+	"session_type": "Practice",
+	"year": 2024
+},
+{
+	"_id": "9534",
+	"circuit_key": 15,
+	"circuit_short_name": "Catalunya",
+	"country_code": "ESP",
+	"country_key": 1,
+	"country_name": "Spain",
+	"date_end": {
+		"$date": "2024-06-22T11:30:00Z"
+	},
+	"date_start": {
+		"$date": "2024-06-22T10:30:00Z"
+	},
+	"gmt_offset": "02:00:00",
+	"location": "Barcelona",
+	"meeting_key": 1238,
+	"session_key": 9534,
+	"session_name": "Practice 3",
+	"session_type": "Practice",
+	"year": 2024
+},
+{
+	"_id": "9535",
+	"circuit_key": 15,
+	"circuit_short_name": "Catalunya",
+	"country_code": "ESP",
+	"country_key": 1,
+	"country_name": "Spain",
+	"date_end": {
+		"$date": "2024-06-22T15:00:00Z"
+	},
+	"date_start": {
+		"$date": "2024-06-22T14:00:00Z"
+	},
+	"gmt_offset": "02:00:00",
+	"location": "Barcelona",
+	"meeting_key": 1238,
+	"session_key": 9535,
+	"session_name": "Qualifying",
+	"session_type": "Qualifying",
+	"year": 2024
+},
+{
+	"_id": "9539",
+	"circuit_key": 15,
+	"circuit_short_name": "Catalunya",
+	"country_code": "ESP",
+	"country_key": 1,
+	"country_name": "Spain",
+	"date_end": {
+		"$date": "2024-06-23T15:00:00Z"
+	},
+	"date_start": {
+		"$date": "2024-06-23T13:00:00Z"
+	},
+	"gmt_offset": "02:00:00",
+	"location": "Barcelona",
+	"meeting_key": 1238,
+	"session_key": 9539,
+	"session_name": "Race",
+	"session_type": "Race",
+	"year": 2024
+},
+{
+	"_id": "9540",
+	"circuit_key": 19,
+	"circuit_short_name": "Spielberg",
+	"country_code": "AUT",
+	"country_key": 17,
+	"country_name": "Austria",
+	"date_end": {
+		"$date": "2024-06-28T11:30:00Z"
+	},
+	"date_start": {
+		"$date": "2024-06-28T10:30:00Z"
+	},
+	"gmt_offset": "02:00:00",
+	"location": "Spielberg",
+	"meeting_key": 1239,
+	"session_key": 9540,
+	"session_name": "Practice 1",
+	"session_type": "Practice",
+	"year": 2024
+},
+{
+	"_id": "9545",
+	"circuit_key": 19,
+	"circuit_short_name": "Spielberg",
+	"country_code": "AUT",
+	"country_key": 17,
+	"country_name": "Austria",
+	"date_end": {
+		"$date": "2024-06-28T15:14:00Z"
+	},
+	"date_start": {
+		"$date": "2024-06-28T14:30:00Z"
+	},
+	"gmt_offset": "02:00:00",
+	"location": "Spielberg",
+	"meeting_key": 1239,
+	"session_key": 9545,
+	"session_name": "Sprint Qualifying",
+	"session_type": "Qualifying",
+	"year": 2024
+},
+{
+	"_id": "9549",
+	"circuit_key": 19,
+	"circuit_short_name": "Spielberg",
+	"country_code": "AUT",
+	"country_key": 17,
+	"country_name": "Austria",
+	"date_end": {
+		"$date": "2024-06-29T10:30:00Z"
+	},
+	"date_start": {
+		"$date": "2024-06-29T10:00:00Z"
+	},
+	"gmt_offset": "02:00:00",
+	"location": "Spielberg",
+	"meeting_key": 1239,
+	"session_key": 9549,
+	"session_name": "Sprint",
+	"session_type": "Race",
+	"year": 2024
+},
+{
+	"_id": "9541",
+	"circuit_key": 19,
+	"circuit_short_name": "Spielberg",
+	"country_code": "AUT",
+	"country_key": 17,
+	"country_name": "Austria",
+	"date_end": {
+		"$date": "2024-06-29T15:00:00Z"
+	},
+	"date_start": {
+		"$date": "2024-06-29T14:00:00Z"
+	},
+	"gmt_offset": "02:00:00",
+	"location": "Spielberg",
+	"meeting_key": 1239,
+	"session_key": 9541,
+	"session_name": "Qualifying",
+	"session_type": "Qualifying",
+	"year": 2024
+}]
+
