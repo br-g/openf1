@@ -48,3 +48,9 @@ tqdm = ">=4.66.5"
 typer = ">=0.12.5"
 uvicorn = {version = ">=0.31.0", extras = ["standard"]}
 
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.3"
+pytest-mock = "^3.14.0"
+mongomock = "^4.2.0.post1"
+pytest-asyncio = "^0.24.0"
+

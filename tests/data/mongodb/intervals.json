@@ -1,0 +1,96 @@
+[
+    {
+        "_id": "1719144447798_1",
+        "date": 1719144447798,
+        "driver_number": 1,
+        "gap_to_leader": "",
+        "interval": "",
+        "meeting_key": 1238,
+        "session_key": 9539
+    },
+    {
+        "_id": "1719144447798_2",
+        "date": 1719144447798,
+        "driver_number": 2,
+        "gap_to_leader": "",
+        "interval": "",
+        "meeting_key": 1238,
+        "session_key": 9539
+    },
+    {
+        "_id": "1719144447798_3",
+        "date": 1719144447798,
+        "driver_number": 3,
+        "gap_to_leader": "",
+        "interval": "",
+        "meeting_key": 1238,
+        "session_key": 9539
+    },
+    {
+        "_id": "1719144447798_4",
+        "date": 1719144447798,
+        "driver_number": 4,
+        "gap_to_leader": {
+            "$numberDouble": "0.0"
+        },
+        "interval": {
+            "$numberDouble": "0.0"
+        },
+        "meeting_key": 1238,
+        "session_key": 9539
+    },
+    {
+        "_id": "1719144447798_10",
+        "date": 1719144447798,
+        "driver_number": 10,
+        "gap_to_leader": "",
+        "interval": "",
+        "meeting_key": 1238,
+        "session_key": 9539
+    },
+    {
+        "_id": "1719144447798_11",
+        "date": 1719144447798,
+        "driver_number": 11,
+        "gap_to_leader": "",
+        "interval": "",
+        "meeting_key": 1238,
+        "session_key": 9539
+    },
+    {
+        "_id": "1719144447798_14",
+        "date": 1719144447798,
+        "driver_number": 14,
+        "gap_to_leader": "",
+        "interval": "",
+        "meeting_key": 1238,
+        "session_key": 9539
+    },
+    {
+        "_id": "1719144447798_16",
+        "date": 1719144447798,
+        "driver_number": 16,
+        "gap_to_leader": "",
+        "interval": "",
+        "meeting_key": 1238,
+        "session_key": 9539
+    },
+    {
+        "_id": "1719144447798_18",
+        "date": 1719144447798,
+        "driver_number": 18,
+        "gap_to_leader": "",
+        "interval": "",
+        "meeting_key": 1238,
+        "session_key": 9539
+    },
+    {
+        "_id": "1719144447798_20",
+        "date": 1719144447798,
+        "driver_number": 20,
+        "gap_to_leader": "",
+        "interval": "",
+        "meeting_key": 1238,
+        "session_key": 9539
+    }
+]

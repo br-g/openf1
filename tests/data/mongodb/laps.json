@@ -1,0 +1,892 @@
+[
+    {
+        "_id": "9532_1_1",
+        "date_start": 1718969615872,
+        "driver_number": 1,
+        "duration_sector_1": null,
+        "duration_sector_2": {
+            "$numberDouble": "35.704"
+        },
+        "duration_sector_3": {
+            "$numberDouble": "26.353"
+        },
+        "i1_speed": 263,
+        "i2_speed": 213,
+        "is_pit_out_lap": true,
+        "lap_duration": null,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "segments_sector_1": [
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "segments_sector_2": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "segments_sector_3": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2051"
+            },
+            {
+                "$numberInt": "2051"
+            }
+        ],
+        "session_key": 9532,
+        "st_speed": 225
+    },
+    {
+        "_id": "9532_1_2",
+        "date_start": 1718969442649,
+        "driver_number": 2,
+        "duration_sector_1": null,
+        "duration_sector_2": {
+            "$numberDouble": "44.202"
+        },
+        "duration_sector_3": {
+            "$numberDouble": "35.849"
+        },
+        "i1_speed": 208,
+        "i2_speed": 225,
+        "is_pit_out_lap": true,
+        "lap_duration": null,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "segments_sector_1": [
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "segments_sector_2": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "segments_sector_3": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2064"
+            }
+        ],
+        "session_key": 9532,
+        "st_speed": 174
+    },
+    {
+        "_id": "9532_1_3",
+        "date_start": 1718969480849,
+        "driver_number": 3,
+        "duration_sector_1": null,
+        "duration_sector_2": {
+            "$numberDouble": "43.118"
+        },
+        "duration_sector_3": {
+            "$numberDouble": "29.025"
+        },
+        "i1_speed": 221,
+        "i2_speed": 104,
+        "is_pit_out_lap": true,
+        "lap_duration": null,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "segments_sector_1": [
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "segments_sector_2": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "segments_sector_3": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "session_key": 9532,
+        "st_speed": 202
+    },
+    {
+        "_id": "9532_1_4",
+        "date_start": 1718969425168,
+        "driver_number": 4,
+        "duration_sector_1": null,
+        "duration_sector_2": {
+            "$numberDouble": "48.821"
+        },
+        "duration_sector_3": {
+            "$numberDouble": "32.733"
+        },
+        "i1_speed": 146,
+        "i2_speed": 174,
+        "is_pit_out_lap": true,
+        "lap_duration": null,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "segments_sector_1": [
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "segments_sector_2": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "segments_sector_3": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2064"
+            }
+        ],
+        "session_key": 9532,
+        "st_speed": 139
+    },
+    {
+        "_id": "9532_1_10",
+        "date_start": 1718969437456,
+        "driver_number": 10,
+        "duration_sector_1": null,
+        "duration_sector_2": {
+            "$numberDouble": "35.716"
+        },
+        "duration_sector_3": {
+            "$numberDouble": "26.429"
+        },
+        "i1_speed": 228,
+        "i2_speed": 240,
+        "is_pit_out_lap": true,
+        "lap_duration": null,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "segments_sector_1": [
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "segments_sector_2": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2051"
+            }
+        ],
+        "segments_sector_3": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "session_key": 9532,
+        "st_speed": 190
+    },
+    {
+        "_id": "9532_1_11",
+        "date_start": 1718969488337,
+        "driver_number": 11,
+        "duration_sector_1": null,
+        "duration_sector_2": {
+            "$numberDouble": "36.416"
+        },
+        "duration_sector_3": {
+            "$numberDouble": "36.697"
+        },
+        "i1_speed": 242,
+        "i2_speed": 115,
+        "is_pit_out_lap": true,
+        "lap_duration": null,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "segments_sector_1": [
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "segments_sector_2": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "segments_sector_3": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "session_key": 9532,
+        "st_speed": 186
+    },
+    {
+        "_id": "9532_1_14",
+        "date_start": 1718969412801,
+        "driver_number": 14,
+        "duration_sector_1": null,
+        "duration_sector_2": {
+            "$numberDouble": "35.799"
+        },
+        "duration_sector_3": {
+            "$numberDouble": "28.07"
+        },
+        "i1_speed": 227,
+        "i2_speed": 240,
+        "is_pit_out_lap": true,
+        "lap_duration": null,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "segments_sector_1": [
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2051"
+            },
+            {
+                "$numberInt": "2051"
+            },
+            {
+                "$numberInt": "2051"
+            },
+            {
+                "$numberInt": "2051"
+            }
+        ],
+        "segments_sector_2": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "segments_sector_3": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2051"
+            },
+            {
+                "$numberInt": "2051"
+            },
+            {
+                "$numberInt": "2051"
+            }
+        ],
+        "session_key": 9532,
+        "st_speed": 231
+    },
+    {
+        "_id": "9532_1_16",
+        "date_start": 1718969494501,
+        "driver_number": 16,
+        "duration_sector_1": null,
+        "duration_sector_2": {
+            "$numberDouble": "42.566"
+        },
+        "duration_sector_3": {
+            "$numberDouble": "31.282"
+        },
+        "i1_speed": 139,
+        "i2_speed": 194,
+        "is_pit_out_lap": true,
+        "lap_duration": null,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "segments_sector_1": [
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "segments_sector_2": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "segments_sector_3": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "session_key": 9532,
+        "st_speed": 198
+    },
+    {
+        "_id": "9532_1_18",
+        "date_start": 1718969470368,
+        "driver_number": 18,
+        "duration_sector_1": null,
+        "duration_sector_2": {
+            "$numberDouble": "34.141"
+        },
+        "duration_sector_3": {
+            "$numberDouble": "33.197"
+        },
+        "i1_speed": 216,
+        "i2_speed": 201,
+        "is_pit_out_lap": true,
+        "lap_duration": null,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "segments_sector_1": [
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "segments_sector_2": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "segments_sector_3": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "session_key": 9532,
+        "st_speed": 41
+    },
+    {
+        "_id": "9532_1_20",
+        "date_start": 1718969415276,
+        "driver_number": 20,
+        "duration_sector_1": null,
+        "duration_sector_2": {
+            "$numberDouble": "35.871"
+        },
+        "duration_sector_3": {
+            "$numberDouble": "31.301"
+        },
+        "i1_speed": 188,
+        "i2_speed": 174,
+        "is_pit_out_lap": true,
+        "lap_duration": null,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "segments_sector_1": [
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2064"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "segments_sector_2": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2051"
+            },
+            {
+                "$numberInt": "2051"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            }
+        ],
+        "segments_sector_3": [
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2049"
+            },
+            {
+                "$numberInt": "2051"
+            },
+            {
+                "$numberInt": "2051"
+            },
+            {
+                "$numberInt": "2051"
+            }
+        ],
+        "session_key": 9532,
+        "st_speed": 229
+    }
+]

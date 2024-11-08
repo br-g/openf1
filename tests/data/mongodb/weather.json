@@ -1,0 +1,232 @@
+[
+    {
+        "_id": "1718968586087",
+        "air_temperature": {
+            "$numberDouble": "27.5"
+        },
+        "date": 1718968586087,
+        "humidity": {
+            "$numberDouble": "37.0"
+        },
+        "meeting_key": 1238,
+        "pressure": {
+            "$numberDouble": "1004.3"
+        },
+        "rainfall": 0,
+        "session_key": 9532,
+        "track_temperature": {
+            "$numberDouble": "46.3"
+        },
+        "wind_direction": 93,
+        "wind_speed": {
+            "$numberDouble": "0.0"
+        }
+    },
+    {
+        "_id": "1718968646107",
+        "air_temperature": {
+            "$numberDouble": "27.5"
+        },
+        "date": 1718968646107,
+        "humidity": {
+            "$numberDouble": "36.0"
+        },
+        "meeting_key": 1238,
+        "pressure": {
+            "$numberDouble": "1004.5"
+        },
+        "rainfall": 0,
+        "session_key": 9532,
+        "track_temperature": {
+            "$numberDouble": "46.4"
+        },
+        "wind_direction": 0,
+        "wind_speed": {
+            "$numberDouble": "0.0"
+        }
+    },
+    {
+        "_id": "1718968706098",
+        "air_temperature": {
+            "$numberDouble": "27.5"
+        },
+        "date": 1718968706098,
+        "humidity": {
+            "$numberDouble": "36.0"
+        },
+        "meeting_key": 1238,
+        "pressure": {
+            "$numberDouble": "1004.5"
+        },
+        "rainfall": 0,
+        "session_key": 9532,
+        "track_temperature": {
+            "$numberDouble": "47.3"
+        },
+        "wind_direction": 241,
+        "wind_speed": {
+            "$numberDouble": "2.3"
+        }
+    },
+    {
+        "_id": "1718968766105",
+        "air_temperature": {
+            "$numberDouble": "27.6"
+        },
+        "date": 1718968766105,
+        "humidity": {
+            "$numberDouble": "34.0"
+        },
+        "meeting_key": 1238,
+        "pressure": {
+            "$numberDouble": "1004.4"
+        },
+        "rainfall": 0,
+        "session_key": 9532,
+        "track_temperature": {
+            "$numberDouble": "47.5"
+        },
+        "wind_direction": 226,
+        "wind_speed": {
+            "$numberDouble": "2.0"
+        }
+    },
+    {
+        "_id": "1718968826112",
+        "air_temperature": {
+            "$numberDouble": "27.7"
+        },
+        "date": 1718968826112,
+        "humidity": {
+            "$numberDouble": "35.0"
+        },
+        "meeting_key": 1238,
+        "pressure": {
+            "$numberDouble": "1004.4"
+        },
+        "rainfall": 0,
+        "session_key": 9532,
+        "track_temperature": {
+            "$numberDouble": "46.4"
+        },
+        "wind_direction": 242,
+        "wind_speed": {
+            "$numberDouble": "2.0"
+        }
+    },
+    {
+        "_id": "1718968886114",
+        "air_temperature": {
+            "$numberDouble": "27.7"
+        },
+        "date": 1718968886114,
+        "humidity": {
+            "$numberDouble": "34.0"
+        },
+        "meeting_key": 1238,
+        "pressure": {
+            "$numberDouble": "1004.5"
+        },
+        "rainfall": 0,
+        "session_key": 9532,
+        "track_temperature": {
+            "$numberDouble": "46.4"
+        },
+        "wind_direction": 252,
+        "wind_speed": {
+            "$numberDouble": "2.1"
+        }
+    },
+    {
+        "_id": "1718968946112",
+        "air_temperature": {
+            "$numberDouble": "27.6"
+        },
+        "date": 1718968946112,
+        "humidity": {
+            "$numberDouble": "34.0"
+        },
+        "meeting_key": 1238,
+        "pressure": {
+            "$numberDouble": "1004.5"
+        },
+        "rainfall": 0,
+        "session_key": 9532,
+        "track_temperature": {
+            "$numberDouble": "45.8"
+        },
+        "wind_direction": 235,
+        "wind_speed": {
+            "$numberDouble": "1.8"
+        }
+    },
+    {
+        "_id": "1718969006117",
+        "air_temperature": {
+            "$numberDouble": "27.5"
+        },
+        "date": 1718969006117,
+        "humidity": {
+            "$numberDouble": "35.0"
+        },
+        "meeting_key": 1238,
+        "pressure": {
+            "$numberDouble": "1004.5"
+        },
+        "rainfall": 0,
+        "session_key": 9532,
+        "track_temperature": {
+            "$numberDouble": "45.3"
+        },
+        "wind_direction": 238,
+        "wind_speed": {
+            "$numberDouble": "3.2"
+        }
+    },
+    {
+        "_id": "1718969066115",
+        "air_temperature": {
+            "$numberDouble": "27.6"
+        },
+        "date": 1718969066115,
+        "humidity": {
+            "$numberDouble": "35.0"
+        },
+        "meeting_key": 1238,
+        "pressure": {
+            "$numberDouble": "1004.4"
+        },
+        "rainfall": 0,
+        "session_key": 9532,
+        "track_temperature": {
+            "$numberDouble": "45.7"
+        },
+        "wind_direction": 230,
+        "wind_speed": {
+            "$numberDouble": "2.0"
+        }
+    },
+    {
+        "_id": "1718969126111",
+        "air_temperature": {
+            "$numberDouble": "27.6"
+        },
+        "date": 1718969126111,
+        "humidity": {
+            "$numberDouble": "34.0"
+        },
+        "meeting_key": 1238,
+        "pressure": {
+            "$numberDouble": "1004.5"
+        },
+        "rainfall": 0,
+        "session_key": 9532,
+        "track_temperature": {
+            "$numberDouble": "46.0"
+        },
+        "wind_direction": 236,
+        "wind_speed": {
+            "$numberDouble": "1.5"
+        }
+    }
+]

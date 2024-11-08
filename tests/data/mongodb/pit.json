@@ -1,0 +1,92 @@
+[
+    {
+        "_id": "1718969402317_77",
+        "date": 1718969402317,
+        "driver_number": 77,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "pit_duration": null,
+        "session_key": 9532
+    },
+    {
+        "_id": "1718969412932_14",
+        "date": 1718969412932,
+        "driver_number": 14,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "pit_duration": null,
+        "session_key": 9532
+    },
+    {
+        "_id": "1718969415387_20",
+        "date": 1718969415387,
+        "driver_number": 20,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "pit_duration": null,
+        "session_key": 9532
+    },
+    {
+        "_id": "1718969416413_44",
+        "date": 1718969416413,
+        "driver_number": 44,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "pit_duration": null,
+        "session_key": 9532
+    },
+    {
+        "_id": "1718969418787_63",
+        "date": 1718969418787,
+        "driver_number": 63,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "pit_duration": null,
+        "session_key": 9532
+    },
+    {
+        "_id": "1718969425245_4",
+        "date": 1718969425245,
+        "driver_number": 4,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "pit_duration": null,
+        "session_key": 9532
+    },
+    {
+        "_id": "1718969427632_24",
+        "date": 1718969427632,
+        "driver_number": 24,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "pit_duration": null,
+        "session_key": 9532
+    },
+    {
+        "_id": "1718969432425_81",
+        "date": 1718969432425,
+        "driver_number": 81,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "pit_duration": null,
+        "session_key": 9532
+    },
+    {
+        "_id": "1718969437585_10",
+        "date": 1718969437585,
+        "driver_number": 10,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "pit_duration": null,
+        "session_key": 9532
+    },
+    {
+        "_id": "1718969442740_2",
+        "date": 1718969442740,
+        "driver_number": 2,
+        "lap_number": 1,
+        "meeting_key": 1238,
+        "pit_duration": null,
+        "session_key": 9532
+    }
+]
