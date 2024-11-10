@@ -12,6 +12,8 @@ from dateutil.tz import tzutc
 
 def join_url(*args) -> str:
     """Join URL parts with a forward slash"""
+    if any(len(e) == 0 or e is None for e in args):
+        raise ValueError(f"Invalid URL components: {args}")
     return "/".join([e.strip("/") for e in args])
 
 
