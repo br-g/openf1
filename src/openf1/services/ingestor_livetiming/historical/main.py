@@ -1,5 +1,4 @@
 import json
-import os
 import re
 from datetime import datetime, timedelta
 from functools import lru_cache
@@ -18,6 +17,7 @@ from openf1.services.ingestor_livetiming.core.objects import (
     get_source_topics,
 )
 from openf1.services.ingestor_livetiming.core.processing.main import process_messages
+from openf1.util import join_url
 from openf1.util.db import DbBatchIngestor
 from openf1.util.misc import json_serializer, to_datetime, to_timedelta
 from openf1.util.schedule import get_meeting_keys
@@ -54,7 +54,7 @@ def get_session_url(year: int, meeting_key: int, session_key: int) -> str:
             for session in meeting["Sessions"]:
                 if session["Key"] == session_key:
                     path = session["Path"]
-                    session_url = os.path.join(BASE_URL, path)
+                    session_url = join_url(BASE_URL, path)
 
     if session_url is None:
         raise ValueError(
@@ -67,7 +67,7 @@ def get_session_url(year: int, meeting_key: int, session_key: int) -> str:
 
 def _list_topics(session_url: str) -> list[str]:
     """Returns all the available raw data filenames for the session"""
-    index_url = os.path.join(session_url, "Index.json")
+    index_url = join_url(session_url, "Index.json")
     index_response = requests.get(index_url)
     index_content = json.loads(index_response.content)
 
@@ -97,7 +97,7 @@ def list_topics(
 @lru_cache()
 def _get_topic_content(session_url: str, topic: str) -> list[str]:
     topic_filename = f"{topic}.jsonStream"
-    url_topic = os.path.join(session_url, topic_filename)
+    url_topic = join_url(session_url, topic_filename)
     topic_content = requests.get(url_topic).text.split("\r\n")
     return topic_content
 
