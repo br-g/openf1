@@ -1,11 +1,11 @@
 import json
-import os
 from functools import lru_cache
 
 import requests
 
 from openf1.util import join_url
 from openf1.util.db import get_latest_session_info
+from openf1.util.misc import join_url
 
 
 @lru_cache()
