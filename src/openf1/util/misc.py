@@ -12,8 +12,8 @@ from dateutil.tz import tzutc
 
 def join_url(*args) -> str:
     """Join URL parts with a forward slash"""
-    return "/".join([e.strip("/") for e in args if e is not None and
-                    e.strip("/") != ""])
+    return "/".join([e.strip("/") for e in args])
+
 
 def timed_cache(expiration_time: float) -> Callable:
     """A decorator to cache the function output for a given duration.
