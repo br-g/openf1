@@ -10,7 +10,7 @@ def _try_parse_date(s: str) -> datetime | str:
     """Attempts to convert a string to a datetime object"""
     try:
         dt = parse_date(s)
-    except:
+    except Exception:
         return s
 
     if dt.tzinfo is None or dt.tzinfo.utcoffset(dt) is None:

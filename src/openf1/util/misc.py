@@ -25,7 +25,6 @@ def timed_cache(expiration_time: float) -> Callable:
     timestamps = {}
 
     def decorator(func):
-
         @wraps(func)
         def wrapper(*args, **kwargs):
             # Convert the arguments and keyword arguments to a single hashable key
@@ -138,7 +137,7 @@ def to_datetime(x: str | datetime) -> datetime | None:
                 int(msus),
             )
 
-        except Exception as exc:
+        except Exception:
             return None
 
     elif isinstance(x, datetime):

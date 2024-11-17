@@ -27,7 +27,7 @@ def process_message(
             documents = list(collection.process_message(message))
             if len(documents) > 0:
                 results[collection.__class__.name] = documents
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
 
     return results

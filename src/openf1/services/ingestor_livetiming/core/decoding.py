@@ -8,6 +8,6 @@ def decode(data: str) -> dict:
     data = data.strip()
     try:
         return json.loads(data.strip('"'))
-    except:
+    except Exception:
         s = zlib.decompress(base64.b64decode(data), -zlib.MAX_WBITS)
         return json.loads(s.decode("utf-8-sig"))
