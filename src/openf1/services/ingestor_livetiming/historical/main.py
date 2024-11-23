@@ -17,7 +17,6 @@ from openf1.services.ingestor_livetiming.core.objects import (
     get_source_topics,
 )
 from openf1.services.ingestor_livetiming.core.processing.main import process_messages
-from openf1.util import join_url
 from openf1.util.db import DbBatchIngestor
 from openf1.util.misc import join_url, json_serializer, to_datetime, to_timedelta
 from openf1.util.schedule import get_meeting_keys
@@ -282,7 +281,7 @@ def _get_processed_documents(
         logger.info(f"Fetched {len(messages)} messages")
 
     if verbose:
-        logger.info(f"Starting processing")
+        logger.info("Starting processing")
 
     docs_by_collection = process_messages(
         messages=messages, meeting_key=meeting_key, session_key=session_key
@@ -344,7 +343,7 @@ def ingest_collections(
     )
 
     if verbose:
-        logger.info(f"Inserting documents to DB")
+        logger.info("Inserting documents to DB")
     for collection, docs in tqdm(list(docs_by_collection.items()), disable=not verbose):
         docs_mongo = [d.to_mongo_doc() for d in docs]
         DbBatchIngestor().add_and_flush(collection=collection, docs=docs_mongo)
