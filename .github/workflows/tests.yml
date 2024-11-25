@@ -18,10 +18,7 @@ jobs:
           pip install -r testing_requirements.txt
       - name: Lint with ruff
         run: |
-          # Stop the build if there are Python syntax errors or undefined names
-          ruff --format=github --select=E9,F63,F7,F82 --target-version=py37 .
-          # Default set of ruff rules with GitHub Annotations
-          ruff --format=github --ignore=E501 --target-version=py37 .
+          ruff --format=github --ignore=E501 --target-version=py310 .
       - name: Format with black
         run: |
           black --check --diff --color .
