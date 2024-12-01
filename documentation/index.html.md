@@ -33,10 +33,10 @@ includes:
   - api_methods
   - data_filtering
   - csv_format
-  - system_architecture
   - faq
   - community_and_support
   - roadmap
+  - contributing
   - usage_guidelines
   - acknowledgments
 
