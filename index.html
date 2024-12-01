@@ -390,20 +390,6 @@
             <a href="#csv-format" class="toc-h1 toc-link" data-title="CSV Format">CSV Format</a>
           </li>
           <li>
-            <a href="#system-architecture" class="toc-h1 toc-link" data-title="System architecture">System architecture</a>
-              <ul class="toc-list-h2">
-                  <li>
-                    <a href="#ingestor" class="toc-h2 toc-link" data-title="Ingestor">Ingestor</a>
-                  </li>
-                  <li>
-                    <a href="#database" class="toc-h2 toc-link" data-title="Database">Database</a>
-                  </li>
-                  <li>
-                    <a href="#query-api" class="toc-h2 toc-link" data-title="Query API">Query API</a>
-                  </li>
-              </ul>
-          </li>
-          <li>
             <a href="#faq" class="toc-h1 toc-link" data-title="FAQ">FAQ</a>
               <ul class="toc-list-h2">
                   <li>
@@ -422,6 +408,14 @@
           </li>
           <li>
             <a href="#roadmap" class="toc-h1 toc-link" data-title="Roadmap">Roadmap</a>
+          </li>
+          <li>
+            <a href="#contributing" class="toc-h1 toc-link" data-title="Contributing">Contributing</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#contributors" class="toc-h2 toc-link" data-title="Contributors">Contributors</a>
+                  </li>
+              </ul>
           </li>
           <li>
             <a href="#usage-guidelines" class="toc-h1 toc-link" data-title="Usage Guidelines">Usage Guidelines</a>
@@ -1947,23 +1941,6 @@ To get all sessions in September 2023, use:
 <p><strong>Example</strong><br>
 To get all sessions for the year 2023 in CSV format, use the following URL:
 <a href="https://api.openf1.org/v1/sessions?year=2023&csv=true" target="_blank">https://api.openf1.org/v1/sessions?year=2023&amp;csv=true</a></p>
-<h1 id='system-architecture'>System architecture</h1>
-<p>Our architecture is serverless, optimized for resilience, cost-efficiency and scalability.</p>
-
-<p><img src="https://storage.googleapis.com/openf1-public/images/archi.png" alt="architecture schema" style="
-    max-width: 220px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 35px;
-    margin-bottom: 45px;
-"></p>
-<h3 id='ingestor'>Ingestor</h3>
-<p>The data ingestor runs every 5 minutes to check for new real-time data. During live sessions, at least two instances are active at any time to ensure reliable data recording. The ingestor also performs basic data normalization for efficient database indexing.</p>
-<h3 id='database'>Database</h3>
-<p>We use a MongoDB database with indexes for each collection, enabling faster query responses.</p>
-<h3 id='query-api'>Query API</h3>
-<p>The Query API serves as the intermediary between the user and the database. It processes user queries, fetches the relevant data from the database, and returns it in the requested format.</p>
 <h1 id='faq'>FAQ</h1><h3 id='can-i-access-past-data-during-an-ongoing-session'>Can I access past data during an ongoing session?</h3>
 <p>Yes, real-time storage allows for instant access to past and current session data.</p>
 <h3 id='what-39-s-the-delay-between-live-events-and-api-updates'>What&#39;s the delay between live events and API updates?</h3>
@@ -1973,11 +1950,9 @@ As a point of reference, F1 TV typically has a 6-second delay.</p>
 <h3 id='is-there-a-query-timeout'>Is there a query timeout?</h3>
 <p>Queries are limited to a 1-minute timeout. If your request takes too long, consider breaking it down into smaller queries and then combining the results.</p>
 <h1 id='community-and-support'>Community and Support</h1>
-<p>For community-driven questions or feedback, we encourage you to participate in our <a href="https://github.com/br-g/openf1/discussions" target="_blank">Github Discussions</a>. If you encounter any bugs or issues, please report them by creating a new issue on <a href="https://github.com/br-g/openf1/issues" target="_blank">our Github repository</a>. We&#39;re always open to contributions that enhance the project!</p>
+<p>For community-driven questions or feedback, we encourage you to participate in our <a href="https://github.com/br-g/openf1/discussions" target="_blank">Github Discussions</a>. If you encounter any bugs or issues, please report them by creating a new issue on <a href="https://github.com/br-g/openf1/issues" target="_blank">our Github repository</a>.</p>
 
 <p>For specialized inquiries, feel free to <a href="https://form.typeform.com/to/lCYUbpPz?typeform-source=openf1.org" target="_blank">reach out to me directly</a>. However, for general support questions, please use the <a href="https://github.com/br-g/openf1/discussions" target="_blank">Github Discussions</a> platform to ensure that the entire community can benefit from the answers.</p>
-
-<p>Additionally, I offer freelance data science and data engineering services. Whether your project is in the realm of motorsports or spans other domains, you can count on me for high-quality, efficient coding solutions. If you&#39;re interested in collaborating, please <a href="https://form.typeform.com/to/lCYUbpPz?typeform-source=openf1.org" target="_blank">contact me here</a>.</p>
 <h1 id='roadmap'>Roadmap</h1>
 <ul>
   <li>Race and championship standings, schedules, and starting grids</li>
@@ -1988,6 +1963,17 @@ As a point of reference, F1 TV typically has a 6-second delay.</p>
 </ul>
 
 <p>We welcome your ideas and suggestions for OpenF1&#39;s future. Please share them on our <a href="https://github.com/br-g/openf1/discussions" target="_blank">Github Discussions page</a>.</p>
+<h1 id='contributing'>Contributing</h1>
+<p>OpenF1&#39;s mission is to democratize Formula 1 data by making it open and accessible to everyone.<br />
+We welcome all contributions that help advance this goal!</p>
+
+<p>To get started, please review our <a href="https://github.com/br-g/openf1/blob/main/CONTRIBUTING.md" target="_blank">contribution guidelines</a>.</p>
+<h2 id='contributors'>Contributors</h2>
+<ul>
+<li><a href="https://github.com/br-g" target="_blank">br-g</a></li>
+<li><a href="https://github.com/PrestonHager" target="_blank">PrestonHager</a></li>
+<li><a href="https://github.com/Nik-code" target="_blank">Nik-code</a></li>
+</ul>
 <h1 id='usage-guidelines'>Usage Guidelines</h1>
 <p>The OpenF1 API is an open-source service designed to be easily accessible, requiring no authentication and imposing no rate limits. We kindly ask that you use the service responsibly to conserve computational resources. If you find the API useful, please consider <a href="https://www.buymeacoffee.com/openf1" target="_blank">donating</a> to support the long-term sustainability of the project.</p>
 
