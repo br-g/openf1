@@ -8,7 +8,6 @@ from openf1.services.ingestor_livetiming.core.objects import (
     Document,
     Message,
 )
-from openf1.util.misc import add_timezone_info, to_datetime
 
 
 @dataclass(eq=False)
@@ -34,16 +33,18 @@ class CircuitsCollection(Collection):
 
     def process_message(self, message: Message) -> Iterator[Circuits]:
         data = message.content
-        print(data["Type"])
-        if data["Type"] != "Qualifying":
-            print("Not a qualifying session")
-            return
-        else:
-            print("Qualifying session")
 
-        # Query for laps in the session
+        # Skip non-qualifying sessions and avoid sprint qualifying sessions
+        if data["Name"] != "Qualifying":
+            return
+        
+        # Query for laps in the session and filter out laps with no duration
         results = query_db(collection_name="laps", filters={"session_key": data["Key"]})
         valid_laps = [lap for lap in results if lap["lap_duration"] is not None]
+
+        # If no valid laps are found, skip the session
+        if not valid_laps:
+            return
 
         # Find the fastest lap
         fastest_lap = min(valid_laps, key=lambda x: x["lap_duration"])
@@ -52,9 +53,6 @@ class CircuitsCollection(Collection):
         lap_start_time = fastest_lap["date_start"]
         lap_duration_seconds = fastest_lap["lap_duration"]
         lap_end_time = lap_start_time + timedelta(seconds=lap_duration_seconds)
-
-        print(f"Lap Start Time: {lap_start_time}")
-        print(f"Lap End Time: {lap_end_time}")
 
         # Calculate sector split times
         sector_1_end_time = lap_start_time + timedelta(seconds=fastest_lap["duration_sector_1"])
@@ -69,7 +67,7 @@ class CircuitsCollection(Collection):
             }
         )
 
-        # Extract track coordinates
+        # Extract track coordinates and date from location data
         track_coordinates = [
             {"x": item["x"], "y": item["y"], "z": item["z"], "date": item["date"]}
             for item in lap_data
@@ -79,10 +77,10 @@ class CircuitsCollection(Collection):
         sector_2_start = next((point for point in track_coordinates if point["date"] >= sector_1_end_time), {"x": 0.0, "y": 0.0, "z": 0.0})
         sector_3_start = next((point for point in track_coordinates if point["date"] >= sector_2_end_time), {"x": 0.0, "y": 0.0, "z": 0.0})
 
-        print(f"Sector 2 Start: {sector_2_start}")
-        print(f"Sector 3 Start: {sector_3_start}")
-
-    
+        # Remove date from track coordinates
+        track_coordinates = [{"x": point["x"], "y": point["y"], "z": point["z"]} for point in track_coordinates]
+        sector_2_start = {"x": sector_2_start["x"], "y": sector_2_start["y"], "z": sector_2_start["z"]}
+        sector_3_start = {"x": sector_3_start["x"], "y": sector_3_start["y"], "z": sector_3_start["z"]}
 
         yield Circuits(
             location=data["Meeting"]["Location"],
