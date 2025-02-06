@@ -63,6 +63,18 @@ nix-shell
 ```
 
 This will use poetry to setup any dependancies and create a virtual environment.
+=======
+environment is provided via the `flake.nix` file. To run this ensure you have
+nix installed on your system with experimental flakes enabled, then run:
+
+```bash
+NIXPKGS_ALLOW_UNFREE=1 nix develop --impure
+```
+
+This will use poetry to setup any dependancies and create a virtual environment.
+It will also setup mongodb and any mongodb tools for development use. The shell
+may need to compile the mongodb package which can take some time. After it
+compiles for the first time, it will be cached and future runs will be faster.
 
 ## Supporting OpenF1
 
