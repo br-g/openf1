@@ -74,4 +74,3 @@ class RaceControlCollection(Collection):
                 sector=data.get("Sector"),
                 message=data.get("Message"),
             )
-            )

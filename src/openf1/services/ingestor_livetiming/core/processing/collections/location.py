@@ -65,4 +65,3 @@ class LocationCollection(Collection):
                     y=data.get("Y"),
                     z=data.get("Z"),
                 )
-                )
