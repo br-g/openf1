@@ -55,14 +55,12 @@ class RaceControlCollection(Collection):
             try:
                 date = to_datetime(data["Utc"])
                 date = pytz.utc.localize(date)
-            except Exception as e:
-                logger.warning(e)
+            except:
                 date = None
 
             try:
                 driver_number = int(data.get("RacingNumber"))
-            except Exception as e:
-                logger.warning(e)
+            except:
                 driver_number = None
 
             yield RaceControl(

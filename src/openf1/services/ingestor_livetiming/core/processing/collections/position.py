@@ -38,5 +38,5 @@ class PositionCollection(Collection):
                     date=message.timepoint,
                     position=data["Line"],
                 )
-            except Exception as e:
-                logger.warning(e)
+            except:
+                pass

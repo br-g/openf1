@@ -48,8 +48,7 @@ class MeetingsCollection(Collection):
             date_start = data["StartDate"]
             date_start = to_datetime(date_start)
             date_start = add_timezone_info(dt=date_start, gmt_offset=gmt_offset)
-        except Exception as e:
-            logger.warning(e)
+        except:
             date_start = None
 
         year = date_start.year if date_start else None

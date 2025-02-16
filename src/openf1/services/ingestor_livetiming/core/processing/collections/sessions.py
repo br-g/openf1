@@ -46,15 +46,13 @@ class SessionsCollection(Collection):
         try:
             date_start = to_datetime(data["StartDate"])
             date_start = add_timezone_info(dt=date_start, gmt_offset=gmt_offset)
-        except Exception as e:
-            logger.warning(e)
+        except:
             date_start = None
 
         try:
             date_end = to_datetime(data["EndDate"])
             date_end = add_timezone_info(dt=date_end, gmt_offset=gmt_offset)
-        except Exception as e:
-            logger.warning(e)
+        except:
             date_end = None
 
         year = date_start.year if date_start else None

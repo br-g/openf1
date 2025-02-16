@@ -49,22 +49,19 @@ class TeamRadioCollection(Collection):
             for capture in captures:
                 try:
                     driver_number = int(capture["RacingNumber"])
-                except Exception as e:
-                    logger.warning(e)
+                except:
                     continue
 
                 try:
                     date = to_datetime(capture["Utc"])
                     date = pytz.utc.localize(date)
-                except Exception as e:
-                    logger.warning(e)
+                except:
                     date = None
 
                 try:
                     path = capture["Path"]
                     assert isinstance(path, str)
-                except Exception as e:
-                    logger.warning(e)
+                except:
                     continue
 
                 yield TeamRadio(

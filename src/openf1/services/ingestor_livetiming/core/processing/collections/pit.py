@@ -33,8 +33,7 @@ class PitCollection(Collection):
         for driver_number, data in message.content["PitTimes"].items():
             try:
                 driver_number = int(driver_number)
-            except Exception as e:
-                logger.warning(e)
+            except:
                 continue
 
             if not isinstance(data, dict):
@@ -42,14 +41,12 @@ class PitCollection(Collection):
 
             try:
                 pit_duration = float(data["Duration"])
-            except Exception as e:
-                logger.warning(e)
+            except:
                 pit_duration = None
 
             try:
                 lap_number = int(data["Lap"])
-            except Exception as e:
-                logger.warning(e)
+            except:
                 lap_number = None
 
             yield Pit(
