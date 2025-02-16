@@ -1,14 +1,15 @@
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Iterator
+
+from loguru import logger
 
 from openf1.services.ingestor_livetiming.core.objects import (
     Collection,
     Document,
     Message,
 )
-from openf1.util.misc import to_timedelta
 
 
 @dataclass(eq=False)
@@ -107,60 +108,93 @@ class LapsCollection(Collection):
         )
 
     def process_message(self, message: Message) -> Iterator[Lap]:
-        if "Lines" not in message.content:
-            return
-
         for driver_number, data in message.content["Lines"].items():
-            driver_number = int(driver_number)
+            try:
+                driver_number = int(driver_number)
+            except Exception as e:
+                logger.warning(e)
+                continue
 
-            if "LastLapTime" in data and data["LastLapTime"].get("Value") is not None:
-                lap_time = to_timedelta(data["LastLapTime"]["Value"])
-                if lap_time is not None:
-                    self._update_lap(
-                        driver_number=driver_number,
-                        property="lap_duration",
-                        value=lap_time.total_seconds(),
-                    )
+            if not isinstance(data, dict):
+                continue
 
-            if "Sectors" in data:
-                if isinstance(data["Sectors"], dict):
-                    for sector_number_s, sector_data in data["Sectors"].items():
+            try:
+                lap_time = data.get("LastLapTime", {}).get("Value")
+            except Exception as e:
+                logger.warning(e)
+                lap_time = None
+            if isinstance(lap_time, timedelta):
+                self._update_lap(
+                    driver_number=driver_number,
+                    property="lap_duration",
+                    value=lap_time.total_seconds(),
+                )
+
+            sectors = data.get("Sectors")
+            if isinstance(sectors, dict):
+                for sector_number_s, sector_data in sectors.items():
+                    try:
                         sector_number = int(sector_number_s) + 1
+                    except Exception as e:
+                        logger.warning(e)
+                        continue
 
-                        if "Value" in sector_data:
-                            if len(sector_data["Value"]) > 0:
-                                duration = float(sector_data["Value"])
-                                self._update_lap(
-                                    driver_number=driver_number,
-                                    property=f"duration_sector_{sector_number}",
-                                    value=duration,
-                                )
-                        if "Segments" in sector_data:
-                            segments_data = sector_data["Segments"]
-                            if isinstance(segments_data, dict):
-                                for (
-                                    segment_number,
-                                    segment_data,
-                                ) in segments_data.items():
-                                    self._add_segment_status(
-                                        driver_number=driver_number,
-                                        sector_number=sector_number,
-                                        segment_number=int(segment_number),
-                                        segment_status=segment_data["Status"],
-                                    )
+                    if not isinstance(sector_data, dict):
+                        continue
 
-            if "Speeds" in data:
-                for label, speed_data in data["Speeds"].items():
-                    if label == "ST" or label.startswith("I"):
-                        value = speed_data.get("Value")
-                        if value:
+                    if "Value" in sector_data:
+                        try:
+                            duration = float(sector_data["Value"])
+                        except Exception as e:
+                            logger.warning(e)
+                            duration = None
+                        if duration is not None:
                             self._update_lap(
                                 driver_number=driver_number,
-                                property=f"{label.lower()}_speed",
-                                value=int(value),
+                                property=f"duration_sector_{sector_number}",
+                                value=duration,
                             )
+                    if "Segments" in sector_data:
+                        segments_data = sector_data["Segments"]
+                        if isinstance(segments_data, dict):
+                            for (
+                                segment_number,
+                                segment_data,
+                            ) in segments_data.items():
+                                try:
+                                    segment_number = int(segment_number)
+                                except Exception as e:
+                                    logger.warning(e)
+                                    continue
+                                if not isinstance(segment_data, dict):
+                                    continue
+                                self._add_segment_status(
+                                    driver_number=driver_number,
+                                    sector_number=sector_number,
+                                    segment_number=segment_number,
+                                    segment_status=segment_data.get("Status"),
+                                )
 
-            if "NumberOfLaps" in data:
+            speeds = data.get("Speeds")
+            if isinstance(speeds, dict):
+                for label, speed_data in speeds.items():
+                    if not isinstance(label, str):
+                        continue
+                    if not isinstance(speed_data, dict):
+                        continue
+                    if label == "ST" or label.startswith("I"):
+                        try:
+                            value = int(speed_data.get("Value"))
+                        except Exception as e:
+                            logger.warning(e)
+                            continue
+                        self._update_lap(
+                            driver_number=driver_number,
+                            property=f"{label.lower()}_speed",
+                            value=value,
+                        )
+
+            if data.get("NumberOfLaps") is not None:
                 self._add_lap(driver_number=driver_number)
                 self._update_lap(
                     driver_number=driver_number,
@@ -168,7 +202,7 @@ class LapsCollection(Collection):
                     value=message.timepoint,
                 )
 
-            if data.get("PitOut"):
+            if data.get("PitOut") is not None:
                 self._update_lap(
                     driver_number=driver_number,
                     property="is_pit_out_lap",

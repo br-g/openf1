@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Iterator
 
+from loguru import logger
+
 from openf1.services.ingestor_livetiming.core.objects import (
     Collection,
     Document,
@@ -16,7 +18,7 @@ class Pit(Document):
     driver_number: int
     date: datetime
     pit_duration: int | None
-    lap_number: int
+    lap_number: int | None
 
     @property
     def unique_key(self) -> tuple:
@@ -31,14 +33,30 @@ class PitCollection(Collection):
         for driver_number, data in message.content["PitTimes"].items():
             try:
                 driver_number = int(driver_number)
-            except ValueError:
+            except Exception as e:
+                logger.warning(e)
                 continue
+
+            if not isinstance(data, dict):
+                continue
+
+            try:
+                pit_duration = float(data["Duration"])
+            except Exception as e:
+                logger.warning(e)
+                pit_duration = None
+
+            try:
+                lap_number = int(data["Lap"])
+            except Exception as e:
+                logger.warning(e)
+                lap_number = None
 
             yield Pit(
                 meeting_key=self.meeting_key,
                 session_key=self.session_key,
                 driver_number=driver_number,
                 date=message.timepoint,
-                pit_duration=float(data["Duration"]) if data["Duration"] else None,
-                lap_number=int(data["Lap"]),
+                pit_duration=pit_duration,
+                lap_number=lap_number,
             )

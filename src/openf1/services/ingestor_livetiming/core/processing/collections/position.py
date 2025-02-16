@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Iterator
 
+from loguru import logger
+
 from openf1.services.ingestor_livetiming.core.objects import (
     Collection,
     Document,
@@ -28,19 +30,13 @@ class PositionCollection(Collection):
 
     def process_message(self, message: Message) -> Iterator[Position]:
         for driver_number, data in message.content["Lines"].items():
-            position = data.get("Line")
-            if position is None:
-                continue
-
             try:
-                driver_number = int(driver_number)
-            except ValueError:
-                continue
-
-            yield Position(
-                meeting_key=self.meeting_key,
-                session_key=self.session_key,
-                driver_number=driver_number,
-                date=message.timepoint,
-                position=position,
-            )
+                yield Position(
+                    meeting_key=self.meeting_key,
+                    session_key=self.session_key,
+                    driver_number=int(driver_number),
+                    date=message.timepoint,
+                    position=data["Line"],
+                )
+            except Exception as e:
+                logger.warning(e)

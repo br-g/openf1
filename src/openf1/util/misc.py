@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from enum import Enum
 from functools import wraps
 from threading import Lock
-from typing import Callable
+from typing import Any, Callable
 
 import pytz
 from dateutil.tz import tzutc
@@ -91,7 +91,7 @@ class SingletonMeta(type):
         return cls._instances[cls]
 
 
-def to_datetime(x: str | datetime) -> datetime | None:
+def to_datetime(x: str | datetime | None) -> datetime | None:
     """This function is taken from FastF1: https://github.com/theOehrly/Fast-F1/blob/317bacf8c61038d7e8d0f48165330167702b349f/fastf1/utils.py#L178
 
     Fast datetime object creation from a date string.
@@ -147,7 +147,7 @@ def to_datetime(x: str | datetime) -> datetime | None:
         return None
 
 
-def to_timedelta(x: str | timedelta) -> timedelta | None:
+def to_timedelta(x: Any) -> timedelta | None:
     """This function is taken from FastF1: https://github.com/theOehrly/Fast-F1/blob/317bacf8c61038d7e8d0f48165330167702b349f/fastf1/utils.py#L120
 
     Fast timedelta object creation from a time string

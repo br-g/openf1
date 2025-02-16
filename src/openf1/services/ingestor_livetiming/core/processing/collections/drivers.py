@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from functools import cached_property
 from typing import Iterator
 
+from loguru import logger
+
 from openf1.services.ingestor_livetiming.core.objects import (
     Collection,
     Document,
@@ -64,10 +66,13 @@ class DriversCollection(Collection):
 
     def process_message(self, message: Message) -> Iterator[Driver]:
         for driver_number, driver_content in message.content.items():
-            # Skip if driver_number is invalid
             try:
                 driver_number = int(driver_number)
-            except ValueError:
+            except Exception as e:
+                logger.warning(e)
+                continue
+
+            if not isinstance(driver_content, dict):
                 continue
 
             self._update_driver(

@@ -52,6 +52,8 @@ def get_session_url(year: int, meeting_key: int, session_key: int) -> str:
         if meeting["Key"] == meeting_key:
             for session in meeting["Sessions"]:
                 if session["Key"] == session_key:
+                    if "Path" not in session:
+                        continue
                     path = session["Path"]
                     session_url = join_url(BASE_URL, path)
 

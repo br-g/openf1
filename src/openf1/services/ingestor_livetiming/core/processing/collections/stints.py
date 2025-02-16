@@ -2,6 +2,8 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Iterator
 
+from loguru import logger
+
 from openf1.services.ingestor_livetiming.core.objects import (
     Collection,
     Document,
@@ -69,26 +71,40 @@ class StintsCollection(Collection):
     def process_message(self, message: Message) -> Iterator[Stint]:
         if message.topic == "TimingAppData":
             for driver_number, data in message.content["Lines"].items():
-                driver_number = int(driver_number)
+                try:
+                    driver_number = int(driver_number)
+                except Exception as e:
+                    logger.warning(e)
+                    continue
 
-                if "Stints" in data:
-                    if isinstance(data["Stints"], list):
-                        stints_data = data["Stints"]
+                if not isinstance(data, dict):
+                    continue
+
+                stints_data = data.get("Stints")
+                if stints_data:
+                    if isinstance(stints_data, list):
                         stints_number = [0] * len(stints_data)
+                    elif isinstance(stints_data, dict):
+                        stints_data = [v for _, v in sorted(list(stints_data.items()))]
+                        stints_number = sorted(list(stints_data.keys()))
                     else:
-                        stints_data = [
-                            v for _, v in sorted(list(data["Stints"].items()))
-                        ]
-                        stints_number = sorted(list(data["Stints"].keys()))
+                        continue
 
                     for stint_number, stint_data in zip(stints_number, stints_data):
-                        stint_number = int(stint_number) + 1
+                        try:
+                            stint_number = int(stint_number) + 1
+                        except Exception as e:
+                            logger.warning(e)
+                            continue
 
                         if stint_number not in self.stints[driver_number]:
                             self._add_stint(
                                 driver_number=driver_number,
                                 stint_number=stint_number,
                             )
+
+                        if not isinstance(stint_data, dict):
+                            continue
 
                         if "Compound" in stint_data:
                             self._update_stint(
@@ -108,32 +124,41 @@ class StintsCollection(Collection):
                                 )
 
         elif message.topic == "TimingData":
-            if "Lines" in message.content:
-                for driver_number, data in message.content["Lines"].items():
+            if "Lines" not in message.content:
+                return
+
+            for driver_number, data in message.content["Lines"].items():
+                try:
                     driver_number = int(driver_number)
+                except Exception as e:
+                    logger.warning(e)
+                    continue
 
-                    if len(self.stints[driver_number]) == 0:
-                        self._add_stint(
-                            driver_number=driver_number,
-                            stint_number=1,
-                        )
+                if not isinstance(data, dict):
+                    continue
 
-                    if "NumberOfLaps" in data:
-                        stint = self._get_last_stint(driver_number)
-                        if stint is not None:
-                            if stint.lap_start is None:
-                                self._update_stint(
-                                    driver_number=driver_number,
-                                    stint_number=stint.stint_number,
-                                    property="lap_start",
-                                    value=data["NumberOfLaps"],
-                                )
+                if len(self.stints[driver_number]) == 0:
+                    self._add_stint(
+                        driver_number=driver_number,
+                        stint_number=1,
+                    )
+
+                if "NumberOfLaps" in data:
+                    stint = self._get_last_stint(driver_number)
+                    if stint is not None:
+                        if stint.lap_start is None:
                             self._update_stint(
                                 driver_number=driver_number,
                                 stint_number=stint.stint_number,
-                                property="lap_end",
+                                property="lap_start",
                                 value=data["NumberOfLaps"],
                             )
+                        self._update_stint(
+                            driver_number=driver_number,
+                            stint_number=stint.stint_number,
+                            property="lap_end",
+                            value=data["NumberOfLaps"],
+                        )
 
         yield from self.updated_stints
         self.updated_stints = set()

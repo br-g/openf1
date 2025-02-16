@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Iterator
 
+from loguru import logger
+
 from openf1.services.ingestor_livetiming.core.objects import (
     Collection,
     Document,
@@ -54,6 +56,15 @@ class IntervalsCollection(Collection):
 
     def process_message(self, message: Message) -> Iterator[Interval]:
         for driver_number, data in message.content.items():
+            try:
+                driver_number = int(driver_number)
+            except Exception as e:
+                logger.warning(e)
+                continue
+
+            if not isinstance(data, dict):
+                continue
+
             if data.get("Gap") is None and data.get("Interval") is None:
                 continue
 
@@ -63,7 +74,7 @@ class IntervalsCollection(Collection):
             yield Interval(
                 meeting_key=self.meeting_key,
                 session_key=self.session_key,
-                driver_number=int(driver_number),
+                driver_number=driver_number,
                 gap_to_leader=gap_to_leader,
                 interval=interval,
                 date=message.timepoint,
