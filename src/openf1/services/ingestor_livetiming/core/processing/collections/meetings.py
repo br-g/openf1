@@ -2,8 +2,6 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Iterator
 
-from loguru import logger
-
 from openf1.services.ingestor_livetiming.core.objects import (
     Collection,
     Document,

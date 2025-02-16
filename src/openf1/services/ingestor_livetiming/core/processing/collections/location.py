@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import Iterator
 
 import pytz
-from loguru import logger
 
 from openf1.services.ingestor_livetiming.core.objects import (
     Collection,
@@ -65,4 +64,5 @@ class LocationCollection(Collection):
                     x=data.get("X"),
                     y=data.get("Y"),
                     z=data.get("Z"),
+                )
                 )

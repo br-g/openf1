@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import Iterator
 
 import pytz
-from loguru import logger
 
 from openf1.services.ingestor_livetiming.core.objects import (
     Collection,
@@ -74,4 +73,5 @@ class RaceControlCollection(Collection):
                 scope=data.get("Scope"),
                 sector=data.get("Sector"),
                 message=data.get("Message"),
+            )
             )

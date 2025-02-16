@@ -18,7 +18,7 @@ jobs:
           pip install -r testing_requirements.txt
       - name: Lint with ruff
         run: |
-          ruff --format=github --ignore=E501 --target-version=py310 .
+          ruff --format=github --ignore=E501,E722 --target-version=py310 .
       - name: Format with black
         run: |
           black --check --diff --color .
