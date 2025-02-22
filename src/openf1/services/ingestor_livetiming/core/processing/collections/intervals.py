@@ -10,7 +10,7 @@ from openf1.services.ingestor_livetiming.core.objects import (
 
 
 def _parse_time_delta(time_delta: str | float | None) -> str | float | None:
-    if time_delta is None:
+    if time_delta is None or time_delta == "":
         return None
 
     # Handle leader
@@ -39,8 +39,8 @@ class Interval(Document):
     meeting_key: int
     session_key: int
     driver_number: int
-    gap_to_leader: float | None
-    interval: float | None
+    gap_to_leader: str | float | None
+    interval: str | float | None
     date: datetime
 
     @property
@@ -62,11 +62,11 @@ class IntervalsCollection(Collection):
             if not isinstance(data, dict):
                 continue
 
-            if data.get("Gap") is None and data.get("Interval") is None:
-                continue
-
             gap_to_leader = _parse_time_delta(data.get("Gap"))
             interval = _parse_time_delta(data.get("Interval"))
+
+            if gap_to_leader is None and interval is None:
+                continue
 
             yield Interval(
                 meeting_key=self.meeting_key,

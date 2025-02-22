@@ -148,6 +148,21 @@ class LapsCollection(Collection):
                                 property=f"duration_sector_{sector_number}",
                                 value=duration,
                             )
+                            lap = self._get_latest_lap(driver_number)
+                            if (
+                                not lap.lap_duration
+                                and lap.duration_sector_1
+                                and lap.duration_sector_2
+                                and lap.duration_sector_3
+                            ):
+                                self._update_lap(
+                                    driver_number=driver_number,
+                                    property="lap_duration",
+                                    value=lap.duration_sector_1
+                                    + lap.duration_sector_2
+                                    + lap.duration_sector_3,
+                                )
+
                     if "Segments" in sector_data:
                         segments_data = sector_data["Segments"]
                         if isinstance(segments_data, dict):
@@ -187,7 +202,9 @@ class LapsCollection(Collection):
                         )
 
             if data.get("NumberOfLaps") is not None:
-                self._add_lap(driver_number=driver_number)
+                latest_lap = self._get_latest_lap(driver_number=driver_number)
+                if _is_lap_valid(latest_lap):
+                    self._add_lap(driver_number=driver_number)
                 self._update_lap(
                     driver_number=driver_number,
                     property="date_start",
