@@ -64,10 +64,12 @@ class DriversCollection(Collection):
 
     def process_message(self, message: Message) -> Iterator[Driver]:
         for driver_number, driver_content in message.content.items():
-            # Skip if driver_number is invalid
             try:
                 driver_number = int(driver_number)
-            except ValueError:
+            except:
+                continue
+
+            if not isinstance(driver_content, dict):
                 continue
 
             self._update_driver(

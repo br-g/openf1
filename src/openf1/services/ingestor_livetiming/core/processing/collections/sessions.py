@@ -14,18 +14,18 @@ from openf1.util.misc import add_timezone_info, to_datetime
 class Session(Document):
     meeting_key: int
     session_key: int
-    location: str
-    date_start: datetime
-    date_end: datetime
-    session_type: str
-    session_name: str
-    country_key: int
-    country_code: str
-    country_name: str
-    circuit_key: int
-    circuit_short_name: str
-    gmt_offset: str
-    year: int
+    location: str | None
+    date_start: datetime | None
+    date_end: datetime | None
+    session_type: str | None
+    session_name: str | None
+    country_key: int | None
+    country_code: str | None
+    country_name: str | None
+    circuit_key: int | None
+    circuit_short_name: str | None
+    gmt_offset: str | None
+    year: int | None
 
     @property
     def unique_key(self) -> tuple:
@@ -39,27 +39,37 @@ class SessionsCollection(Collection):
     def process_message(self, message: Message) -> Iterator[Session]:
         data = message.content
 
-        gmt_offset = data["GmtOffset"]
+        gmt_offset = data.get("GmtOffset")
 
-        date_start = to_datetime(data["StartDate"])
-        date_start = add_timezone_info(dt=date_start, gmt_offset=gmt_offset)
+        try:
+            date_start = to_datetime(data["StartDate"])
+            date_start = add_timezone_info(dt=date_start, gmt_offset=gmt_offset)
+        except:
+            date_start = None
 
-        date_end = to_datetime(data["EndDate"])
-        date_end = add_timezone_info(dt=date_end, gmt_offset=gmt_offset)
+        try:
+            date_end = to_datetime(data["EndDate"])
+            date_end = add_timezone_info(dt=date_end, gmt_offset=gmt_offset)
+        except:
+            date_end = None
+
+        year = date_start.year if date_start else None
 
         yield Session(
             meeting_key=self.meeting_key,
             session_key=self.session_key,
-            location=data["Meeting"]["Location"],
+            location=data.get("Meeting", {}).get("Location"),
             date_start=date_start,
             date_end=date_end,
-            session_type=data["Type"],
-            session_name=data["Name"],
-            country_key=data["Meeting"]["Country"]["Key"],
-            country_code=data["Meeting"]["Country"]["Code"],
-            country_name=data["Meeting"]["Country"]["Name"],
-            circuit_key=data["Meeting"]["Circuit"]["Key"],
-            circuit_short_name=data["Meeting"]["Circuit"]["ShortName"],
+            session_type=data.get("Type"),
+            session_name=data.get("Name"),
+            country_key=data.get("Meeting", {}).get("Country", {}).get("Key"),
+            country_code=data.get("Meeting", {}).get("Country", {}).get("Code"),
+            country_name=data.get("Meeting", {}).get("Country", {}).get("Name"),
+            circuit_key=data.get("Meeting", {}).get("Circuit", {}).get("Key"),
+            circuit_short_name=data.get("Meeting", {})
+            .get("Circuit", {})
+            .get("ShortName"),
             gmt_offset=gmt_offset,
-            year=date_start.year,
+            year=year,
         )

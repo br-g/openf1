@@ -19,7 +19,7 @@ class TeamRadio(Document):
     meeting_key: int
     session_key: int
     driver_number: int
-    date: datetime
+    date: datetime | None
     recording_url: str
 
     @property
@@ -48,16 +48,25 @@ class TeamRadioCollection(Collection):
             for capture in captures:
                 try:
                     driver_number = int(capture["RacingNumber"])
-                except ValueError:
+                except:
                     continue
 
-                date = to_datetime(capture["Utc"])
-                date = pytz.utc.localize(date)
+                try:
+                    date = to_datetime(capture["Utc"])
+                    date = pytz.utc.localize(date)
+                except:
+                    date = None
+
+                try:
+                    path = capture["Path"]
+                    assert isinstance(path, str)
+                except:
+                    continue
 
                 yield TeamRadio(
                     meeting_key=self.meeting_key,
                     session_key=self.session_key,
                     driver_number=driver_number,
                     date=date,
-                    recording_url=BASE_URL + self.session_path + capture["Path"],
+                    recording_url=BASE_URL + self.session_path + path,
                 )

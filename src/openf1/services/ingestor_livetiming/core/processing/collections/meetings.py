@@ -13,18 +13,18 @@ from openf1.util.misc import add_timezone_info, to_datetime
 @dataclass(eq=False)
 class Meeting(Document):
     meeting_key: int
-    circuit_key: int
-    circuit_short_name: str
-    meeting_code: str
-    location: str
-    country_key: int
-    country_code: str
-    country_name: str
-    meeting_name: str
-    meeting_official_name: str
-    gmt_offset: str
-    date_start: datetime
-    year: int
+    circuit_key: int | None
+    circuit_short_name: str | None
+    meeting_code: str | None
+    location: str | None
+    country_key: int | None
+    country_code: str | None
+    country_name: str | None
+    meeting_name: str | None
+    meeting_official_name: str | None
+    gmt_offset: str | None
+    date_start: datetime | None
+    year: int | None
 
     @property
     def unique_key(self) -> tuple:
@@ -40,23 +40,31 @@ class MeetingsCollection(Collection):
     def process_message(self, message: Message) -> Iterator[Meeting]:
         data = message.content
 
-        gmt_offset = data["GmtOffset"]
+        gmt_offset = data.get("GmtOffset")
 
-        date_start = to_datetime(data["StartDate"])
-        date_start = add_timezone_info(dt=date_start, gmt_offset=gmt_offset)
+        try:
+            date_start = data["StartDate"]
+            date_start = to_datetime(date_start)
+            date_start = add_timezone_info(dt=date_start, gmt_offset=gmt_offset)
+        except:
+            date_start = None
+
+        year = date_start.year if date_start else None
 
         yield Meeting(
             meeting_key=self.meeting_key,
-            circuit_key=data["Meeting"]["Circuit"]["Key"],
-            circuit_short_name=data["Meeting"]["Circuit"]["ShortName"],
-            meeting_code=data["Meeting"]["Country"]["Code"],
-            location=data["Meeting"]["Location"],
-            country_key=data["Meeting"]["Country"]["Key"],
-            country_code=data["Meeting"]["Country"]["Code"],
-            country_name=data["Meeting"]["Country"]["Name"],
-            meeting_name=data["Meeting"]["Name"],
-            meeting_official_name=data["Meeting"]["OfficialName"],
-            gmt_offset=data["GmtOffset"],
+            circuit_key=data.get("Meeting", {}).get("Circuit", {}).get("Key"),
+            circuit_short_name=data.get("Meeting", {})
+            .get("Circuit", {})
+            .get("ShortName"),
+            meeting_code=data.get("Meeting", {}).get("Country", {}).get("Code"),
+            location=data.get("Meeting", {}).get("Location"),
+            country_key=data.get("Meeting", {}).get("Country", {}).get("Key"),
+            country_code=data.get("Meeting", {}).get("Country", {}).get("Code"),
+            country_name=data.get("Meeting", {}).get("Country", {}).get("Name"),
+            meeting_name=data.get("Meeting", {}).get("Name"),
+            meeting_official_name=data.get("Meeting", {}).get("OfficialName"),
+            gmt_offset=gmt_offset,
             date_start=date_start,
-            year=date_start.year,
+            year=year,
         )

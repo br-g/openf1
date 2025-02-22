@@ -16,8 +16,8 @@ from openf1.util.misc import to_datetime
 class RaceControl(Document):
     meeting_key: int
     session_key: int
-    date: datetime
-    driver_number: int
+    date: datetime | None
+    driver_number: int | None
     lap_number: int | None
     category: str | None
     flag: str | None
@@ -48,12 +48,19 @@ class RaceControlCollection(Collection):
             inner_messages = inner_messages.values()
 
         for data in inner_messages:
-            date = to_datetime(data["Utc"])
-            date = pytz.utc.localize(date)
+            if not isinstance(data, dict):
+                continue
 
-            driver_number = data.get("RacingNumber")
-            if driver_number is not None:
-                driver_number = int(driver_number)
+            try:
+                date = to_datetime(data["Utc"])
+                date = pytz.utc.localize(date)
+            except:
+                date = None
+
+            try:
+                driver_number = int(data.get("RacingNumber"))
+            except:
+                driver_number = None
 
             yield RaceControl(
                 meeting_key=self.meeting_key,

@@ -1,5 +1,6 @@
 from collections import defaultdict
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from typing import Iterator
 
 from openf1.services.ingestor_livetiming.core.objects import (
@@ -19,6 +20,7 @@ class Stint(Document):
     lap_end: int | None = None
     compound: str | None = None
     tyre_age_at_start: int | None = None
+    _date_start_last_lap: datetime | None = None
 
     @property
     def unique_key(self) -> tuple:
@@ -50,8 +52,17 @@ class StintsCollection(Collection):
             setattr(stint, property, value)
             self.updated_stints.add(stint)
 
-    def _add_stint(self, driver_number: int, stint_number: int):
+    def _add_stint(self, driver_number: int, stint_number: int, timepoint: datetime):
         last_stint = self._get_last_stint(driver_number)
+
+        # Sometimes, lap information arrives before stint information.
+        # We detect this using time points and correct it.
+        if (
+            last_stint is not None
+            and last_stint._date_start_last_lap is not None
+            and timepoint - last_stint._date_start_last_lap < timedelta(seconds=10)
+        ):
+            last_stint.lap_end -= 1
 
         new_stint = Stint(
             meeting_key=self.meeting_key,
@@ -69,26 +80,39 @@ class StintsCollection(Collection):
     def process_message(self, message: Message) -> Iterator[Stint]:
         if message.topic == "TimingAppData":
             for driver_number, data in message.content["Lines"].items():
-                driver_number = int(driver_number)
+                try:
+                    driver_number = int(driver_number)
+                except:
+                    continue
 
-                if "Stints" in data:
-                    if isinstance(data["Stints"], list):
-                        stints_data = data["Stints"]
+                if not isinstance(data, dict):
+                    continue
+
+                stints_data = data.get("Stints")
+                if stints_data:
+                    if isinstance(stints_data, list):
                         stints_number = [0] * len(stints_data)
+                    elif isinstance(stints_data, dict):
+                        stints_number = sorted(list(stints_data.keys()))
+                        stints_data = [v for _, v in sorted(list(stints_data.items()))]
                     else:
-                        stints_data = [
-                            v for _, v in sorted(list(data["Stints"].items()))
-                        ]
-                        stints_number = sorted(list(data["Stints"].keys()))
+                        continue
 
                     for stint_number, stint_data in zip(stints_number, stints_data):
-                        stint_number = int(stint_number) + 1
+                        try:
+                            stint_number = int(stint_number) + 1
+                        except:
+                            continue
 
                         if stint_number not in self.stints[driver_number]:
                             self._add_stint(
                                 driver_number=driver_number,
                                 stint_number=stint_number,
+                                timepoint=message.timepoint,
                             )
+
+                        if not isinstance(stint_data, dict):
+                            continue
 
                         if "Compound" in stint_data:
                             self._update_stint(
@@ -108,32 +132,47 @@ class StintsCollection(Collection):
                                 )
 
         elif message.topic == "TimingData":
-            if "Lines" in message.content:
-                for driver_number, data in message.content["Lines"].items():
+            if "Lines" not in message.content:
+                return
+
+            for driver_number, data in message.content["Lines"].items():
+                try:
                     driver_number = int(driver_number)
+                except:
+                    continue
 
-                    if len(self.stints[driver_number]) == 0:
-                        self._add_stint(
-                            driver_number=driver_number,
-                            stint_number=1,
-                        )
+                if not isinstance(data, dict):
+                    continue
 
-                    if "NumberOfLaps" in data:
-                        stint = self._get_last_stint(driver_number)
-                        if stint is not None:
-                            if stint.lap_start is None:
-                                self._update_stint(
-                                    driver_number=driver_number,
-                                    stint_number=stint.stint_number,
-                                    property="lap_start",
-                                    value=data["NumberOfLaps"],
-                                )
+                if len(self.stints[driver_number]) == 0:
+                    self._add_stint(
+                        driver_number=driver_number,
+                        stint_number=1,
+                        timepoint=message.timepoint,
+                    )
+
+                if "NumberOfLaps" in data:
+                    stint = self._get_last_stint(driver_number)
+                    if stint is not None:
+                        if stint.lap_start is None:
                             self._update_stint(
                                 driver_number=driver_number,
                                 stint_number=stint.stint_number,
-                                property="lap_end",
+                                property="lap_start",
                                 value=data["NumberOfLaps"],
                             )
+                        self._update_stint(
+                            driver_number=driver_number,
+                            stint_number=stint.stint_number,
+                            property="lap_end",
+                            value=data["NumberOfLaps"],
+                        )
+                        self._update_stint(
+                            driver_number=driver_number,
+                            stint_number=stint.stint_number,
+                            property="_date_start_last_lap",
+                            value=message.timepoint,
+                        )
 
         yield from self.updated_stints
         self.updated_stints = set()

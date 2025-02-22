@@ -59,7 +59,14 @@ class Document(ABC):
         return False
 
     def __lt__(self, other):
-        return self.unique_key < other.unique_key
+        for e_self, e_other in zip(self.unique_key, other.unique_key):
+            try:
+                return e_self < e_other
+            except (
+                TypeError
+            ):  # elements can't be compared (because of a None for example)
+                continue
+        return False
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.unique_key))

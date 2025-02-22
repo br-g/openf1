@@ -33,14 +33,33 @@ class LocationCollection(Collection):
 
     def process_message(self, message: Message) -> Iterator[CarData]:
         for content in message.content["Position"]:
-            date = to_datetime(content["Timestamp"])
-            date = pytz.utc.localize(date)
+            if not isinstance(content, dict):
+                continue
 
-            for driver_number, data in content["Entries"].items():
+            try:
+                timestamp = content["Timestamp"]
+                date = to_datetime(timestamp)
+                date = pytz.utc.localize(date)
+            except:
+                continue
+
+            entries = content.get("Entries")
+            if not isinstance(entries, dict):
+                continue
+
+            for driver_number, data in entries.items():
+                try:
+                    driver_number = int(driver_number)
+                except:
+                    continue
+
+                if not isinstance(data, dict):
+                    continue
+
                 yield CarData(
                     meeting_key=self.meeting_key,
                     session_key=self.session_key,
-                    driver_number=int(driver_number),
+                    driver_number=driver_number,
                     date=date,
                     x=data.get("X"),
                     y=data.get("Y"),
