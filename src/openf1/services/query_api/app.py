@@ -59,6 +59,20 @@ def _parse_path(path: str) -> str:
         raise ValueError("Invalid route")
 
 
+def _deduplicate_meetings(results: list[dict]) -> list[dict]:
+    """Keeps only the first occurrence of each meeting"""
+    deduplicated = []
+    meeting_keys_seen = set()
+
+    for res in results:
+        if res["meeting_key"] in meeting_keys_seen:
+            continue
+        deduplicated.append(res)
+        meeting_keys_seen.add(res["meeting_key"])
+
+    return deduplicated
+
+
 def _postprocess_results(collection: str, results: list[str]) -> list[str]:
     results = [
         {k: v for k, v in res.items() if not k.startswith("_")} for res in results
@@ -66,6 +80,8 @@ def _postprocess_results(collection: str, results: list[str]) -> list[str]:
     results = deduplicate_dicts(results)
     results = apply_tmp_fixes(collection=collection, results=results)
     results = sort_results(results)
+    if collection == "meetings":
+        results = _deduplicate_meetings(results)
     return results
 
 
