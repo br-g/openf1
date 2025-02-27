@@ -8,63 +8,45 @@ from functools import lru_cache
 
 from loguru import logger
 from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo import MongoClient, UpdateOne
+from pymongo import UpdateOne
 
-from openf1.util.misc import SingletonMeta, timed_cache
+from openf1.util.misc import SingletonMeta
 
 _MONGO_CONNECTION_STRING = os.getenv("MONGO_CONNECTION_STRING")
 _MONGO_DATABASE = "openf1-livetiming"
 
 
 @lru_cache()
-def _get_mongo_db_sync():
-    client = MongoClient(_MONGO_CONNECTION_STRING)
-    db = client[_MONGO_DATABASE]
-    return db
-
-
-@lru_cache()
 def _get_mongo_db_async():
     client = AsyncIOMotorClient(_MONGO_CONNECTION_STRING)
-    db = client[_MONGO_DATABASE]
-    return db
+    return client[_MONGO_DATABASE]
 
 
-def query_db(collection_name: str, filters: dict) -> list[dict]:
-    collection = _get_mongo_db_sync()[collection_name]
-    results = collection.find(filters)
-    return list(results)
+async def query_db(collection_name: str, filters: dict) -> list[dict]:
+    collection = _get_mongo_db_async()[collection_name]
+    cursor = collection.find(filters)
+    return [doc async for doc in cursor]
 
 
-@timed_cache(60)  # Cache the output for 1 minute
-def get_latest_session_info() -> int:
-    sessions = _get_mongo_db_sync()["sessions"]
-    latest_session = sessions.find_one(sort=[("date_start", -1)])
-
+async def get_latest_session_info() -> dict:
+    sessions = _get_mongo_db_async()["sessions"]
+    latest_session = await sessions.find_one(sort=[("date_start", -1)])
     if latest_session:
         return latest_session
-    else:
-        raise SystemError("Could not find any session in MongoDB")
+    raise SystemError("Could not find any session in MongoDB")
 
 
 @lru_cache()
-def session_key_to_path(session_key: int) -> str | None:
-    sessions = _get_mongo_db_sync()["sessions"]
-
-    session = sessions.find_one(
+async def session_key_to_path(session_key: int) -> str | None:
+    sessions = _get_mongo_db_async()["sessions"]
+    session = await sessions.find_one(
         {"session_key": session_key, "_path": {"$exists": True}},
         projection={"_path": 1},
     )
-
     return session["_path"] if session else None
 
 
-async def insert_data_async(
-    collection_name: str,
-    docs: list[dict],
-):
-    """Asynchronously inserts or updates multiple documents in the specified
-    MongoDB collection"""
+async def insert_data_async(collection_name: str, docs: list[dict]):
     collection = _get_mongo_db_async()[collection_name]
     try:
         operations = [

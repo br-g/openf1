@@ -81,3 +81,5 @@ To ingest processed documents of all the available collections for season `2024`
 ```bash
 python -m openf1.services.ingestor_livetiming.historical.main ingest-season 2024
 ```
+
+http://159.223.209.114:8000/v1/sessions
