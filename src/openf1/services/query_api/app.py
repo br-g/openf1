@@ -1,8 +1,8 @@
 import asyncio
 import re
 import traceback
+from functools import lru_cache
 
-import aiohttp
 import requests
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware

@@ -1,6 +1,8 @@
+aiohttp>=3.11.13
 fastapi>=0.115.0
 fastf1_livetiming @ git+https://github.com/br-g/fastf1-livetiming.git#egg=fastf1_livetiming
 google-cloud-storage>=2.18.2
+gunicorn>=23.0.0
 loguru>=0.7.2
 motor>=3.6.0
 pydantic>=2.8.2
