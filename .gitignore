@@ -1,5 +1,6 @@
 .DS_Store
 .dockerignore
+scripts/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
