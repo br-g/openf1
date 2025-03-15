@@ -1,5 +1,5 @@
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Iterator
 
@@ -27,12 +27,15 @@ class Stint(Document):
         return (self.session_key, self.stint_number, self.driver_number)
 
 
+@dataclass
 class StintsCollection(Collection):
     name = "stints"
     source_topics = {"TimingAppData", "TimingData"}
 
-    stints = defaultdict(dict)
-    updated_stints = set()  # stints that have been updated since the last message
+    stints: defaultdict = field(default_factory=lambda: defaultdict(dict))
+    updated_stints: set = field(
+        default_factory=set
+    )  # stints updated since last message
 
     def _get_last_stint(self, driver_number: int) -> Stint | None:
         stint_numbers = self.stints[driver_number].keys()

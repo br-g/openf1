@@ -32,6 +32,7 @@ class Session(Document):
         return (self.session_key,)
 
 
+@dataclass
 class SessionsCollection(Collection):
     name = "sessions"
     source_topics = {"SessionInfo"}

@@ -48,6 +48,7 @@ class Interval(Document):
         return (self.date, self.driver_number)
 
 
+@dataclass
 class IntervalsCollection(Collection):
     name = "intervals"
     source_topics = {"DriverRaceInfo"}

@@ -27,6 +27,7 @@ class CarData(Document):
         return (self.date, self.driver_number)
 
 
+@dataclass
 class LocationCollection(Collection):
     name = "location"
     source_topics = {"Position.z"}

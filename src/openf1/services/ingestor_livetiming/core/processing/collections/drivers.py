@@ -1,5 +1,5 @@
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from functools import cached_property
 from typing import Iterator
 
@@ -43,11 +43,14 @@ class Driver(Document):
         return (self.session_key, self.driver_number)
 
 
+@dataclass
 class DriversCollection(Collection):
     name = "drivers"
     source_topics = {"DriverList"}
 
-    updated_drivers = set()  # drivers that have been updated since the last message
+    updated_drivers: set = field(
+        default_factory=set
+    )  # drivers updated since last message
 
     @cached_property
     def drivers(self) -> defaultdict:

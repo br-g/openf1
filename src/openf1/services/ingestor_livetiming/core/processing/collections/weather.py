@@ -27,6 +27,7 @@ class Weather(Document):
         return (self.date,)
 
 
+@dataclass
 class WeatherCollection(Collection):
     name = "weather"
     source_topics = {"WeatherData"}

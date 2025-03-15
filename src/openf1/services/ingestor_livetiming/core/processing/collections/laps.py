@@ -1,5 +1,5 @@
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Iterator
 
@@ -49,12 +49,13 @@ def _is_lap_valid(lap: Lap) -> bool:
     )
 
 
+@dataclass
 class LapsCollection(Collection):
     name = "laps"
     source_topics = {"TimingData"}
 
-    laps = defaultdict(list)
-    updated_laps = set()  # laps that have been updated since the last message
+    laps: defaultdict = field(default_factory=lambda: defaultdict(list))
+    updated_laps: set = field(default_factory=set)  # laps updated since last message
 
     def _add_lap(self, driver_number: int):
         n_laps = len(self.laps[driver_number])

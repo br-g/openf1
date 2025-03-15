@@ -38,6 +38,7 @@ class RaceControl(Document):
         )
 
 
+@dataclass
 class RaceControlCollection(Collection):
     name = "race_control"
     source_topics = {"RaceControlMessages"}

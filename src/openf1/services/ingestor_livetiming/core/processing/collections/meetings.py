@@ -33,6 +33,7 @@ class Meeting(Document):
         return (self.date_start,)
 
 
+@dataclass
 class MeetingsCollection(Collection):
     name = "meetings"
     source_topics = {"SessionInfo"}

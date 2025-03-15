@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Iterator
 
@@ -27,11 +27,12 @@ class TeamRadio(Document):
         return (self.date, self.driver_number)
 
 
+@dataclass
 class TeamRadioCollection(Collection):
     name = "team_radio"
     source_topics = {"SessionInfo", "TeamRadio"}
 
-    session_path = None
+    session_path: str = field(default=None)
 
     def process_message(self, message: Message) -> Iterator[TeamRadio]:
         if message.topic == "SessionInfo":

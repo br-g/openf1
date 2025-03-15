@@ -23,6 +23,7 @@ class Pit(Document):
         return (self.date, self.driver_number)
 
 
+@dataclass
 class PitCollection(Collection):
     name = "pit"
     source_topics = {"PitLaneTimeCollection"}

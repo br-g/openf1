@@ -22,6 +22,7 @@ class Position(Document):
         return (self.date, self.driver_number)
 
 
+@dataclass
 class PositionCollection(Collection):
     name = "position"
     source_topics = {"TimingAppData"}

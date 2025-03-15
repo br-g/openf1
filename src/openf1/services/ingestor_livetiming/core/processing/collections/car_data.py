@@ -30,6 +30,7 @@ class CarData(Document):
         return (self.date, self.driver_number)
 
 
+@dataclass
 class CarDataCollection(Collection):
     name = "car_data"
     source_topics = {"CarData.z"}
