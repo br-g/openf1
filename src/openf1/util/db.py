@@ -8,7 +8,8 @@ from functools import lru_cache
 
 from loguru import logger
 from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo import MongoClient, UpdateOne
+from pymongo import InsertOne, MongoClient
+from pymongo.errors import BulkWriteError
 
 from openf1.util.misc import SingletonMeta, timed_cache
 
@@ -26,18 +27,34 @@ def _get_mongo_db_sync():
 @lru_cache()
 def _get_mongo_db_async():
     client = AsyncIOMotorClient(_MONGO_CONNECTION_STRING)
-    db = client[_MONGO_DATABASE]
-    return db
+    return client[_MONGO_DATABASE]
 
 
-def query_db(collection_name: str, filters: dict) -> list[dict]:
-    collection = _get_mongo_db_sync()[collection_name]
-    results = collection.find(filters)
-    return list(results)
+async def get_documents(collection_name: str, filters: dict) -> list[dict]:
+    """Retrieves documents from the specified database collection while ensuring
+    uniqueness based on the '_unique_key' field.
+
+    - For 'meetings', the earliest document is returned to reflect the start time of the
+      first session.
+    - For all other collections, the latest document is returned to ensure the most
+      up-to-date information.
+    """
+    sort_direction = 1 if collection_name == "meetings" else -1
+
+    collection = _get_mongo_db_async()[collection_name]
+    pipeline = [
+        {"$match": filters},
+        {"$sort": {"_time": sort_direction}},
+        {"$group": {"_id": "$_unique_key", "document": {"$first": "$$ROOT"}}},
+        {"$replaceRoot": {"newRoot": "$document"}},
+    ]
+    cursor = collection.aggregate(pipeline)
+    results = await cursor.to_list(length=None)
+    return results
 
 
 @timed_cache(60)  # Cache the output for 1 minute
-def get_latest_session_info() -> int:
+def get_latest_session_info() -> dict:
     sessions = _get_mongo_db_sync()["sessions"]
     latest_session = sessions.find_one(sort=[("date_start", -1)])
 
@@ -59,19 +76,17 @@ def session_key_to_path(session_key: int) -> str | None:
     return session["_path"] if session else None
 
 
-async def insert_data_async(
-    collection_name: str,
-    docs: list[dict],
-):
-    """Asynchronously inserts or updates multiple documents in the specified
-    MongoDB collection"""
+async def insert_data_async(collection_name: str, docs: list[dict]):
     collection = _get_mongo_db_async()[collection_name]
     try:
-        operations = [
-            UpdateOne(filter={"_id": doc["_id"]}, update={"$set": doc}, upsert=True)
-            for doc in docs
-        ]
+        operations = [InsertOne(doc) for doc in docs]
         await collection.bulk_write(operations, ordered=False)
+    except BulkWriteError as bwe:
+        for error in bwe.details.get("writeErrors", []):
+            if error.get("code") == 11000:
+                continue
+            else:
+                logger.error(f"Error during bulk write operation: {error}")
     except Exception as e:
         logger.error(f"Error during bulk write operation: {str(e)}")
 

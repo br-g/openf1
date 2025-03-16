@@ -7,6 +7,7 @@ cf. https://github.com/br-g/openf1/blob/main/src/openf1/services/ingestor_liveti
 import importlib
 import inspect
 import sys
+import time
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from dataclasses import dataclass
@@ -33,8 +34,8 @@ class Document(ABC):
         """Returns a key generated from content, used for detecting duplicates"""
         pass
 
-    def _get_id(self) -> str:
-        """Generates a string ID from the unique key, used for detecting duplicates"""
+    def _get_unique_key_str(self) -> str:
+        """Generates a string ID, used for detecting duplicates"""
         # Convert key component to strings
         unique_key_str = [
             str(int(k.timestamp() * 1000)) if isinstance(k, datetime) else str(k)
@@ -44,10 +45,13 @@ class Document(ABC):
         return id_
 
     def to_mongo_doc(self) -> dict:
-        """Converts the Document instance to a dictionary, adding an '_id' property to
-        ensure the uniqueness of each document in the DB"""
+        """Converts the Document instance to a dictionary, adding '_unique_key' and
+        '_time' properties to help retrieving the right documents are query time"""
         mongo_doc = self.__dict__
-        mongo_doc["_id"] = self._get_id()
+        mongo_doc["_unique_key"] = self._get_unique_key_str()
+        mongo_doc["_time"] = (
+            time.time_ns() // 1_000_000
+        )  # Convert nanoseconds to milliseconds
         return mongo_doc
 
     def __eq__(self, other):
