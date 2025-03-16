@@ -9,6 +9,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, Response
 from loguru import logger
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from openf1.services.query_api.cache import get_from_cache, save_to_cache
 from openf1.services.query_api.csv import generate_csv_response
 from openf1.services.query_api.query_params import (
     parse_query_params,
@@ -83,16 +84,26 @@ def _parse_path(path: str) -> str:
 
 
 async def _process_request(request: Request, path: str) -> list[dict] | Response:
+    if not path and not request.query_params:
+        return Response(content="Welcome to OpenF1!", media_type="text/plain")
+
     query_params = parse_query_params(request.query_params)
     collection = _parse_path(path)
     use_csv = "csv" in query_params and query_params.pop("csv")[0].value
-    mongodb_filter = query_params_to_mongo_filters(query_params)
-    results = await get_documents(collection_name=collection, filters=mongodb_filter)
-    results = [
-        {k: v for k, v in res.items() if not k.startswith("_")} for res in results
-    ]
-    results = apply_tmp_fixes(collection=collection, results=results)
-    results = sort_results(results)
+
+    results = get_from_cache(path=path, query_params=query_params)
+
+    if results is None:
+        mongodb_filter = query_params_to_mongo_filters(query_params)
+        results = await get_documents(
+            collection_name=collection, filters=mongodb_filter
+        )
+        results = [
+            {k: v for k, v in res.items() if not k.startswith("_")} for res in results
+        ]
+        results = apply_tmp_fixes(collection=collection, results=results)
+        results = sort_results(results)
+        save_to_cache(path=path, query_params=query_params, results=results)
 
     return (
         generate_csv_response(results, filename=f"{collection}.csv")

@@ -154,7 +154,7 @@ def parse_query_params(query_params_raw: dict) -> dict[str, QueryParam]:
 
 
 def query_params_to_mongo_filters(
-    query_params: dict[str, QueryParam]
+    query_params: dict[str, QueryParam],
 ) -> dict[str, dict]:
     return {
         key: {COMPARISON_OPERATORS_TO_MONGO[param.op]: param.value for param in params}
