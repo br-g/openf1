@@ -17,7 +17,6 @@ from openf1.services.query_api.query_params import (
 from openf1.services.query_api.sort import sort_results
 from openf1.services.query_api.tmp_fixes import apply_tmp_fixes
 from openf1.util.db import get_documents
-from openf1.util.misc import deduplicate_dicts
 
 app = FastAPI()
 
@@ -92,7 +91,6 @@ async def _process_request(request: Request, path: str) -> list[dict] | Response
     results = [
         {k: v for k, v in res.items() if not k.startswith("_")} for res in results
     ]
-    results = deduplicate_dicts(results)
     results = apply_tmp_fixes(collection=collection, results=results)
     results = sort_results(results)
 
