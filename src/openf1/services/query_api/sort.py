@@ -8,6 +8,7 @@ _SORT_KEYS = [
     "lap_number",
     "lap_end",
     "date_end",
+    "stint_number",
     "driver_number",
 ]
 

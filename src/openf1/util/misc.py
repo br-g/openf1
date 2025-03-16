@@ -1,4 +1,3 @@
-import json
 import time
 from datetime import datetime, timedelta
 from enum import Enum
@@ -59,20 +58,6 @@ def json_serializer(obj):
     elif isinstance(obj, object):
         return obj.__dict__
     raise TypeError(f"Type {type(obj)} not serializable")
-
-
-def deduplicate_dicts(dicts: list[dict]) -> list[dict]:
-    if len(dicts) <= 1:
-        return dicts
-
-    seen = set()
-    res = []
-    for d in dicts:
-        d_json = json.dumps(d, default=json_serializer)
-        if d_json not in seen:
-            seen.add(d_json)
-            res.append(d)
-    return res
 
 
 class SingletonMeta(type):

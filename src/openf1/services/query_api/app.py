@@ -1,9 +1,8 @@
 import asyncio
 import re
 import traceback
-from functools import lru_cache
 
-import requests
+import aiohttp
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, Response
@@ -12,14 +11,12 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 from openf1.services.query_api.csv import generate_csv_response
 from openf1.services.query_api.query_params import (
-    QueryParam,
     parse_query_params,
     query_params_to_mongo_filters,
 )
 from openf1.services.query_api.sort import sort_results
 from openf1.services.query_api.tmp_fixes import apply_tmp_fixes
-from openf1.util.db import query_db
-from openf1.util.misc import deduplicate_dicts
+from openf1.util.db import get_documents
 
 app = FastAPI()
 
@@ -47,15 +44,25 @@ class TimeoutMiddleware(BaseHTTPMiddleware):
 
 app.add_middleware(TimeoutMiddleware)
 
+_favicon = None
 
-@lru_cache()
-def _get_favicon() -> Response:
+
+async def _get_favicon() -> Response:
+    global _favicon
+
+    if _favicon is not None:
+        return Response(content=_favicon, media_type="image/png")
+
     favicon_url = "https://storage.googleapis.com/openf1-public/images/favicon.png"
-    response = requests.get(favicon_url)
-    if response.status_code == 200:
-        return Response(content=response.content, media_type="image/png")
-    else:
-        raise HTTPException(status_code=404, detail="Favicon not found")
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(favicon_url) as resp:
+                if resp.status == 200:
+                    _favicon = await resp.read()
+                    return Response(content=_favicon, media_type="image/png")
+                raise HTTPException(status_code=404, detail="Favicon not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching favicon: {str(e)}")
 
 
 def _parse_path(path: str) -> str:
@@ -75,74 +82,31 @@ def _parse_path(path: str) -> str:
         raise ValueError("Invalid route")
 
 
-def _deduplicate_meetings(results: list[dict]) -> list[dict]:
-    """Keeps only the first occurrence of each meeting"""
-    deduplicated = []
-    meeting_keys_seen = set()
-
-    for res in results:
-        if res["meeting_key"] in meeting_keys_seen:
-            continue
-        deduplicated.append(res)
-        meeting_keys_seen.add(res["meeting_key"])
-
-    return deduplicated
-
-
-def _postprocess_results(collection: str, results: list[str]) -> list[str]:
+async def _process_request(request: Request, path: str) -> list[dict] | Response:
+    query_params = parse_query_params(request.query_params)
+    collection = _parse_path(path)
+    use_csv = "csv" in query_params and query_params.pop("csv")[0].value
+    mongodb_filter = query_params_to_mongo_filters(query_params)
+    results = await get_documents(collection_name=collection, filters=mongodb_filter)
     results = [
         {k: v for k, v in res.items() if not k.startswith("_")} for res in results
     ]
-    results = deduplicate_dicts(results)
     results = apply_tmp_fixes(collection=collection, results=results)
     results = sort_results(results)
-    if collection == "meetings":
-        results = _deduplicate_meetings(results)
-    return results
 
-
-def _is_output_format_csv(query_params: dict[str, QueryParam]) -> bool:
-    if "csv" in query_params:
-        if query_params["csv"][0].op != "=":
-            raise ValueError(f'Invalid query parameter `{query_params["csv"][0]}`')
-
-        is_csv = query_params["csv"][0].value
-        if not isinstance(is_csv, bool):
-            raise ValueError(
-                f"Invalid value for parameter `csv` (`{is_csv}`). Expected `true` or `false`."
-            )
-
-        return is_csv
-    else:
-        return False
-
-
-def _process_request(request: Request, path: str) -> list[dict] | Response:
-    query_params = parse_query_params(request.query_params)
-    collection = _parse_path(path)
-
-    use_csv = _is_output_format_csv(query_params)
-    if "csv" in query_params:
-        del query_params["csv"]
-
-    mongodb_filter = query_params_to_mongo_filters(query_params)
-    results = query_db(collection_name=collection, filters=mongodb_filter)
-    results = _postprocess_results(collection, results)
-
-    if use_csv:
-        return generate_csv_response(results, filename=f"{collection}.csv")
-    else:
-        return results
+    return (
+        generate_csv_response(results, filename=f"{collection}.csv")
+        if use_csv
+        else results
+    )
 
 
 @app.api_route("/{path:path}", methods=["GET", "POST"])
 async def endpoint(request: Request, path: str):
     try:
         if path == "favicon.ico":
-            return _get_favicon()
-        else:
-            return _process_request(request, path)
-
+            return await _get_favicon()
+        return await _process_request(request, path)
     except Exception as e:
         stack_trace = traceback.format_exc()
         error_msg = f"<h1>An error occurred</h1><pre>{stack_trace}</pre>"

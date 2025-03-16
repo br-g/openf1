@@ -28,9 +28,7 @@ class Meeting(Document):
 
     @property
     def unique_key(self) -> tuple:
-        # Meetings are a bit tricky...
-        # Duplicates are removed at query time
-        return (self.date_start,)
+        return (self.meeting_key,)
 
 
 @dataclass
