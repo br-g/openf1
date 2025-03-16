@@ -7,6 +7,9 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, Response
 from loguru import logger
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from openf1.services.query_api.cache import get_from_cache, save_to_cache
@@ -19,7 +22,11 @@ from openf1.services.query_api.sort import sort_results
 from openf1.services.query_api.tmp_fixes import apply_tmp_fixes
 from openf1.util.db import get_documents
 
+rate_limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
+
+app.state.limiter = rate_limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # CORS middleware settings
 # There are pretty much no security risks here as the app read-only.
@@ -113,6 +120,7 @@ async def _process_request(request: Request, path: str) -> list[dict] | Response
 
 
 @app.api_route("/{path:path}", methods=["GET", "POST"])
+@rate_limiter.limit("30/10seconds")  # 30 requests every 10 seconds per IP
 async def endpoint(request: Request, path: str):
     try:
         if path == "favicon.ico":
