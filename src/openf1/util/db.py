@@ -4,6 +4,7 @@ import time
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from functools import lru_cache
 
 from loguru import logger
@@ -50,6 +51,13 @@ async def get_documents(collection_name: str, filters: dict) -> list[dict]:
     ]
     cursor = collection.aggregate(pipeline)
     results = await cursor.to_list(length=None)
+
+    # Add UTC timezone if not set
+    for res in results:
+        for key, val in res.items():
+            if isinstance(val, datetime) and val.tzinfo is None:
+                res[key] = res[key].replace(tzinfo=timezone.utc)
+
     return results
 
 
