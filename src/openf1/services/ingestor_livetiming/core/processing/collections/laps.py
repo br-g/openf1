@@ -159,9 +159,12 @@ class LapsCollection(Collection):
                                 self._update_lap(
                                     driver_number=driver_number,
                                     property="lap_duration",
-                                    value=lap.duration_sector_1
-                                    + lap.duration_sector_2
-                                    + lap.duration_sector_3,
+                                    value=round(
+                                        lap.duration_sector_1
+                                        + lap.duration_sector_2
+                                        + lap.duration_sector_3,
+                                        3,
+                                    ),
                                 )
 
                     if "Segments" in sector_data:
