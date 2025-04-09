@@ -1,20 +1,16 @@
 import asyncio
-import json
-import os
 from datetime import timedelta
 from functools import lru_cache
 from pathlib import Path
 
+from google.auth import default
 from google.cloud import storage
-from google.oauth2.service_account import Credentials
 
 
 @lru_cache()
 def _storage_client() -> storage.Client:
-    creds_filepath = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
-    with open(creds_filepath, "r") as file:
-        creds = json.load(file)
-    client = storage.Client(credentials=Credentials.from_service_account_info(creds))
+    credentials, project_id = default()
+    client = storage.Client(credentials=credentials, project=project_id)
     return client
 
 
