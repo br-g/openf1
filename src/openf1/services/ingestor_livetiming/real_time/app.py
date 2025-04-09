@@ -10,7 +10,7 @@ from openf1.services.ingestor_livetiming.real_time.processing import ingest_file
 from openf1.services.ingestor_livetiming.real_time.recording import record_to_file
 from openf1.util.gcs import upload_to_gcs_periodically
 
-TIMEOUT = 5400  # Terminate job if no data received for 90 minutes (in seconds)
+TIMEOUT = 10800  # Terminate job if no data received for 3 hours (in seconds)
 GCS_BUCKET = os.getenv("OPENF1_INGESTOR_LIVETIMING_GCS_BUCKET_RAW")
 
 
