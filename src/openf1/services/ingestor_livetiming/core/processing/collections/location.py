@@ -13,7 +13,7 @@ from openf1.util.misc import to_datetime
 
 
 @dataclass(eq=False)
-class CarData(Document):
+class Location(Document):
     meeting_key: int
     session_key: int
     driver_number: int
@@ -32,7 +32,7 @@ class LocationCollection(Collection):
     name = "location"
     source_topics = {"Position.z"}
 
-    def process_message(self, message: Message) -> Iterator[CarData]:
+    def process_message(self, message: Message) -> Iterator[Location]:
         for content in message.content["Position"]:
             if not isinstance(content, dict):
                 continue
@@ -57,7 +57,7 @@ class LocationCollection(Collection):
                 if not isinstance(data, dict):
                     continue
 
-                yield CarData(
+                yield Location(
                     meeting_key=self.meeting_key,
                     session_key=self.session_key,
                     driver_number=driver_number,
