@@ -1,4 +1,5 @@
 from collections import defaultdict
+from copy import deepcopy
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Iterator
@@ -222,5 +223,5 @@ class LapsCollection(Collection):
                     value=True,
                 )
 
-        yield from self.updated_laps
+        yield from deepcopy(self.updated_laps)
         self.updated_laps = set()

@@ -1,4 +1,5 @@
 from collections import defaultdict
+from copy import deepcopy
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Iterator
@@ -177,5 +178,5 @@ class StintsCollection(Collection):
                             value=message.timepoint,
                         )
 
-        yield from self.updated_stints
+        yield from deepcopy(self.updated_stints)
         self.updated_stints = set()

@@ -1,4 +1,5 @@
 from collections import defaultdict
+from copy import deepcopy
 from dataclasses import dataclass, field
 from functools import cached_property
 from typing import Iterator
@@ -90,5 +91,5 @@ class DriversCollection(Collection):
                     value=driver_content[topic_key],
                 )
 
-        yield from self.updated_drivers
+        yield from deepcopy(self.updated_drivers)
         self.updated_drivers = set()
