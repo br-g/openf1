@@ -156,4 +156,3 @@ def get_topics() -> set[str]:
     for cls in _get_collections_cls_by_name().values():
         topics.update(cls.source_topics)
     return topics
-    return topics

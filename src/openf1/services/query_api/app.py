@@ -97,7 +97,8 @@ async def _process_request(request: Request, path: str) -> list[dict] | Response
     collection = _parse_path(path)
     use_csv = "csv" in query_params and query_params.pop("csv")[0].value
 
-    results = get_from_cache(path=path, query_params=query_params)
+    # results = get_from_cache(path=path, query_params=query_params)
+    results = None
 
     if results is None:
         mongodb_filter = query_params_to_mongo_filters(query_params)
@@ -108,7 +109,7 @@ async def _process_request(request: Request, path: str) -> list[dict] | Response
             {k: v for k, v in res.items() if not k.startswith("_")} for res in results
         ]
         results = sort_results(results)
-        save_to_cache(path=path, query_params=query_params, results=results)
+        # save_to_cache(path=path, query_params=query_params, results=results)
 
     return (
         generate_csv_response(results, filename=f"{collection}.csv")
