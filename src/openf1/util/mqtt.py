@@ -47,63 +47,15 @@ async def publish_messages(topic: str, messages: list[str], qos: int = 1) -> boo
     if not messages:
         logger.warning("No messages to publish")
         return True
-
-    global _client
-
     try:
-        logger.info(f"Publishing {len(messages)} messages to {topic}")
-
-        # Track all message IDs and their corresponding futures
-        futures = []
-        message_ids = []
-
-        # Store the original callback to restore later
-        # original_on_publish = _client.on_publish
-
-        # Create a dictionary to track which message IDs have completed
-        completed_messages = {}
-
-        # Set up a callback to handle multiple publish confirmations
-        def on_batch_publish(client, userdata, mid, reason_code, properties):
-            if mid in message_ids:
-                completed_messages[mid] = True
-                # If all messages are confirmed, resolve all futures
-                if len(completed_messages) == len(message_ids):
-                    for future in futures:
-                        if not future.done():
-                            future.set_result(True)
-
-        # Set the callback for batch publishing
-        # _client.on_publish = on_batch_publish
-
-        # Publish all messages and collect their message IDs
         for message in messages:
             result = _client.publish(topic, message, qos=qos)
-
             if result.rc != mqtt.MQTT_ERR_SUCCESS:
-                logger.error(
-                    f"Failed to publish message: {mqtt.error_string(result.rc)}"
-                )
+                logger.error(f"Failed to publish: {mqtt.error_string(result.rc)}")
                 return False
-
-            # Create a future for this batch
-            future = asyncio.Future()
-            futures.append(future)
-            message_ids.append(result.mid)
-
-        # Wait for all messages to be published
-        await asyncio.gather(*futures)
-
-        # Restore the original callback
-        # _client.on_publish = original_on_publish
-
-        logger.info(f"All {len(messages)} messages published successfully")
         return True
-
     except Exception as e:
         logger.error(f"Error batch publishing: {e}")
-        # Restore the original callback in case of error
-        # _client.on_publish = original_on_publish
         return False
 
 
@@ -114,8 +66,8 @@ def cleanup():
 
 
 async def main():
-    await publish_messages("test/topic", ["Hello3", "Hello4"])
-    # cleanup()
+    await publish_messages("test/topic", ["Hello5", "Hello4"])
+    cleanup()
 
 
 if __name__ == "__main__":
