@@ -1,4 +1,6 @@
 import asyncio
+import json
+import os
 
 from loguru import logger
 
@@ -6,7 +8,10 @@ from openf1.services.ingestor_livetiming.core.decoding import decode
 from openf1.services.ingestor_livetiming.core.objects import Document, Message
 from openf1.services.ingestor_livetiming.core.processing.main import process_message
 from openf1.util.db import DbBatchIngestor
-from openf1.util.misc import to_datetime
+from openf1.util.misc import json_serializer, to_datetime
+
+if "OPENF1_MQTT_URL" in os.environ:
+    from openf1.util.mqtt import publish_messages_to_mqtt
 
 # Store keys values found in data
 _meeting_key = None
@@ -61,6 +66,11 @@ async def ingest_line(line: str):
         return
     for collection, docs in docs_by_collection.items():
         docs_mongo = [await d.to_mongo_doc_async() for d in docs]
+        if "OPENF1_MQTT_URL" in os.environ:
+            docs_mongo_json = [
+                json.dumps(d, default=json_serializer) for d in docs_mongo
+            ]
+            await publish_messages_to_mqtt(topic=collection, messages=docs_mongo_json)
         await DbBatchIngestor().add(collection=collection, docs=docs_mongo)
 
 
