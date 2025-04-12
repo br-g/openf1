@@ -120,10 +120,7 @@ async def insert_data_async(collection_name: str, docs: list[dict]):
         await collection.bulk_write(operations, ordered=False)
     except BulkWriteError as bwe:
         for error in bwe.details.get("writeErrors", []):
-            if error.get("code") == 11000:
-                continue
-            else:
-                logger.error(f"Error during bulk write operation: {error}")
+            logger.error(f"Error during bulk write operation: {error}")
     except Exception as e:
         logger.error(f"Error during bulk write operation: {str(e)}")
 
