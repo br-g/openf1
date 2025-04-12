@@ -53,7 +53,7 @@ def _process_message(message: Message) -> dict[str, list[Document]] | None:
     return docs_by_collection
 
 
-async def _ingest_line(line: str):
+async def ingest_line(line: str):
     """Asynchronously ingests a single line of raw data"""
     message = _parse_message(line)
     docs_by_collection = _process_message(message)
@@ -76,7 +76,7 @@ async def ingest_file(filepath: str):
         # Read and ingest existing lines
         lines = file.readlines()
         for line in lines:
-            await _ingest_line(line)
+            await ingest_line(line)
 
         # Move to the end of the file
         file.seek(0, 2)
@@ -87,4 +87,4 @@ async def ingest_file(filepath: str):
             if not line:
                 await asyncio.sleep(0.1)  # Sleep a bit before trying again
                 continue
-            await _ingest_line(line)
+            await ingest_line(line)
