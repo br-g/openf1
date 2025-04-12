@@ -15,7 +15,7 @@ from pymongo.errors import BulkWriteError
 from openf1.util.misc import SingletonMeta, timed_cache
 
 _MONGO_CONNECTION_STRING = os.getenv("MONGO_CONNECTION_STRING")
-_MONGO_DATABASE = "openf1-livetiming"
+_MONGO_DATABASE = os.getenv("OPENF1_DB_NAME", "openf1-livetiming")
 
 
 @lru_cache()
