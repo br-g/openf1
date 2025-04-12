@@ -6,6 +6,7 @@ google-cloud-storage>=2.18.2
 gunicorn>=23.0.0
 loguru>=0.7.2
 motor>=3.6.0
+paho-mqtt>=2.1.0
 pydantic>=2.8.2
 pymongo>=4.9
 python-dateutil>=2.9.0.post0

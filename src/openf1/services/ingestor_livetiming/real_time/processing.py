@@ -61,6 +61,8 @@ async def ingest_line(line: str):
         return
     for collection, docs in docs_by_collection.items():
         docs_mongo = [await d.to_mongo_doc_async() for d in docs]
+        if 'OPENF1_MQTT_URL' in os.environ:
+            publish_messages(topic: str, messages: list[str], qos: int = 1)
         await DbBatchIngestor().add(collection=collection, docs=docs_mongo)
 
 
