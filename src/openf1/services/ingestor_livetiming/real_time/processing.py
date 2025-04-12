@@ -60,7 +60,7 @@ async def _ingest_line(line: str):
     if docs_by_collection is None:
         return
     for collection, docs in docs_by_collection.items():
-        docs_mongo = [d.to_mongo_doc() for d in docs]
+        docs_mongo = [await d.to_mongo_doc_async() for d in docs]
         await DbBatchIngestor().add(collection=collection, docs=docs_mongo)
 
 

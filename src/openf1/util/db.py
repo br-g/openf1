@@ -33,7 +33,7 @@ def _get_mongo_db_async():
 
 async def get_documents(collection_name: str, filters: dict) -> list[dict]:
     """Retrieves documents from the specified database collection while ensuring
-    uniqueness based on the '_unique_key' field.
+    uniqueness based on the '_key' field.
 
     - For 'meetings', the earliest document is returned to reflect the start time of the
       first session.
@@ -45,8 +45,8 @@ async def get_documents(collection_name: str, filters: dict) -> list[dict]:
     collection = _get_mongo_db_async()[collection_name]
     pipeline = [
         {"$match": filters},
-        {"$sort": {"_time": sort_direction}},
-        {"$group": {"_id": "$_unique_key", "document": {"$first": "$$ROOT"}}},
+        {"$sort": {"_id": sort_direction}},
+        {"$group": {"_id": "$_key", "document": {"$first": "$$ROOT"}}},
         {"$replaceRoot": {"newRoot": "$document"}},
     ]
     cursor = collection.aggregate(pipeline)

@@ -318,7 +318,7 @@ def get_processed_documents(
 
     if _is_called_from_cli:
         docs_by_collection = {
-            k: [d.to_mongo_doc() for d in v] for k, v in docs_by_collection.items()
+            k: [d.to_mongo_doc_sync() for d in v] for k, v in docs_by_collection.items()
         }
         docs_by_collection_json = json.dumps(
             docs_by_collection, indent=2, default=json_serializer
@@ -347,7 +347,7 @@ def ingest_collections(
     if verbose:
         logger.info("Inserting documents to DB")
     for collection, docs in tqdm(list(docs_by_collection.items()), disable=not verbose):
-        docs_mongo = [d.to_mongo_doc() for d in docs]
+        docs_mongo = [d.to_mongo_doc_sync() for d in docs]
         DbBatchIngestor().add_and_flush(collection=collection, docs=docs_mongo)
 
 

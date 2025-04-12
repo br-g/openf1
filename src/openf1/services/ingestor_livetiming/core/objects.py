@@ -4,6 +4,7 @@ structured documents and organizing them into collections.
 cf. https://github.com/br-g/openf1/blob/main/src/openf1/services/ingestor_livetiming/README.md
 """
 
+import asyncio
 import importlib
 import inspect
 import sys
@@ -15,6 +16,30 @@ from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
 from typing import Iterator
+
+_id_lock = asyncio.Lock()
+_last_id = 0
+
+
+def _generate_mongo_id_sync() -> int:
+    """Generates a unique, monotonically increasing ID based on time"""
+    global _last_id
+    time_ms = time.time_ns() // 1_000_000
+    if time_ms <= _last_id:
+        time_ms = _last_id + 1
+    _last_id = time_ms
+    return time_ms
+
+
+async def _generate_mongo_id_async() -> int:
+    """Generates a unique, monotonically increasing ID based on time"""
+    global _last_id
+    time_ms = time.time_ns() // 1_000_000
+    async with _id_lock:
+        if time_ms <= _last_id:
+            time_ms = _last_id + 1
+        _last_id = time_ms
+    return time_ms
 
 
 @dataclass
@@ -34,7 +59,7 @@ class Document(ABC):
         """Returns a key generated from content, used for detecting duplicates"""
         pass
 
-    def _get_unique_key_str(self) -> str:
+    def _get_key_str(self) -> str:
         """Generates a string ID, used for detecting duplicates"""
         # Convert key component to strings
         unique_key_str = [
@@ -44,14 +69,20 @@ class Document(ABC):
         id_ = "_".join(unique_key_str)
         return id_
 
-    def to_mongo_doc(self) -> dict:
-        """Converts the Document instance to a dictionary, adding '_unique_key' and
-        '_time' properties to help retrieving the right documents are query time"""
+    def to_mongo_doc_sync(self) -> dict:
+        """Converts the Document instance to a dictionary, adding '_key' and
+        '_id' properties to help retrieving the right documents are query time"""
         mongo_doc = self.__dict__
-        mongo_doc["_unique_key"] = self._get_unique_key_str()
-        mongo_doc["_time"] = (
-            time.time_ns() // 1_000_000
-        )  # Convert nanoseconds to milliseconds
+        mongo_doc["_key"] = self._get_key_str()
+        mongo_doc["_id"] = _generate_mongo_id_sync()
+        return mongo_doc
+
+    async def to_mongo_doc_async(self) -> dict:
+        """Converts the Document instance to a dictionary, adding '_key' and
+        '_id' properties to help retrieving the right documents are query time"""
+        mongo_doc = self.__dict__
+        mongo_doc["_key"] = self._get_key_str()
+        mongo_doc["_id"] = await _generate_mongo_id_async()
         return mongo_doc
 
     def __eq__(self, other):
@@ -155,5 +186,4 @@ def get_topics() -> set[str]:
     topics = set()
     for cls in _get_collections_cls_by_name().values():
         topics.update(cls.source_topics)
-    return topics
     return topics
