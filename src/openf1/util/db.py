@@ -32,22 +32,23 @@ def _get_mongo_db_async():
 
 
 async def get_documents(collection_name: str, filters: dict) -> list[dict]:
-    """Retrieves documents from the specified database collection while ensuring
-    uniqueness based on the '_key' field.
+    """Retrieves documents from a specified MongoDB collection, applies filters,
+    and sorts.
 
     - For 'meetings', the earliest document is returned to reflect the start time of the
       first session.
     - For all other collections, the latest document is returned to ensure the most
       up-to-date information.
     """
-    sort_direction = 1 if collection_name == "meetings" else -1
+    presort_direction = 1 if collection_name == "meetings" else -1
 
     collection = _get_mongo_db_async()[collection_name]
     pipeline = [
         {"$match": filters},
-        {"$sort": {"_id": sort_direction}},
+        {"$sort": {"_id": presort_direction}},
         {"$group": {"_id": "$_key", "document": {"$first": "$$ROOT"}}},
         {"$replaceRoot": {"newRoot": "$document"}},
+        {"$sort": {"_id": 1}},
     ]
     cursor = collection.aggregate(pipeline)
     results = await cursor.to_list(length=None)

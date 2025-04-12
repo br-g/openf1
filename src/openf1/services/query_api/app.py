@@ -18,7 +18,6 @@ from openf1.services.query_api.query_params import (
     parse_query_params,
     query_params_to_mongo_filters,
 )
-from openf1.services.query_api.sort import sort_results
 from openf1.util.db import get_documents
 
 rate_limiter = Limiter(key_func=get_remote_address)
@@ -107,7 +106,6 @@ async def _process_request(request: Request, path: str) -> list[dict] | Response
         results = [
             {k: v for k, v in res.items() if not k.startswith("_")} for res in results
         ]
-        results = sort_results(results)
         save_to_cache(path=path, query_params=query_params, results=results)
 
     return (
