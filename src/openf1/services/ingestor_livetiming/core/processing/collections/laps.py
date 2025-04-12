@@ -108,6 +108,9 @@ class LapsCollection(Collection):
         )
 
     def process_message(self, message: Message) -> Iterator[Lap]:
+        if "Lines" not in message.content:
+            return
+
         for driver_number, data in message.content["Lines"].items():
             try:
                 driver_number = int(driver_number)
