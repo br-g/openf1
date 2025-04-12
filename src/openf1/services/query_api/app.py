@@ -1,16 +1,14 @@
-import asyncio
 import re
 import traceback
 
 import aiohttp
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse, Response
+from fastapi.responses import HTMLResponse, Response
 from loguru import logger
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
-from starlette.middleware.base import BaseHTTPMiddleware
 
 from openf1.services.query_api.cache import get_from_cache, save_to_cache
 from openf1.services.query_api.csv import generate_csv_response
@@ -36,19 +34,6 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-
-class TimeoutMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        try:
-            return await asyncio.wait_for(call_next(request), timeout=20.0)
-        except asyncio.TimeoutError:
-            return JSONResponse(
-                status_code=408,
-                content={"detail": "Request timed out after 20 seconds"},
-            )
-
-
-app.add_middleware(TimeoutMiddleware)
 
 _favicon = None
 
