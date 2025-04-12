@@ -17,6 +17,19 @@ from openf1.util.misc import SingletonMeta, timed_cache
 _MONGO_CONNECTION_STRING = os.getenv("MONGO_CONNECTION_STRING")
 _MONGO_DATABASE = os.getenv("OPENF1_DB_NAME", "openf1-livetiming")
 
+_SORT_KEYS = [
+    "date",
+    "date_start",
+    "meeting_key",
+    "session_key",
+    "lap_start",
+    "lap_number",
+    "lap_end",
+    "date_end",
+    "stint_number",
+    "driver_number",
+]
+
 
 @lru_cache()
 def _get_mongo_db_sync():
@@ -44,11 +57,26 @@ async def get_documents(collection_name: str, filters: dict) -> list[dict]:
 
     collection = _get_mongo_db_async()[collection_name]
     pipeline = [
+        # Apply user filters
         {"$match": filters},
         {"$sort": {"_id": presort_direction}},
+        # Group all versions of the same document and keep only the first one
         {"$group": {"_id": "$_key", "document": {"$first": "$$ROOT"}}},
         {"$replaceRoot": {"newRoot": "$document"}},
-        {"$sort": {"_id": 1}},
+        # Remove fields starting with '_'
+        {
+            "$replaceWith": {
+                "$arrayToObject": {
+                    "$filter": {
+                        "input": {"$objectToArray": "$$ROOT"},
+                        "as": "field",
+                        "cond": {"$ne": [{"$substrCP": ["$$field.k", 0, 1]}, "_"]},
+                    }
+                }
+            }
+        },
+        # Sort
+        {"$sort": {key: 1 for key in _SORT_KEYS}},
     ]
     cursor = collection.aggregate(pipeline)
     results = await cursor.to_list(length=None)

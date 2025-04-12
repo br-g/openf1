@@ -103,9 +103,6 @@ async def _process_request(request: Request, path: str) -> list[dict] | Response
         results = await get_documents(
             collection_name=collection, filters=mongodb_filter
         )
-        results = [
-            {k: v for k, v in res.items() if not k.startswith("_")} for res in results
-        ]
         save_to_cache(path=path, query_params=query_params, results=results)
 
     return (
