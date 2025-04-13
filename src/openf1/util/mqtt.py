@@ -24,7 +24,7 @@ try:
     logger.info("MQTT client connected and running")
 except Exception as e:
     logger.error(f"Failed to connect: {e}")
-    raise
+    _client = None
 
 
 async def publish_messages_to_mqtt(
@@ -38,6 +38,9 @@ async def publish_messages_to_mqtt(
         messages: List of message contents to publish
         qos: Quality of Service level (0, 1, or 2)
     """
+    if _client is None:
+        return False
+
     if not messages:
         logger.warning("No messages to publish")
         return True
