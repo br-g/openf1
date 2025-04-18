@@ -60,22 +60,6 @@ def json_serializer(obj):
     raise TypeError(f"Type {type(obj)} not serializable")
 
 
-class SingletonMeta(type):
-    """Thread-safe metaclass to create singleton classes"""
-
-    _instances = {}
-
-    _lock: Lock = Lock()
-
-    def __call__(cls, *args, **kwargs):
-        # Synchronize access to instance
-        with cls._lock:
-            if cls not in cls._instances:
-                instance = super().__call__(*args, **kwargs)
-                cls._instances[cls] = instance
-        return cls._instances[cls]
-
-
 def to_datetime(x: str | datetime | None) -> datetime | None:
     """This function is taken from FastF1: https://github.com/theOehrly/Fast-F1/blob/317bacf8c61038d7e8d0f48165330167702b349f/fastf1/utils.py#L178
 
