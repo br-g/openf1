@@ -3,7 +3,6 @@ cachetools>=5.3.3
 fastapi>=0.115.0
 fastf1_livetiming @ git+https://github.com/br-g/fastf1-livetiming.git#egg=fastf1_livetiming
 google-cloud-storage>=2.18.2
-gunicorn>=23.0.0
 loguru>=0.7.2
 motor>=3.6.0
 paho-mqtt>=2.1.0
