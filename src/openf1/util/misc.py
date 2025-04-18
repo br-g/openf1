@@ -2,7 +2,6 @@ import time
 from datetime import datetime, timedelta
 from enum import Enum
 from functools import wraps
-from threading import Lock
 from typing import Any, Callable
 
 import pytz
