@@ -7,7 +7,7 @@ from loguru import logger
 from openf1.services.ingestor_livetiming.core.decoding import decode
 from openf1.services.ingestor_livetiming.core.objects import Document, Message
 from openf1.services.ingestor_livetiming.core.processing.main import process_message
-from openf1.util.db import DbBatchIngestor
+from openf1.util.db import insert_data_async
 from openf1.util.misc import json_serializer, to_datetime
 
 if "OPENF1_MQTT_URL" in os.environ:
@@ -71,7 +71,7 @@ async def ingest_line(line: str):
                 json.dumps(d, default=json_serializer) for d in docs_mongo
             ]
             await publish_messages_to_mqtt(topic=collection, messages=docs_mongo_json)
-        await DbBatchIngestor().add(collection=collection, docs=docs_mongo)
+        await insert_data_async(collection_name=collection, docs=docs_mongo)
 
 
 async def ingest_file(filepath: str):

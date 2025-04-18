@@ -17,7 +17,7 @@ from openf1.services.ingestor_livetiming.core.objects import (
     get_source_topics,
 )
 from openf1.services.ingestor_livetiming.core.processing.main import process_messages
-from openf1.util.db import DbBatchIngestor
+from openf1.util.db import insert_data_sync
 from openf1.util.misc import join_url, json_serializer, to_datetime, to_timedelta
 from openf1.util.schedule import get_meeting_keys
 from openf1.util.schedule import get_schedule as _get_schedule
@@ -348,7 +348,7 @@ def ingest_collections(
         logger.info("Inserting documents to DB")
     for collection, docs in tqdm(list(docs_by_collection.items()), disable=not verbose):
         docs_mongo = [d.to_mongo_doc_sync() for d in docs]
-        DbBatchIngestor().add_and_flush(collection=collection, docs=docs_mongo)
+        insert_data_sync(collection_name=collection, docs=docs_mongo)
 
 
 @cli.command()
