@@ -17,8 +17,8 @@ class Stint(Document):
     session_key: int
     stint_number: int
     driver_number: int
-    lap_start: int | None = None
-    lap_end: int | None = None
+    lap_start: int
+    lap_end: int
     compound: str | None = None
     tyre_age_at_start: int | None = None
     _date_start_last_lap: datetime | None = None
@@ -66,19 +66,22 @@ class StintsCollection(Collection):
             and last_stint._date_start_last_lap is not None
             and timepoint - last_stint._date_start_last_lap < timedelta(seconds=10)
         ):
-            last_stint.lap_end -= 1
+            self._update_stint(
+                driver_number=driver_number,
+                stint_number=last_stint.stint_number,
+                property="lap_end",
+                value=last_stint.lap_end - 1,
+            )
 
+        lap_start = last_stint.lap_end + 1 if last_stint is not None else 1
         new_stint = Stint(
             meeting_key=self.meeting_key,
             session_key=self.session_key,
             driver_number=driver_number,
             stint_number=stint_number,
+            lap_start=lap_start,
+            lap_end=lap_start,
         )
-
-        if last_stint is not None and last_stint.lap_end is not None:
-            new_stint.lap_start = last_stint.lap_end + 1
-            new_stint.lap_end = new_stint.lap_start
-
         self.stints[driver_number][stint_number] = new_stint
 
     def process_message(self, message: Message) -> Iterator[Stint]:
@@ -158,19 +161,13 @@ class StintsCollection(Collection):
                 if "NumberOfLaps" in data:
                     stint = self._get_last_stint(driver_number)
                     if stint is not None:
-                        if stint.lap_start is None:
+                        if data["NumberOfLaps"] is not None:
                             self._update_stint(
                                 driver_number=driver_number,
                                 stint_number=stint.stint_number,
-                                property="lap_start",
+                                property="lap_end",
                                 value=data["NumberOfLaps"],
                             )
-                        self._update_stint(
-                            driver_number=driver_number,
-                            stint_number=stint.stint_number,
-                            property="lap_end",
-                            value=data["NumberOfLaps"],
-                        )
                         self._update_stint(
                             driver_number=driver_number,
                             stint_number=stint.stint_number,
