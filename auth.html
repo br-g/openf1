@@ -522,13 +522,13 @@ mqtt_port = 8883
 mqtt_username = "your_username_or_email@example.com"
 
 def on_connect(client, userdata, flags, rc, properties=None):
-if rc == 0:
-    print("Connected to OpenF1 MQTT broker")
-    client.subscribe("v1/location")
-    client.subscribe("v1/laps")
-    # client.subscribe("#") # Subscribe to all topics
-else:
-    print(f"Failed to connect, return code {rc}")
+    if rc == 0:
+        print("Connected to OpenF1 MQTT broker")
+        client.subscribe("v1/location")
+        client.subscribe("v1/laps")
+        # client.subscribe("#") # Subscribe to all topics
+    else:
+        print(f"Failed to connect, return code {rc}")
 
 def on_message(client, userdata, msg):
     print(f"Received message on topic '{msg.topic}': {msg.payload.decode()}")
