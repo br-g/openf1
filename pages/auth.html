@@ -359,7 +359,7 @@ else:
     "token_type": "bearer"
 }</code></pre>
             <p class="important">
-              <strong>Important:</strong> Tokens expire! Your application should
+              <strong>Important:</strong> Tokens expire after 1 hour. Your application should
               be designed to handle token expiry gracefully by requesting a new
               one.
             </p>
@@ -438,7 +438,7 @@ else:
           <section id="mqtt-websockets">
             <h2>Real-time data with MQTT & Websockets</h2>
             <p>
-              For the most efficient access to real-time data, we now offer MQTT
+              For the most efficient access to real-time data, we offer MQTT
               and Websocket connections. These methods push data to your
               application as soon as it's available, eliminating the need for
               constant polling of the REST API.
@@ -452,9 +452,9 @@ else:
             <h3>Connection Details</h3>
             <ul>
               <li>
-                <strong>MQTT Server:</strong> <code>mqtt.openf1.org</code>
+                <strong>MQTT server:</strong> <code>mqtt.openf1.org</code>
               </li>
-              <li><strong>MQTT Port (TLS/MQTTS):</strong> <code>8883</code></li>
+              <li><strong>MQTT port (TLS/MQTTS):</strong> <code>8883</code></li>
               <li>
                 <strong>Websockets URL (WSS for MQTT over Websockets):</strong>
                 <code>wss://mqtt.openf1.org:8084/mqtt</code>
