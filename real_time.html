@@ -141,7 +141,7 @@
           .important,
           .tip {
             padding: 15px 20px;
-            margin: 20px 0;
+            margin: 0 0 20px 0;
             border-radius: 6px;
             font-size: 0.95rem;
           }
@@ -255,41 +255,20 @@
       <body>
         <div class="container">
           <section id="introduction">
-            <h2>Welcome to the Enhanced OpenF1 API!</h2>
+            <h2>Using OpenF1 with authentication</h2>
             <p>
-              We're excited to announce significant updates to the OpenF1 API,
-              designed to provide more flexibility and real-time data access for
-              your applications.
+                This guide explains how to access the OpenF1 API as an authenticated user.
+                Authentication removes rate limits, provides access to both historical and real-time data, and enables live data streaming through MQTT or WebSocket.
             </p>
-            <p><strong>Key Changes:</strong></p>
-            <ul>
-              <li>
-                <strong>Authentication Required for Real-Time Data:</strong>
-                Unauthenticated users can still access all historical data via
-                the REST API. However, access to real-time data and new
-                connection methods now requires authentication.
-              </li>
-              <li>
-                <strong>New Real-Time Data Streams:</strong> Authenticated users
-                can now access live F1 data using MQTT or Websockets, offering a
-                much more efficient way to get updates as they happen.
-              </li>
-              <li>
-                <strong>OAuth2 for Secure Access:</strong> We've implemented the
-                industry-standard OAuth2 protocol for authentication.
-              </li>
-            </ul>
             <p>
-              This guide will walk you through these changes, helping you to
-              leverage the full power of the OpenF1 API.
+                The following sections will walk you through these features and how to make use of them.
             </p>
           </section>
 
           <section id="authentication">
             <h2>Obtaining an OAuth2 access token</h2>
             <p>
-              To access real-time data and certain authenticated REST API
-              endpoints, you'll need to obtain an OAuth2 access token. This
+              To access real-time data, you'll need to obtain an OAuth2 access token. This
               token proves your identity to the API.
             </p>
             <p>
@@ -298,17 +277,17 @@
               username and password.
             </p>
 
-            <h3>Request (Bash/cURL):</h3>
+            <h3>Bash/cURL example</h3>
             <pre><code class="language-bash">curl -X POST "https://api.openf1.org/token" \
  -H "Content-Type: application/x-www-form-urlencoded" \
- -d "username=YOUR_USERNAME@example.com&password=YOUR_PASSWORD"</code></pre>
+ -d "username=YOUR_USERNAME&password=YOUR_PASSWORD"</code></pre>
 
-            <h3>Request (Python - `requests` library):</h3>
+            <h3>Python example</h3>
             <pre><code class="language-python">import requests
 
 token_url = "https://api.openf1.org/token"
 payload = {
-    "username": "YOUR_USERNAME@example.com",
+    "username": "YOUR_USERNAME",
     "password": "YOUR_PASSWORD"
 }
 headers = {
@@ -324,11 +303,11 @@ if response.status_code == 200:
 else:
     print(f"Error obtaining token: {response.status_code} - {response.text}")</code></pre>
 
-            <h3>Request (JavaScript - `Workspace` API, Node.js or Browser):</h3>
+            <h3>JavaScript example</h3>
             <pre><code class="language-javascript">async function getAccessToken() {
     const tokenUrl = "https://api.openf1.org/token";
     const params = new URLSearchParams();
-    params.append("username", "YOUR_USERNAME@example.com");
+    params.append("username", "YOUR_USERNAME");
     params.append("password", "YOUR_PASSWORD");
 
     try {
@@ -387,14 +366,14 @@ else:
               <code>Authorization</code> header as a Bearer token.
             </p>
 
-            <h3>Request with Token (Bash/cURL):</h3>
+            <h3>Bash/cURL example</h3>
             <pre><code class="language-bash"># Replace YOUR_ACCESS_TOKEN with the token you obtained
 curl -X 'GET' \
  'https://api.openf1.org/v1/sessions?year=2024' \
  -H 'accept: application/json' \
  -H 'Authorization: Bearer YOUR_ACCESS_TOKEN'</code></pre>
 
-            <h3>Request with Token (Python - `requests` library):</h3>
+            <h3>Python example</h3>
             <pre><code class="language-python">import requests
 
 # Assume 'access_token' is a variable holding your obtained token
@@ -414,7 +393,7 @@ if response.status_code == 200:
 else:
     print(f"Error fetching data: {response.status_code} - {response.text}")</code></pre>
 
-            <h3>Request with Token (JavaScript - `Workspace` API):</h3>
+            <h3>JavaScript example</h3>
             <pre><code class="language-javascript">async function fetchDataWithToken(accessToken) {
     const apiUrl = "https://api.openf1.org/v1/sessions?year=2024"; // Example
 
@@ -450,7 +429,7 @@ else:
           </section>
 
           <section id="mqtt-websockets">
-            <h2>Real-Time Data with MQTT & Websockets</h2>
+            <h2>Real-time data with MQTT & Websockets</h2>
             <p>
               For the most efficient access to real-time data, we now offer MQTT
               and Websocket connections. These methods push data to your
@@ -522,7 +501,7 @@ else:
               </li>
             </ul>
 
-            <h4>Example Message (Topic: <code>v1/location</code>)</h4>
+            <h4>Example message (topic: <code>v1/location</code>)</h4>
             <pre><code class="language-json">{
     "meeting_key": 1257,
     "session_key": 10007,
@@ -551,7 +530,7 @@ mqtt_username = "your_username_or_email@example.com"
 
 def on_connect(client, userdata, flags, rc, properties=None):
     if rc == 0:
-        print("Connected to MQTT broker")
+        print("Connected to OpenF1 MQTT broker")
         client.subscribe("v1/location")
         client.subscribe("v1/laps")
         # client.subscribe("#") # Subscribe to all topics
@@ -564,7 +543,6 @@ def on_message(client, userdata, msg):
 
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.username_pw_set(username=mqtt_username, password=access_token)
-
 client.tls_set(cert_reqs=ssl.CERT_REQUIRED,
                tls_version=ssl.PROTOCOL_TLS_CLIENT)
 
