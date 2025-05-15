@@ -45,24 +45,11 @@
 
           .container {
             max-width: 900px;
-            margin: 25px auto;
+            margin: 50px auto;
             padding: 30px;
             background: var(--background-color);
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-          }
-
-          header {
-            text-align: center;
-            margin-bottom: 0px;
-            margin-top: 25px;
-          }
-
-          header h1 {
-            margin: 0;
-            font-size: 2.25rem; /* 36px */
-            font-weight: 600;
-            color: var(--text-color);
           }
 
           section {
@@ -74,6 +61,10 @@
             border-bottom: none;
             margin-bottom: 0;
             padding-bottom: 0;
+          }
+
+          p {
+            margin-top: 0.5em;
           }
 
           h2 {
@@ -91,7 +82,11 @@
             font-weight: 600;
             color: #343a40;
             margin-top: 30px;
-            margin-bottom: 15px;
+            margin-bottom: 0px;
+          }
+
+          h4 {
+            margin-bottom: 0;
           }
 
           p,
@@ -119,7 +114,7 @@
             font-family: var(--font-family-monospace);
             font-size: 0.875rem; /* 14px */
             line-height: 1.5;
-            margin: 20px 0;
+            margin: 4px 0 20px 0;
           }
 
           code {
@@ -210,15 +205,6 @@
             transform: translateY(-1px);
           }
 
-          footer {
-            text-align: center;
-            padding: 30px 0;
-            margin-top: 40px;
-            font-size: 0.9rem;
-            color: var(--muted-text-color);
-            border-top: 1px solid var(--border-color);
-          }
-
           /* Responsive adjustments */
           @media (max-width: 768px) {
             body {
@@ -234,24 +220,16 @@
               box-shadow: none;
             }
 
-            header {
-              margin-bottom: 20px; /* Reduce margin */
-              box-sizing: border-box; /* Add this for consistency */
-            }
-
-            header h1 {
-              font-size: 1.9rem;
-            }
-
             h2 {
               font-size: 1.6rem;
+              line-height: 2.3rem;
+              padding-bottom: 8px;
             }
 
             h3 {
               font-size: 1.25rem;
             }
 
-            /* ... (rest of your mobile styles for table, pre, footer etc.) ... */
             table {
               font-size: 0.85rem;
               display: block; /* Make table block to allow horizontal scrolling if needed */
@@ -271,19 +249,10 @@
               white-space: pre-wrap; /* Allow text to wrap in code blocks */
               word-break: break-all; /* More aggressive word breaking if needed */
             }
-
-            footer {
-              padding: 20px;
-              box-sizing: border-box; /* Add this */
-            }
           }
         </style>
       </head>
       <body>
-        <header>
-          <h1>OpenF1 API Updates</h1>
-        </header>
-
         <div class="container">
           <section id="introduction">
             <h2>Welcome to the Enhanced OpenF1 API!</h2>
@@ -317,26 +286,24 @@
           </section>
 
           <section id="authentication">
-            <h2>Authentication with OAuth2</h2>
+            <h2>Obtaining an OAuth2 access token</h2>
             <p>
               To access real-time data and certain authenticated REST API
               endpoints, you'll need to obtain an OAuth2 access token. This
               token proves your identity to the API.
             </p>
-
-            <h3>Obtaining an access token</h3>
             <p>
               You can get an access token by sending a POST request to the
               <code>https://api.openf1.org/token</code> endpoint with your
               username and password.
             </p>
 
-            <h4>Request (Bash/cURL):</h4>
+            <h3>Request (Bash/cURL):</h3>
             <pre><code class="language-bash">curl -X POST "https://api.openf1.org/token" \
  -H "Content-Type: application/x-www-form-urlencoded" \
  -d "username=YOUR_USERNAME@example.com&password=YOUR_PASSWORD"</code></pre>
 
-            <h4>Request (Python - `requests` library):</h4>
+            <h3>Request (Python - `requests` library):</h3>
             <pre><code class="language-python">import requests
 
 token_url = "https://api.openf1.org/token"
@@ -357,7 +324,7 @@ if response.status_code == 200:
 else:
     print(f"Error obtaining token: {response.status_code} - {response.text}")</code></pre>
 
-            <h4>Request (JavaScript - `Workspace` API, Node.js or Browser):</h4>
+            <h3>Request (JavaScript - `Workspace` API, Node.js or Browser):</h3>
             <pre><code class="language-javascript">async function getAccessToken() {
     const tokenUrl = "https://api.openf1.org/token";
     const params = new URLSearchParams();
@@ -395,7 +362,7 @@ else:
 //     }
 // });</code></pre>
 
-            <h4>Response:</h4>
+            <h3>Response</h3>
             <p>
               A successful request will return a JSON object containing your
               access token and its expiry time:
@@ -420,14 +387,14 @@ else:
               <code>Authorization</code> header as a Bearer token.
             </p>
 
-            <h4>Request with Token (Bash/cURL):</h4>
+            <h3>Request with Token (Bash/cURL):</h3>
             <pre><code class="language-bash"># Replace YOUR_ACCESS_TOKEN with the token you obtained
 curl -X 'GET' \
  'https://api.openf1.org/v1/sessions?year=2024' \
  -H 'accept: application/json' \
  -H 'Authorization: Bearer YOUR_ACCESS_TOKEN'</code></pre>
 
-            <h4>Request with Token (Python - `requests` library):</h4>
+            <h3>Request with Token (Python - `requests` library):</h3>
             <pre><code class="language-python">import requests
 
 # Assume 'access_token' is a variable holding your obtained token
@@ -447,7 +414,7 @@ if response.status_code == 200:
 else:
     print(f"Error fetching data: {response.status_code} - {response.text}")</code></pre>
 
-            <h4>Request with Token (JavaScript - `Workspace` API):</h4>
+            <h3>Request with Token (JavaScript - `Workspace` API):</h3>
             <pre><code class="language-javascript">async function fetchDataWithToken(accessToken) {
     const apiUrl = "https://api.openf1.org/v1/sessions?year=2024"; // Example
 
@@ -496,7 +463,7 @@ else:
               >
             </p>
 
-            <h3>Connection Details:</h3>
+            <h3>Connection Details</h3>
             <ul>
               <li>
                 <strong>MQTT Server:</strong> <code>mqtt.openf1.org</code>
@@ -508,7 +475,7 @@ else:
               </li>
             </ul>
 
-            <h3>Authentication:</h3>
+            <h3>Authentication</h3>
             <p>
               Both MQTT and Websocket connections use the OAuth2
               <strong>access token as the password</strong> for authentication.
@@ -517,7 +484,7 @@ else:
               token-based auth.
             </p>
 
-            <h3>Topics:</h3>
+            <h3>Topics</h3>
             <p>
               Topics for MQTT/Websockets directly correspond to the REST API
               endpoint paths. For example:
@@ -534,7 +501,7 @@ else:
               supports it).
             </p>
 
-            <h3>Message Format:</h3>
+            <h3>Message Format</h3>
             <p>
               Messages received via MQTT/Websockets are JSON objects, mirroring
               the data from the corresponding REST API endpoint. However, they
@@ -555,7 +522,7 @@ else:
               </li>
             </ul>
 
-            <h4>Example Message (Topic: <code>v1/location</code>):</h4>
+            <h4>Example Message (Topic: <code>v1/location</code>)</h4>
             <pre><code class="language-json">{
     "meeting_key": 1257,
     "session_key": 10007,
@@ -568,7 +535,7 @@ else:
     "_id": 1747235800206
 }</code></pre>
 
-            <h3>Examples:</h3>
+            <h3>Code examples</h3>
 
             <h4>Python (MQTT with `paho-mqtt`):</h4>
             <pre><code class="language-python">import paho.mqtt.client as mqtt
@@ -713,84 +680,65 @@ client.on('reconnect', function() {
 
           <section id="security">
             <h2>Security Best Practices</h2>
-            <p class="important">
-              <strong>CRITICAL: Protect Your Credentials!</strong>
-            </p>
             <p>
               The most important security consideration is the handling of your
               API credentials (username and password used to obtain the OAuth2
               token) and the access token itself.
             </p>
-            <ul>
-              <li>
-                <strong>Backend Authentication:</strong> The process of
-                obtaining the OAuth2 access token (exchanging your username and
-                password)
-                <strong
-                  >MUST be implemented in your backend application code</strong
-                >. Never embed your direct username and password into
-                client-side applications (like JavaScript running in a user's
-                browser or in a desktop application that can be easily
-                decompiled).
-              </li>
-              <li>
-                <strong>Token Storage:</strong>
+
+            <h3>Backend Authentication</h3>
+            <p>
+              The process of obtaining the OAuth2 access token (exchanging your
+              username and password)
+              <strong
+                >MUST be implemented in your backend application code</strong
+              >. Never embed your direct username and password into client-side
+              applications (like JavaScript running in a user's browser or in a
+              desktop application that can be easily decompiled).
+            </p>
+
+            <h3>Token Storage</h3>
+            <h4>Backend</h4>
+            <p>
+              If your backend needs to make authenticated calls, store the
+              access token securely (e.g., in memory with appropriate access
+              controls, or an encrypted store if persisted).
+            </p>
+            <h4>Client-Side</h4>
+            <p>
+                If your
+                architecture involves your backend providing a token to a
+                client application (e.g., a single-page web app) for direct
+                OpenF1 API calls:
                 <ul>
-                  <li>
-                    <strong>Backend:</strong> If your backend needs to make
-                    authenticated calls, store the access token securely (e.g.,
-                    in memory with appropriate access controls, or an encrypted
-                    store if persisted).
-                  </li>
-                  <li>
-                    <strong>Client-Side (Caution Advised):</strong> If your
-                    architecture involves your backend providing a token to a
-                    client application (e.g., a single-page web app) for direct
-                    OpenF1 API calls:
-                    <ul>
-                      <li>Transmit securely (HTTPS).</li>
-                      <li>
-                        Store appropriately (e.g., in memory for the session;
-                        avoid <code>localStorage</code> for sensitive tokens due
-                        to XSS risks. HttpOnly, Secure cookies are better if
-                        applicable for web).
-                      </li>
-                      <li>
-                        Consider that for MQTT/Websocket connections from the
-                        client, the token will be in client-side memory. It's
-                        often more secure for your backend to manage the
-                        MQTT/Websocket connection and stream data to your
-                        clients.
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <strong>Token Exposure:</strong> Do not embed access tokens
+                    <li>Transmit securely (HTTPS).</li>
+                    <li>
+                      Store appropriately (e.g., in memory for the session;
+                      avoid <code>localStorage</code> for sensitive tokens due
+                      to XSS risks. HttpOnly, Secure cookies are better if
+                      applicable for web).
+                    </li>
+                    <li>
+                      Consider that for MQTT/Websocket connections from the
+                      client, the token will be in client-side memory. It's
+                      often more secure for your backend to manage the
+                      MQTT/Websocket connection and stream data to your
+                      clients.
+                    </li>
+                  </ul>
+            </p>
+
+            <h3>Token Exposure</h3>
+            <p>
+                Do not embed access tokens
                 directly into your client-side source code if it's publicly
                 accessible. For client applications, the ideal pattern is for
                 your application to communicate with *your* backend, and your
                 backend then makes authenticated requests to the OpenF1 API.
               </li>
-            </ul>
-            <p>
-              By following these guidelines, you can ensure that your
-              applications interact with the OpenF1 API securely and
-              responsibly.
             </p>
-          </section>
+              </section>
         </div>
-
-        <footer>
-          <p>
-            &copy;
-            <script>
-              document.write(new Date().getFullYear());
-            </script>
-            OpenF1 API. Happy Coding!
-          </p>
-        </footer>
       </body>
     </html>
   </head>
