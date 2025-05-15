@@ -9,6 +9,12 @@
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+          type="image/png"
+          sizes="32x32"
+          rel="icon"
+          href="https://storage.googleapis.com/openf1-public/images/favicon.png"
+        />
         <title>OpenF1 API - New Authentication and Real-time Data Guide</title>
         <style>
           :root {
@@ -318,7 +324,7 @@
               token proves your identity to the API.
             </p>
 
-            <h3>Obtaining an Access Token</h3>
+            <h3>Obtaining an access token</h3>
             <p>
               You can get an access token by sending a POST request to the
               <code>https://api.openf1.org/token</code> endpoint with your
@@ -346,10 +352,8 @@ response = requests.post(token_url, data=payload, headers=headers)
 
 if response.status_code == 200:
     token_data = response.json()
-    access_token = token_data.get("access_token")
-    expires_in = token_data.get("expiresIn")
-    print(f"Access Token: {access_token}")
-    print(f"Expires In: {expires_in} seconds")
+    print(f"Access token: {token_data.get('access_token')}")
+    print(f"Expires in: {token_data.get('expires_in')} seconds")
 else:
     print(f"Error obtaining token: {response.status_code} - {response.text}")</code></pre>
 
@@ -371,8 +375,8 @@ else:
 
         if (response.ok) {
             const tokenData = await response.json();
-            console.log("Access Token:", tokenData.access_token);
-            console.log("Expires In:", tokenData.expiresIn, "seconds");
+            console.log("Access token:", tokenData.access_token);
+            console.log("Expires in:", tokenData.expires_in, "seconds");
             return tokenData.access_token;
         } else {
             console.error("Error obtaining token:", response.status, await response.text());
@@ -397,37 +401,22 @@ else:
               access token and its expiry time:
             </p>
             <pre><code class="language-json">{
-    "expiresIn": "3600",
-    "access_token": "your_unique_access_token_here",
+    "expires_in": "3600",
+    "access_token": "YOUR_ACCESS_TOKEN",
     "token_type": "bearer"
 }</code></pre>
             <p class="important">
               <strong>Important:</strong> Tokens expire! Your application should
-              be designed to refresh tokens before they expire or handle token
-              expiry gracefully by requesting a new one.
+              be designed to handle token expiry gracefully by requesting a new
+              one.
             </p>
           </section>
 
           <section id="rest-api">
-            <h2>Using the REST API</h2>
+            <h2>Authenticated requests to the REST API</h2>
             <p>
-              The OpenF1 REST API allows you to fetch data via standard HTTP GET
-              requests.
-            </p>
-
-            <h3>Unauthenticated Access (Historical Data)</h3>
-            <p>
-              You can continue to access historical data without authentication.
-              For example, to get session data for a past year:
-            </p>
-            <pre><code class="language-bash">curl -X 'GET' \
- 'https://api.openf1.org/v1/sessions?year=2023' \
- -H 'accept: application/json'</code></pre>
-
-            <h3>Authenticated Access (Historical & Real-Time Data)</h3>
-            <p>
-              To access current season data or other protected resources, you
-              must include your access token in the
+              To access real-time data, you must include your access token in
+              the
               <code>Authorization</code> header as a Bearer token.
             </p>
 
@@ -537,20 +526,12 @@ else:
               <li><code>v1/sessions</code></li>
               <li><code>v1/laps</code></li>
               <li><code>v1/location</code></li>
-              <li><code>v1/car_data</code></li>
-              <li><code>v1/pit</code></li>
-              <li><code>v1/messages</code></li>
-              <li><code>v1/intervals</code></li>
-              <li><code>v1/weather</code></li>
-              <li><code>v1/position</code></li>
-              <li><code>v1/race_control</code></li>
-              <li><code>v1/team_radio</code></li>
-              <li><code>v1/driver_list</code></li>
+              <li>...</li>
             </ul>
             <p>
               You can subscribe to specific topics or use wildcards (e.g.,
-              <code>v1/#</code> to subscribe to all topics under
-              <code>v1</code> if your client library supports it).
+              <code>#</code> to subscribe to all topics if your client library
+              supports it).
             </p>
 
             <h3>Message Format:</h3>
@@ -560,13 +541,17 @@ else:
               include two additional fields:
             </p>
             <ul>
-              <li><code>_id</code>: A unique identifier for each message.</li>
               <li>
-                <code>_key</code>: An identifier for the document. Messages with
-                the same <code>_key</code> represent different versions or
-                updates to the same underlying data object. This is particularly
-                useful for topics like <code>v1/laps</code> where lap
-                information (like duration) is updated in real-time.
+                <code>_id</code> (integer): A unique, ever-increasing identifier
+                assigned to each message. It can be used to sort messages
+                chronologically.
+              </li>
+              <li>
+                <code>_key</code> (string): An identifier for the document.
+                Messages with the same <code>_key</code> represent different
+                versions or updates to the same underlying data object. This is
+                particularly useful for topics like <code>v1/laps</code> where
+                lap information (like sector duration) is updated in real-time.
               </li>
             </ul>
 
@@ -599,10 +584,10 @@ mqtt_username = "your_username_or_email@example.com"
 
 def on_connect(client, userdata, flags, rc, properties=None):
     if rc == 0:
-        print("Connected to MQTT Broker!")
+        print("Connected to MQTT broker")
         client.subscribe("v1/location")
         client.subscribe("v1/laps")
-        # client.subscribe("v1/#") # Subscribe to all v1 topics
+        # client.subscribe("#") # Subscribe to all topics
     else:
         print(f"Failed to connect, return code {rc}")
 
@@ -610,16 +595,11 @@ def on_message(client, userdata, msg):
     print(f"Received message on topic '{msg.topic}': {msg.payload.decode()}")
     # Example: data = json.loads(msg.payload.decode())
 
-# Use CallbackAPIVersion.VERSION2 for compatibility with properties in on_connect
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.username_pw_set(username=mqtt_username, password=access_token)
 
-# Enable TLS encryption for MQTTS
-client.tls_set(cert_reqs=ssl.CERT_NONE, # For testing: CERT_NONE. For production: ssl.CERT_REQUIRED
+client.tls_set(cert_reqs=ssl.CERT_REQUIRED,
                tls_version=ssl.PROTOCOL_TLS_CLIENT)
-# If using CERT_REQUIRED, you might need:
-# client.tls_set(ca_certs="path/to/ca.crt", cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLS_CLIENT)
-
 
 client.on_connect = on_connect
 client.on_message = on_message
@@ -630,13 +610,6 @@ try:
 except Exception as e:
     print(f"Connection error: {e}")
 </code></pre>
-            <p class="important">
-              Note on Paho-MQTT TLS: For production, always use
-              <code>ssl.CERT_REQUIRED</code> and ensure your system trusts the
-              broker's CA or provide a <code>ca_certs</code> file.
-              <code>ssl.CERT_NONE</code> bypasses server certificate
-              verification and is insecure for production.
-            </p>
 
             <h4>JavaScript (Websockets using `mqtt` library):</h4>
             <p>
@@ -648,19 +621,17 @@ except Exception as e:
 
 // Assume 'accessToken' is a variable holding your obtained token
 const accessToken = "YOUR_ACCESS_TOKEN";
-const websocketUrl = "wss://mqtt.openf1.org:8084/mqtt"; // Standard path for MQTT over WSS
+const websocketUrl = "wss://mqtt.openf1.org:8084/mqtt";
 
 const options = {
     username: "your_username_or_email@example.com", // Optional, can be any string
-    password: accessToken, // Access token is used as the password
-    // clientId: 'my_websocket_client_' + Math.random().toString(16).substr(2, 8) // Optional
-    // protocolVersion: 5 // or 4, MQTT.js defaults to 4. Use 5 if broker supports and it's preferred.
+    password: accessToken // Access token is used as the password
 };
 
 const client = mqtt.connect(websocketUrl, options);
 
 client.on('connect', function () {
-    console.log('Connected to OpenF1 via Websockets (MQTT.js)!');
+    console.log('Connected to OpenF1 via Websockets');
     client.subscribe('v1/location', function (err) {
         if (!err) {
             console.log('Subscribed to v1/location');
@@ -675,11 +646,10 @@ client.on('connect', function () {
             console.error('Subscription error for v1/laps:', err);
         }
     });
-    // client.subscribe('v1/#'); // Subscribe to all v1 topics
+    // client.subscribe('#'); // Subscribe to all topics
 });
 
 client.on('message', function (topic, message) {
-    // message is a Buffer
     console.log(`Received on ${topic}: ${message.toString()}`);
     // const data = JSON.parse(message.toString());
     // Process data
@@ -710,121 +680,30 @@ client.on('reconnect', function() {
               efficient and responsive applications.
             </p>
 
-            <table>
-              <thead>
-                <tr>
-                  <th>Method</th>
-                  <th>Best For</th>
-                  <th>Pros</th>
-                  <th>Cons</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>REST API (Unauthenticated)</strong></td>
-                  <td>
-                    Accessing historical F1 data. Simple data retrieval without
-                    real-time needs.
-                  </td>
-                  <td>
-                    Easy to use, widely understood, no authentication overhead
-                    for historical data.
-                  </td>
-                  <td>
-                    Not for real-time data. Requires polling for updates, which
-                    is inefficient.
-                  </td>
-                </tr>
-                <tr>
-                  <td><strong>REST API (Authenticated)</strong></td>
-                  <td>
-                    Fetching specific historical or current season data points
-                    on demand where real-time streaming isn't critical. Initial
-                    data loads for an application.
-                  </td>
-                  <td>
-                    Standard HTTP, good for request-response patterns. Can
-                    access all data including current season.
-                  </td>
-                  <td>
-                    Less efficient for live updates compared to MQTT/Websockets
-                    due to polling. Higher latency for real-time events.
-                  </td>
-                </tr>
-                <tr>
-                  <td><strong>MQTT (over MQTTS/TLS)</strong></td>
-                  <td>
-                    <strong
-                      >Highly recommended for real-time data feeds, especially
-                      in backend systems or non-browser applications.</strong
-                    >
-                    Efficient for continuous streams of data.
-                  </td>
-                  <td>
-                    Extremely efficient for real-time, low overhead,
-                    publish/subscribe model, reliable delivery options (QoS).
-                    Ideal for server-to-server or device communication.
-                  </td>
-                  <td>
-                    Requires an MQTT client library. Initial setup can be more
-                    involved than a simple REST call. Uses port 8883.
-                  </td>
-                </tr>
-                <tr>
-                  <td><strong>Websockets (MQTT over WSS)</strong></td>
-                  <td>
-                    <strong
-                      >Highly recommended for real-time data feeds in web
-                      browser-based applications.</strong
-                    >
-                    For a persistent, two-way connection directly from a user's
-                    browser.
-                  </td>
-                  <td>
-                    Enables real-time, push-based updates directly in the
-                    browser, avoiding HTTP polling. Lower latency than REST for
-                    live data. Uses standard web ports (via WSS on 8084).
-                  </td>
-                  <td>
-                    Requires a Websocket-compatible MQTT library (like MQTT.js).
-                    Can be slightly more resource-intensive on the server per
-                    connection than raw MQTT.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-            <h3>In Summary:</h3>
             <ul>
-              <li>
-                For <strong>historical data</strong> where real-time updates
-                aren't needed: Use the
-                <strong>unauthenticated REST API</strong>.
-              </li>
               <li>
                 For
                 <strong
                   >on-demand requests of current or historical data</strong
                 >
-                without continuous streaming: Use the
-                <strong>authenticated REST API</strong>.
+                without continuous streaming: use the
+                <strong>REST API</strong>.
               </li>
               <li>
                 For
                 <strong
                   >real-time data in backend or non-browser applications</strong
-                >: Prioritize <strong>MQTT (over MQTTS)</strong> for its
-                efficiency.
+                >: prioritize <strong>MQTT</strong> for its efficiency.
               </li>
               <li>
                 For
                 <strong>real-time data in browser-based applications</strong>:
-                Use <strong>Websockets (MQTT over WSS)</strong>.
+                use <strong>Websockets (MQTT over WSS)</strong>.
               </li>
             </ul>
             <p class="tip">
               <strong
-                >Prioritize MQTT or MQTT over Websockets for any application
+                >Please prioritize MQTT or Websockets for any application
                 needing live F1 data.</strong
               >
               They are significantly more efficient and provide data as soon as
@@ -866,8 +745,8 @@ client.on('reconnect', function() {
                   <li>
                     <strong>Client-Side (Caution Advised):</strong> If your
                     architecture involves your backend providing a token to a
-                    client application (e.g., a single-page web app) for
-                    *direct* OpenF1 API calls:
+                    client application (e.g., a single-page web app) for direct
+                    OpenF1 API calls:
                     <ul>
                       <li>Transmit securely (HTTPS).</li>
                       <li>
@@ -893,24 +772,6 @@ client.on('reconnect', function() {
                 accessible. For client applications, the ideal pattern is for
                 your application to communicate with *your* backend, and your
                 backend then makes authenticated requests to the OpenF1 API.
-              </li>
-              <li>
-                <strong>HTTPS/MQTTS/WSS Everywhere:</strong> Always use secure,
-                encrypted connections for all API communication (token endpoint,
-                REST API, MQTTS for MQTT, WSS for Websockets) to protect data in
-                transit.
-              </li>
-              <li>
-                <strong>Token Expiration:</strong> Implement logic to handle
-                token expiration. Your application should be able to refresh
-                tokens or request new ones before they expire or when an API
-                call indicates an invalid/expired token.
-              </li>
-              <li>
-                <strong>Principle of Least Privilege:</strong> While current
-                tokens may grant broad access, always design with the idea of
-                requesting only the permissions/scopes your application needs (a
-                general OAuth2 best practice for the future).
               </li>
             </ul>
             <p>
