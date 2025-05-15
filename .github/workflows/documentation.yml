@@ -22,7 +22,7 @@ jobs:
 
       - name: Copy additional webpages
         run: |
-          cp ${{ github.workspace }}/documentation/*.html build
+          cp ${{ github.workspace }}/documentation/pages/* build
 
       - name: Deploy documentation to Github Pages
         uses: JamesIves/github-pages-deploy-action@v4
