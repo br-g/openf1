@@ -279,59 +279,59 @@
 
         <h3>Bash/cURL example</h3>
         <pre><code class="language-bash">curl -X POST "https://dev.openf1.org/token" \
--H "Content-Type: application/x-www-form-urlencoded" \
--d "username=YOUR_USERNAME&password=YOUR_PASSWORD"</code></pre>
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "username=YOUR_USERNAME&password=YOUR_PASSWORD"</code></pre>
 
         <h3>Python example</h3>
         <pre><code class="language-python">import requests
 
 token_url = "https://dev.openf1.org/token"
 payload = {
-"username": "YOUR_USERNAME",
-"password": "YOUR_PASSWORD"
+    "username": "YOUR_USERNAME",
+    "password": "YOUR_PASSWORD"
 }
 headers = {
-"Content-Type": "application/x-www-form-urlencoded"
+    "Content-Type": "application/x-www-form-urlencoded"
 }
 
 response = requests.post(token_url, data=payload, headers=headers)
 
 if response.status_code == 200:
-token_data = response.json()
-print(f"Access token: {token_data.get('access_token')}")
-print(f"Expires in: {token_data.get('expires_in')} seconds")
+    token_data = response.json()
+    print(f"Access token: {token_data.get('access_token')}")
+    print(f"Expires in: {token_data.get('expires_in')} seconds")
 else:
-print(f"Error obtaining token: {response.status_code} - {response.text}")</code></pre>
+    print(f"Error obtaining token: {response.status_code} - {response.text}")</code></pre>
 
         <h3>JavaScript example</h3>
         <pre><code class="language-javascript">async function getAccessToken() {
-const tokenUrl = "https://dev.openf1.org/token";
-const params = new URLSearchParams();
-params.append("username", "YOUR_USERNAME");
-params.append("password", "YOUR_PASSWORD");
+    const tokenUrl = "https://dev.openf1.org/token";
+    const params = new URLSearchParams();
+    params.append("username", "YOUR_USERNAME");
+    params.append("password", "YOUR_PASSWORD");
 
-try {
-    const response = await fetch(tokenUrl, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: params,
-    });
+    try {
+        const response = await fetch(tokenUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: params,
+        });
 
-    if (response.ok) {
-        const tokenData = await response.json();
-        console.log("Access token:", tokenData.access_token);
-        console.log("Expires in:", tokenData.expires_in, "seconds");
-        return tokenData.access_token;
-    } else {
-        console.error("Error obtaining token:", response.status, await response.text());
+        if (response.ok) {
+            const tokenData = await response.json();
+            console.log("Access token:", tokenData.access_token);
+            console.log("Expires in:", tokenData.expires_in, "seconds");
+            return tokenData.access_token;
+        } else {
+            console.error("Error obtaining token:", response.status, await response.text());
+            return null;
+        }
+    } catch (error) {
+        console.error("Network error or other issue:", error);
         return null;
     }
-} catch (error) {
-    console.error("Network error or other issue:", error);
-    return null;
-}
 }
 
 // Example usage:
@@ -347,9 +347,9 @@ try {
           access token and its expiry time:
         </p>
         <pre><code class="language-json">{
-"expires_in": "3600",
-"access_token": "YOUR_ACCESS_TOKEN",
-"token_type": "bearer"
+    "expires_in": "3600",
+    "access_token": "YOUR_ACCESS_TOKEN",
+    "token_type": "bearer"
 }</code></pre>
         <p class="important">
           <strong>Important:</strong> Tokens expire after 1 hour. Your application should
@@ -369,9 +369,9 @@ try {
         <h3>Bash/cURL example</h3>
         <pre><code class="language-bash"># Replace YOUR_ACCESS_TOKEN with the token you obtained
 curl -X 'GET' \
-'https://dev.openf1.org/v1/sessions?year=2024' \
--H 'accept: application/json' \
--H 'Authorization: Bearer YOUR_ACCESS_TOKEN'</code></pre>
+    'https://dev.openf1.org/v1/sessions?year=2024' \
+    -H 'accept: application/json' \
+    -H 'Authorization: Bearer YOUR_ACCESS_TOKEN'</code></pre>
 
         <h3>Python example</h3>
         <pre><code class="language-python">import requests
@@ -381,43 +381,43 @@ access_token = "YOUR_ACCESS_TOKEN"
 api_url = "https://dev.openf1.org/v1/sessions?year=2024" # Example
 
 headers = {
-"accept": "application/json",
-"Authorization": f"Bearer {access_token}"
+    "accept": "application/json",
+    "Authorization": f"Bearer {access_token}"
 }
 
 response = requests.get(api_url, headers=headers)
 
 if response.status_code == 200:
-data = response.json()
-print(data)
+    data = response.json()
+    print(data)
 else:
-print(f"Error fetching data: {response.status_code} - {response.text}")</code></pre>
+    print(f"Error fetching data: {response.status_code} - {response.text}")</code></pre>
 
         <h3>JavaScript example</h3>
         <pre><code class="language-javascript">async function fetchDataWithToken(accessToken) {
-const apiUrl = "https://dev.openf1.org/v1/sessions?year=2024"; // Example
+    const apiUrl = "https://dev.openf1.org/v1/sessions?year=2024"; // Example
 
-try {
-    const response = await fetch(apiUrl, {
-        method: "GET",
-        headers: {
-            "accept": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-        },
-    });
+    try {
+        const response = await fetch(apiUrl, {
+            method: "GET",
+            headers: {
+                "accept": "application/json",
+                "Authorization": `Bearer ${accessToken}`,
+            },
+        });
 
-    if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-        return data;
-    } else {
-        console.error("Error fetching data:", response.status, await response.text());
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            return data;
+        } else {
+            console.error("Error fetching data:", response.status, await response.text());
+            return null;
+        }
+    } catch (error) {
+        console.error("Network error or other issue:", error);
         return null;
     }
-} catch (error) {
-    console.error("Network error or other issue:", error);
-    return null;
-}
 }
 
 // Example usage:
@@ -503,15 +503,15 @@ try {
 
         <h4>Example message (topic: <code>v1/location</code>)</h4>
         <pre><code class="language-json">{
-"meeting_key": 1257,
-"session_key": 10007,
-"driver_number": 31,
-"date": "2025-04-11T11:21:16.603025+00:00",
-"x": 0,
-"y": 0,
-"z": 0,
-"_key": "1744370476603_31",
-"_id": 1747235800206
+    "meeting_key": 1257,
+    "session_key": 10007,
+    "driver_number": 31,
+    "date": "2025-04-11T11:21:16.603025+00:00",
+    "x": 0,
+    "y": 0,
+    "z": 0,
+    "_key": "1744370476603_31",
+    "_id": 1747235800206
 }</code></pre>
 
         <h3>Code examples</h3>
@@ -538,22 +538,21 @@ else:
     print(f"Failed to connect, return code {rc}")
 
 def on_message(client, userdata, msg):
-print(f"Received message on topic '{msg.topic}': {msg.payload.decode()}")
-# Example: data = json.loads(msg.payload.decode())
+    print(f"Received message on topic '{msg.topic}': {msg.payload.decode()}")
+    # Example: data = json.loads(msg.payload.decode())
 
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.username_pw_set(username=mqtt_username, password=access_token)
-client.tls_set(cert_reqs=ssl.CERT_REQUIRED,
-            tls_version=ssl.PROTOCOL_TLS_CLIENT)
+client.tls_set(cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLS_CLIENT)
 
 client.on_connect = on_connect
 client.on_message = on_message
 
 try:
-client.connect(mqtt_broker, mqtt_port, 60)
-client.loop_forever() # Starts a blocking network loop
+    client.connect(mqtt_broker, mqtt_port, 60)
+    client.loop_forever() # Starts a blocking network loop
 except Exception as e:
-print(f"Connection error: {e}")
+    print(f"Connection error: {e}")
 </code></pre>
 
         <h4>JavaScript (Websockets using `mqtt` library)</h4>
@@ -569,51 +568,51 @@ const accessToken = "YOUR_ACCESS_TOKEN";
 const websocketUrl = "wss://mqtt.openf1.org:8084/mqtt";
 
 const options = {
-username: "your_username_or_email@example.com", // Optional, can be any string
-password: accessToken // Access token is used as the password
+    username: "your_username_or_email@example.com", // Optional, can be any string
+    password: accessToken // Access token is used as the password
 };
 
 const client = mqtt.connect(websocketUrl, options);
 
 client.on('connect', function () {
-console.log('Connected to OpenF1 via Websockets');
-client.subscribe('v1/location', function (err) {
-    if (!err) {
-        console.log('Subscribed to v1/location');
-    } else {
-        console.error('Subscription error for v1/location:', err);
-    }
-});
-client.subscribe('v1/laps', function (err) {
-    if (!err) {
-        console.log('Subscribed to v1/laps');
-    } else {
-        console.error('Subscription error for v1/laps:', err);
-    }
-});
-// client.subscribe('#'); // Subscribe to all topics
+    console.log('Connected to OpenF1 via Websockets');
+    client.subscribe('v1/location', function (err) {
+        if (!err) {
+            console.log('Subscribed to v1/location');
+        } else {
+            console.error('Subscription error for v1/location:', err);
+        }
+    });
+    client.subscribe('v1/laps', function (err) {
+        if (!err) {
+            console.log('Subscribed to v1/laps');
+        } else {
+            console.error('Subscription error for v1/laps:', err);
+        }
+    });
+    // client.subscribe('#'); // Subscribe to all topics
 });
 
 client.on('message', function (topic, message) {
-console.log(`Received on ${topic}: ${message.toString()}`);
-// const data = JSON.parse(message.toString());
-// Process data
+    console.log(`Received on ${topic}: ${message.toString()}`);
+    // const data = JSON.parse(message.toString());
+    // Process data
 });
 
 client.on('error', function (error) {
-console.error('MQTT Connection Error:', error);
+    console.error('MQTT Connection Error:', error);
 });
 
 client.on('close', function () {
-console.log('MQTT Connection closed');
+    console.log('MQTT Connection closed');
 });
 
 client.on('offline', function() {
-console.log('MQTT Client is offline');
+    console.log('MQTT Client is offline');
 });
 
 client.on('reconnect', function() {
-console.log('MQTT Client is attempting to reconnect');
+    console.log('MQTT Client is attempting to reconnect');
 });
 </code></pre>
       </section>
