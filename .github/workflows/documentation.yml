@@ -12,7 +12,9 @@ jobs:
 
       - name: Build Slate documentation
         run: |
+          mkdir -p ${{ github.workspace }}/build
           docker run --rm \
+          --user $(id -u):$(id -g) \
           --name slate \
           -v ${{ github.workspace }}/build:/srv/slate/build \
           -v ${{ github.workspace }}/documentation:/srv/slate/source \
