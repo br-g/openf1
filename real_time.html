@@ -4,231 +4,334 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OpenF1 API - New Authentication and Real-time Data Guide</title>
-    <style>
-      body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        line-height: 1.6;
-        margin: 0;
-        padding: 0;
-        background-color: #f4f4f4;
-        color: #333;
-      }
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>OpenF1 API - New Authentication and Real-time Data Guide</title>
+        <style>
+          :root {
+            --background-color: #ffffff;
+            --text-color: #212529;
+            --muted-text-color: #6c757d;
+            --primary-accent-color: #d70000;
+            --light-gray-background: #f8f9fa;
+            --border-color: #dee2e6;
+            --code-background-color: #282c34; /* Dark background for code */
+            --code-text-color: #abb2bf; /* Light text for code */
+            --font-family-sans-serif: -apple-system, BlinkMacSystemFont,
+              "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif,
+              "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
+              "Liberation Mono", "Courier New", monospace;
+          }
 
-      .container {
-        width: 80%;
-        margin: auto;
-        overflow: hidden;
-        padding: 20px;
-        background: #fff;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
+          body {
+            font-family: var(--font-family-sans-serif);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-gray-background);
+            color: var(--text-color);
+            font-size: 16px;
+          }
 
-      header {
-        background: #1a237e; /* F1-like dark blue */
-        color: #fff;
-        padding: 1rem 0;
-        text-align: center;
-        border-bottom: #e50914 5px solid; /* F1-like red */
-      }
+          .container {
+            max-width: 900px;
+            margin: 25px auto;
+            padding: 30px;
+            background: var(--background-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+          }
 
-      header h1 {
-        margin: 0;
-        font-size: 2.5rem;
-      }
+          header {
+            text-align: center;
+            margin-bottom: 0px;
+            margin-top: 25px;
+          }
 
-      nav {
-        background: #333;
-        color: #fff;
-        padding: 0.5rem;
-        text-align: center;
-      }
+          header h1 {
+            margin: 0;
+            font-size: 2.25rem; /* 36px */
+            font-weight: 600;
+            color: var(--text-color);
+          }
 
-      nav ul {
-        list-style: none;
-        padding: 0;
-      }
+          section {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+          }
 
-      nav ul li {
-        display: inline;
-        margin-right: 20px;
-      }
+          section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+          }
 
-      nav a {
-        color: #fff;
-        text-decoration: none;
-        font-weight: bold;
-      }
+          h2 {
+            font-size: 1.75rem; /* 28px */
+            font-weight: 600;
+            color: var(--text-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 0px;
+            border-bottom: 3px solid var(--primary-accent-color);
+          }
 
-      nav a:hover {
-        text-decoration: underline;
-      }
+          h3 {
+            font-size: 1.375rem; /* 22px */
+            font-weight: 600;
+            color: #343a40;
+            margin-top: 30px;
+            margin-bottom: 15px;
+          }
 
-      section {
-        padding: 20px;
-        margin-bottom: 20px;
-        border-bottom: 1px #ccc dotted;
-      }
+          p,
+          ul,
+          ol {
+            margin-bottom: 1rem;
+            font-size: 1rem; /* 16px */
+          }
 
-      section:last-child {
-        border-bottom: none;
-      }
+          ul,
+          ol {
+            padding-left: 20px;
+          }
 
-      h2 {
-        color: #1a237e;
-        border-bottom: 2px solid #e50914;
-        padding-bottom: 5px;
-      }
+          li {
+            margin-bottom: 0.5rem;
+          }
 
-      h3 {
-        color: #333;
-      }
+          pre {
+            background: var(--code-background-color);
+            color: var(--code-text-color);
+            padding: 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: var(--font-family-monospace);
+            font-size: 0.875rem; /* 14px */
+            line-height: 1.5;
+            margin: 20px 0;
+          }
 
-      pre {
-        background: #2d2d2d; /* Dark background for code blocks */
-        color: #f8f8f2; /* Light text for contrast */
-        padding: 15px;
-        border-radius: 5px;
-        overflow-x: auto;
-        font-family: "Courier New", Courier, monospace;
-        font-size: 0.9rem;
-      }
+          code {
+            /* Inline code */
+            font-family: var(--font-family-monospace);
+            background-color: #e9ecef;
+            color: #cb2431; /* A subtle red for inline code to differentiate */
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            border-radius: 3px;
+          }
 
-      code {
-        font-family: "Courier New", Courier, monospace;
-        background: #eee;
-        padding: 2px 4px;
-        border-radius: 3px;
-      }
+          pre code {
+            /* Code within pre blocks */
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            margin: 0;
+            font-size: inherit;
+            border-radius: 0;
+          }
 
-      .important {
-        background-color: #fff3cd;
-        border-left: 5px solid #ffeeba;
-        padding: 10px;
-        margin: 15px 0;
-      }
+          .important,
+          .tip {
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 6px;
+            font-size: 0.95rem;
+          }
 
-      .tip {
-        background-color: #d1ecf1;
-        border-left: 5px solid #bee5eb;
-        padding: 10px;
-        margin: 15px 0;
-      }
+          .important {
+            background-color: #fff3cd; /* Light yellow */
+            border-left: 5px solid #ffeeba; /* Yellow */
+            color: #856404;
+          }
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-      }
+          .tip {
+            background-color: #d1ecf1; /* Light blue */
+            border-left: 5px solid #bee5eb; /* Blue */
+            color: #0c5460;
+          }
 
-      th,
-      td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-      }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9rem;
+          }
 
-      th {
-        background-color: #1a237e;
-        color: white;
-      }
+          th,
+          td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+          }
 
-      tr:hover {
-        background-color: #f5f5f5;
-      }
+          th {
+            background-color: var(--light-gray-background);
+            font-weight: 600;
+            color: var(--text-color);
+          }
 
-      .button {
-        display: inline-block;
-        background-color: #e50914;
-        color: white;
-        padding: 10px 15px;
-        text-decoration: none;
-        border-radius: 5px;
-        font-weight: bold;
-      }
+          tr:last-child td {
+            border-bottom: none;
+          }
 
-      .button:hover {
-        background-color: #c40812;
-      }
+          tr:hover {
+            background-color: #f1f3f5;
+          }
 
-      footer {
-        text-align: center;
-        padding: 20px;
-        background: #333;
-        color: #fff;
-        margin-top: 20px;
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <h1>OpenF1 API Updates</h1>
-    </header>
+          .button {
+            display: inline-block;
+            background-color: var(--primary-accent-color);
+            color: var(--background-color);
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+          }
 
-    <nav>
-      <ul>
-        <li><a href="#introduction">Introduction</a></li>
-        <li><a href="#authentication">Authentication</a></li>
-        <li><a href="#rest-api">REST API</a></li>
-        <li><a href="#mqtt-websockets">MQTT/Websockets (Real-time)</a></li>
-        <li><a href="#choosing-tool">Choosing Your Tool</a></li>
-        <li><a href="#security">Security Best Practices</a></li>
-      </ul>
-    </nav>
+          .button:hover,
+          .button:focus {
+            background-color: #0056b3; /* Darker shade of accent */
+            color: var(--background-color);
+            transform: translateY(-1px);
+          }
 
-    <div class="container">
-      <section id="introduction">
-        <h2>Welcome to the Enhanced OpenF1 API!</h2>
-        <p>
-          We're excited to announce significant updates to the OpenF1 API,
-          designed to provide more flexibility and real-time data access for
-          your applications.
-        </p>
-        <p><strong>Key Changes:</strong></p>
-        <ul>
-          <li>
-            <strong>Authentication Required for Real-Time Data:</strong>
-            Unauthenticated users can still access all historical data via the
-            REST API. However, access to real-time data and new connection
-            methods now requires authentication.
-          </li>
-          <li>
-            <strong>New Real-Time Data Streams:</strong> Authenticated users can
-            now access live F1 data using MQTT or Websockets, offering a much
-            more efficient way to get updates as they happen.
-          </li>
-          <li>
-            <strong>OAuth2 for Secure Access:</strong> We've implemented the
-            industry-standard OAuth2 protocol for authentication.
-          </li>
-        </ul>
-        <p>
-          This guide will walk you through these changes, helping you to
-          leverage the full power of the OpenF1 API.
-        </p>
-      </section>
+          footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: var(--muted-text-color);
+            border-top: 1px solid var(--border-color);
+          }
 
-      <section id="authentication">
-        <h2>Authentication with OAuth2</h2>
-        <p>
-          To access real-time data and certain authenticated REST API endpoints,
-          you'll need to obtain an OAuth2 access token. This token proves your
-          identity to the API.
-        </p>
+          /* Responsive adjustments */
+          @media (max-width: 768px) {
+            body {
+              font-size: 15px; /* Slightly smaller base font for mobile */
+            }
 
-        <h3>Obtaining an Access Token</h3>
-        <p>
-          You can get an access token by sending a POST request to the
-          <code>https://api.openf1.org/token</code> endpoint with your username
-          and password.
-        </p>
+            .container {
+              margin: 0;
+              padding: 20px; /* Padding inside the container */
+              width: 100%;
+              box-sizing: border-box;
+              border-radius: 0;
+              box-shadow: none;
+            }
 
-        <h4>Request (Bash/cURL):</h4>
-        <pre><code>curl -X POST "https://api.openf1.org/token" \
+            header {
+              margin-bottom: 20px; /* Reduce margin */
+              box-sizing: border-box; /* Add this for consistency */
+            }
+
+            header h1 {
+              font-size: 1.9rem;
+            }
+
+            h2 {
+              font-size: 1.6rem;
+            }
+
+            h3 {
+              font-size: 1.25rem;
+            }
+
+            /* ... (rest of your mobile styles for table, pre, footer etc.) ... */
+            table {
+              font-size: 0.85rem;
+              display: block; /* Make table block to allow horizontal scrolling if needed */
+              overflow-x: auto; /* Add horizontal scroll to table itself */
+              -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            }
+
+            th,
+            td {
+              padding: 8px 5px;
+              /* word-break: break-word; /* Already there, good */
+            }
+
+            pre {
+              padding: 15px;
+              font-size: 0.8rem;
+              white-space: pre-wrap; /* Allow text to wrap in code blocks */
+              word-break: break-all; /* More aggressive word breaking if needed */
+            }
+
+            footer {
+              padding: 20px;
+              box-sizing: border-box; /* Add this */
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <header>
+          <h1>OpenF1 API Updates</h1>
+        </header>
+
+        <div class="container">
+          <section id="introduction">
+            <h2>Welcome to the Enhanced OpenF1 API!</h2>
+            <p>
+              We're excited to announce significant updates to the OpenF1 API,
+              designed to provide more flexibility and real-time data access for
+              your applications.
+            </p>
+            <p><strong>Key Changes:</strong></p>
+            <ul>
+              <li>
+                <strong>Authentication Required for Real-Time Data:</strong>
+                Unauthenticated users can still access all historical data via
+                the REST API. However, access to real-time data and new
+                connection methods now requires authentication.
+              </li>
+              <li>
+                <strong>New Real-Time Data Streams:</strong> Authenticated users
+                can now access live F1 data using MQTT or Websockets, offering a
+                much more efficient way to get updates as they happen.
+              </li>
+              <li>
+                <strong>OAuth2 for Secure Access:</strong> We've implemented the
+                industry-standard OAuth2 protocol for authentication.
+              </li>
+            </ul>
+            <p>
+              This guide will walk you through these changes, helping you to
+              leverage the full power of the OpenF1 API.
+            </p>
+          </section>
+
+          <section id="authentication">
+            <h2>Authentication with OAuth2</h2>
+            <p>
+              To access real-time data and certain authenticated REST API
+              endpoints, you'll need to obtain an OAuth2 access token. This
+              token proves your identity to the API.
+            </p>
+
+            <h3>Obtaining an Access Token</h3>
+            <p>
+              You can get an access token by sending a POST request to the
+              <code>https://api.openf1.org/token</code> endpoint with your
+              username and password.
+            </p>
+
+            <h4>Request (Bash/cURL):</h4>
+            <pre><code class="language-bash">curl -X POST "https://api.openf1.org/token" \
  -H "Content-Type: application/x-www-form-urlencoded" \
  -d "username=YOUR_USERNAME@example.com&password=YOUR_PASSWORD"</code></pre>
 
-        <h4>Request (Python - `requests` library):</h4>
-        <pre><code>import requests
+            <h4>Request (Python - `requests` library):</h4>
+            <pre><code class="language-python">import requests
 
 token_url = "https://api.openf1.org/token"
 payload = {
@@ -250,8 +353,8 @@ if response.status_code == 200:
 else:
     print(f"Error obtaining token: {response.status_code} - {response.text}")</code></pre>
 
-        <h4>Request (JavaScript - `Workspace` API, Node.js or Browser):</h4>
-        <pre><code>async function getAccessToken() {
+            <h4>Request (JavaScript - `Workspace` API, Node.js or Browser):</h4>
+            <pre><code class="language-javascript">async function getAccessToken() {
     const tokenUrl = "https://api.openf1.org/token";
     const params = new URLSearchParams();
     params.append("username", "YOUR_USERNAME@example.com");
@@ -288,59 +391,59 @@ else:
 //     }
 // });</code></pre>
 
-        <h4>Response:</h4>
-        <p>
-          A successful request will return a JSON object containing your access
-          token and its expiry time:
-        </p>
-        <pre><code>{
-    "expiresIn": "3600",        // Token validity period in seconds (e.g., 1 hour)
+            <h4>Response:</h4>
+            <p>
+              A successful request will return a JSON object containing your
+              access token and its expiry time:
+            </p>
+            <pre><code class="language-json">{
+    "expiresIn": "3600",
     "access_token": "your_unique_access_token_here",
     "token_type": "bearer"
 }</code></pre>
-        <p class="important">
-          <strong>Important:</strong> Tokens expire! Your application should be
-          designed to refresh tokens before they expire or handle token expiry
-          gracefully by requesting a new one.
-        </p>
-      </section>
+            <p class="important">
+              <strong>Important:</strong> Tokens expire! Your application should
+              be designed to refresh tokens before they expire or handle token
+              expiry gracefully by requesting a new one.
+            </p>
+          </section>
 
-      <section id="rest-api">
-        <h2>Using the REST API</h2>
-        <p>
-          The OpenF1 REST API allows you to fetch data via standard HTTP GET
-          requests.
-        </p>
+          <section id="rest-api">
+            <h2>Using the REST API</h2>
+            <p>
+              The OpenF1 REST API allows you to fetch data via standard HTTP GET
+              requests.
+            </p>
 
-        <h3>Unauthenticated Access (Historical Data)</h3>
-        <p>
-          You can continue to access historical data without authentication. For
-          example, to get session data for a past year:
-        </p>
-        <pre><code>curl -X 'GET' \
+            <h3>Unauthenticated Access (Historical Data)</h3>
+            <p>
+              You can continue to access historical data without authentication.
+              For example, to get session data for a past year:
+            </p>
+            <pre><code class="language-bash">curl -X 'GET' \
  'https://api.openf1.org/v1/sessions?year=2023' \
  -H 'accept: application/json'</code></pre>
 
-        <h3>Authenticated Access (Historical & Real-Time Data)</h3>
-        <p>
-          To access current season data (considered real-time for some
-          endpoints) or other protected resources, you must include your access
-          token in the <code>Authorization</code> header.
-        </p>
+            <h3>Authenticated Access (Historical & Real-Time Data)</h3>
+            <p>
+              To access current season data or other protected resources, you
+              must include your access token in the
+              <code>Authorization</code> header as a Bearer token.
+            </p>
 
-        <h4>Request with Token (Bash/cURL):</h4>
-        <pre><code># Replace YOUR_ACCESS_TOKEN with the token you obtained
+            <h4>Request with Token (Bash/cURL):</h4>
+            <pre><code class="language-bash"># Replace YOUR_ACCESS_TOKEN with the token you obtained
 curl -X 'GET' \
  'https://api.openf1.org/v1/sessions?year=2024' \
  -H 'accept: application/json' \
  -H 'Authorization: Bearer YOUR_ACCESS_TOKEN'</code></pre>
 
-        <h4>Request with Token (Python - `requests` library):</h4>
-        <pre><code>import requests
+            <h4>Request with Token (Python - `requests` library):</h4>
+            <pre><code class="language-python">import requests
 
 # Assume 'access_token' is a variable holding your obtained token
 access_token = "YOUR_ACCESS_TOKEN"
-api_url = "https://api.openf1.org/v1/sessions?year=2024" # Example for current year data
+api_url = "https://api.openf1.org/v1/sessions?year=2024" # Example
 
 headers = {
     "accept": "application/json",
@@ -355,10 +458,9 @@ if response.status_code == 200:
 else:
     print(f"Error fetching data: {response.status_code} - {response.text}")</code></pre>
 
-        <h4>Request with Token (JavaScript - `Workspace` API):</h4>
-        <pre><code>async function fetchDataWithToken(accessToken) {
-    // Example for current year data
-    const apiUrl = "https://api.openf1.org/v1/sessions?year=2024";
+            <h4>Request with Token (JavaScript - `Workspace` API):</h4>
+            <pre><code class="language-javascript">async function fetchDataWithToken(accessToken) {
+    const apiUrl = "https://api.openf1.org/v1/sessions?year=2024"; // Example
 
     try {
         const response = await fetch(apiUrl, {
@@ -389,87 +491,87 @@ else:
 //         fetchDataWithToken(token);
 //     }
 // });</code></pre>
-      </section>
+          </section>
 
-      <section id="mqtt-websockets">
-        <h2>Real-Time Data with MQTT & Websockets</h2>
-        <p>
-          For the most efficient access to real-time data, we now offer MQTT and
-          Websocket connections. These methods push data to your application as
-          soon as it's available, eliminating the need for constant polling of
-          the REST API.
-        </p>
-        <p class="tip">
-          <strong
-            >This is the recommended method for accessing live data.</strong
-          >
-        </p>
+          <section id="mqtt-websockets">
+            <h2>Real-Time Data with MQTT & Websockets</h2>
+            <p>
+              For the most efficient access to real-time data, we now offer MQTT
+              and Websocket connections. These methods push data to your
+              application as soon as it's available, eliminating the need for
+              constant polling of the REST API.
+            </p>
+            <p class="tip">
+              <strong
+                >This is the recommended method for accessing live data.</strong
+              >
+            </p>
 
-        <h3>Connection Details:</h3>
-        <ul>
-          <li><strong>MQTT URL:</strong> <code>mqtt.openf1.org</code></li>
-          <li><strong>MQTT Port (TLS):</strong> <code>8883</code></li>
-          <li>
-            <strong>Websockets URL (WSS):</strong>
-            <code>wss://mqtt.openf1.org:8084/mqtt</code> (Note: Websockets
-            connect over WSS on port 8084, often using a path like /mqtt for
-            MQTT over Websockets)
-          </li>
-        </ul>
+            <h3>Connection Details:</h3>
+            <ul>
+              <li>
+                <strong>MQTT Server:</strong> <code>mqtt.openf1.org</code>
+              </li>
+              <li><strong>MQTT Port (TLS/MQTTS):</strong> <code>8883</code></li>
+              <li>
+                <strong>Websockets URL (WSS for MQTT over Websockets):</strong>
+                <code>wss://mqtt.openf1.org:8084/mqtt</code>
+              </li>
+            </ul>
 
-        <h3>Authentication:</h3>
-        <p>
-          Both MQTT and Websocket connections use the OAuth2
-          <strong>access token as the password</strong> for authentication. The
-          username can typically be any non-empty string, or you can use your
-          registered email if the broker requires it (check specific library
-          documentation).
-        </p>
+            <h3>Authentication:</h3>
+            <p>
+              Both MQTT and Websocket connections use the OAuth2
+              <strong>access token as the password</strong> for authentication.
+              The username can typically be any non-empty string, or your
+              registered email if preferred/required by your client library for
+              token-based auth.
+            </p>
 
-        <h3>Topics:</h3>
-        <p>
-          Topics for MQTT/Websockets directly correspond to the REST API
-          endpoint paths. For example:
-        </p>
-        <ul>
-          <li><code>v1/sessions</code></li>
-          <li><code>v1/laps</code></li>
-          <li><code>v1/location</code></li>
-          <li><code>v1/car_data</code></li>
-          <li><code>v1/pit</code></li>
-          <li><code>v1/messages</code></li>
-          <li><code>v1/intervals</code></li>
-          <li><code>v1/weather</code></li>
-          <li><code>v1/position</code></li>
-          <li><code>v1/race_control</code></li>
-          <li><code>v1/team_radio</code></li>
-          <li><code>v1/driver_list</code></li>
-        </ul>
-        <p>
-          You can subscribe to specific topics or use wildcards (e.g.,
-          <code>v1/#</code> to subscribe to all topics under <code>v1</code>) if
-          supported by your MQTT client library.
-        </p>
+            <h3>Topics:</h3>
+            <p>
+              Topics for MQTT/Websockets directly correspond to the REST API
+              endpoint paths. For example:
+            </p>
+            <ul>
+              <li><code>v1/sessions</code></li>
+              <li><code>v1/laps</code></li>
+              <li><code>v1/location</code></li>
+              <li><code>v1/car_data</code></li>
+              <li><code>v1/pit</code></li>
+              <li><code>v1/messages</code></li>
+              <li><code>v1/intervals</code></li>
+              <li><code>v1/weather</code></li>
+              <li><code>v1/position</code></li>
+              <li><code>v1/race_control</code></li>
+              <li><code>v1/team_radio</code></li>
+              <li><code>v1/driver_list</code></li>
+            </ul>
+            <p>
+              You can subscribe to specific topics or use wildcards (e.g.,
+              <code>v1/#</code> to subscribe to all topics under
+              <code>v1</code> if your client library supports it).
+            </p>
 
-        <h3>Message Format:</h3>
-        <p>
-          Messages received via MQTT/Websockets are JSON objects, mirroring the
-          data from the corresponding REST API endpoint. However, they include
-          two additional fields:
-        </p>
-        <ul>
-          <li><code>_id</code>: A unique identifier for each message.</li>
-          <li>
-            <code>_key</code>: An identifier for the document. Messages with the
-            same <code>_key</code> represent different versions or updates to
-            the same underlying data object. This is particularly useful for
-            topics like <code>v1/laps</code> where lap information (like
-            duration) is updated in real-time.
-          </li>
-        </ul>
+            <h3>Message Format:</h3>
+            <p>
+              Messages received via MQTT/Websockets are JSON objects, mirroring
+              the data from the corresponding REST API endpoint. However, they
+              include two additional fields:
+            </p>
+            <ul>
+              <li><code>_id</code>: A unique identifier for each message.</li>
+              <li>
+                <code>_key</code>: An identifier for the document. Messages with
+                the same <code>_key</code> represent different versions or
+                updates to the same underlying data object. This is particularly
+                useful for topics like <code>v1/laps</code> where lap
+                information (like duration) is updated in real-time.
+              </li>
+            </ul>
 
-        <h4>Example Message (Topic: <code>v1/location</code>):</h4>
-        <pre><code>{
+            <h4>Example Message (Topic: <code>v1/location</code>):</h4>
+            <pre><code class="language-json">{
     "meeting_key": 1257,
     "session_key": 10007,
     "driver_number": 31,
@@ -477,48 +579,47 @@ else:
     "x": 0,
     "y": 0,
     "z": 0,
-    "_key": "1744370476603_31", // Identifies this location update for driver 31
-    "_id": 1747235800206        // Unique message ID
+    "_key": "1744370476603_31",
+    "_id": 1747235800206
 }</code></pre>
 
-        <h3>Examples:</h3>
+            <h3>Examples:</h3>
 
-        <h4>Python (MQTT with `paho-mqtt`):</h4>
-        <pre><code>import paho.mqtt.client as mqtt
+            <h4>Python (MQTT with `paho-mqtt`):</h4>
+            <pre><code class="language-python">import paho.mqtt.client as mqtt
 import ssl
 
 # Assume 'access_token' is a variable holding your obtained token
 access_token = "YOUR_ACCESS_TOKEN"
 mqtt_broker = "mqtt.openf1.org"
-mqtt_port = 8883 # Standard MQTT TLS port
+mqtt_port = 8883
 
-# Optional: Provide a username, can be your email or any non-empty string
-# Some brokers might not strictly require it if token-based auth is primary.
-mqtt_username = "user@example.com" # Or "openf1_user" or similar
+# Optional: Provide a username. Can be an email or any non-empty string.
+mqtt_username = "your_username_or_email@example.com"
 
-def on_connect(client, userdata, flags, rc, properties=None): # 'properties' for paho-mqtt v1.6+
+def on_connect(client, userdata, flags, rc, properties=None):
     if rc == 0:
         print("Connected to MQTT Broker!")
-        # Subscribe to topics upon connection
         client.subscribe("v1/location")
         client.subscribe("v1/laps")
-        # client.subscribe("v1/#") # To subscribe to all topics under v1
+        # client.subscribe("v1/#") # Subscribe to all v1 topics
     else:
         print(f"Failed to connect, return code {rc}")
 
 def on_message(client, userdata, msg):
     print(f"Received message on topic '{msg.topic}': {msg.payload.decode()}")
-    # Process the message (e.g., parse JSON, update UI)
+    # Example: data = json.loads(msg.payload.decode())
 
-client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2) # Specify callback API version
+# Use CallbackAPIVersion.VERSION2 for compatibility with properties in on_connect
+client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.username_pw_set(username=mqtt_username, password=access_token)
 
-# Enable TLS encryption
-client.tls_set(cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLS_CLIENT)
-# For some systems, you might need to specify ca_certs, certfile, keyfile:
-# client.tls_set(ca_certs="path/to/ca.crt", certfile="path/to/client.crt", keyfile="path/to/client.key",
-#                cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLS_CLIENT)
-# If using a common CA, often just client.tls_set() is enough or client.tls_set(cert_reqs=ssl.CERT_NONE) for testing (not recommended for production)
+# Enable TLS encryption for MQTTS
+client.tls_set(cert_reqs=ssl.CERT_NONE, # For testing: CERT_NONE. For production: ssl.CERT_REQUIRED
+               tls_version=ssl.PROTOCOL_TLS_CLIENT)
+# If using CERT_REQUIRED, you might need:
+# client.tls_set(ca_certs="path/to/ca.crt", cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLS_CLIENT)
+
 
 client.on_connect = on_connect
 client.on_message = on_message
@@ -529,273 +630,307 @@ try:
 except Exception as e:
     print(f"Connection error: {e}")
 </code></pre>
-        <p class="important">
-          Note on Paho-MQTT TLS: You might need to configure
-          <code>tls_set</code> with appropriate CA certificates depending on
-          your system's trust store. For testing,
-          <code>client.tls_set(tls_version=ssl.PROTOCOL_TLS_CLIENT)</code> often
-          works if the broker's certificate is issued by a well-known CA. For
-          production, ensure proper certificate validation.
-        </p>
+            <p class="important">
+              Note on Paho-MQTT TLS: For production, always use
+              <code>ssl.CERT_REQUIRED</code> and ensure your system trusts the
+              broker's CA or provide a <code>ca_certs</code> file.
+              <code>ssl.CERT_NONE</code> bypasses server certificate
+              verification and is insecure for production.
+            </p>
 
-        <h4>
-          JavaScript (Websockets in Browser or Node.js with `mqtt` library):
-        </h4>
-        <p>
-          For browsers, you can use a library that supports MQTT over Websockets
-          (like MQTT.js). For Node.js, the `mqtt` library also supports
-          Websocket connections.
-        </p>
-        <pre><code>// Using MQTT.js (can be used in browser via CDN or bundled, or in Node.js)
-// In Node.js: npm install mqtt
+            <h4>JavaScript (Websockets using `mqtt` library):</h4>
+            <p>
+              This example uses the popular <code>mqtt</code> library (MQTT.js),
+              which works in both Node.js and browsers.
+            </p>
+            <pre><code class="language-javascript">// In Node.js: npm install mqtt
 // In Browser: &lt;script src="https://unpkg.com/mqtt/dist/mqtt.min.js"&gt;&lt;/script&gt;
 
-// Assume 'accessToken' is available
+// Assume 'accessToken' is a variable holding your obtained token
 const accessToken = "YOUR_ACCESS_TOKEN";
-const websocketUrl = "wss://mqtt.openf1.org:8084/mqtt";
+const websocketUrl = "wss://mqtt.openf1.org:8084/mqtt"; // Standard path for MQTT over WSS
 
-// Optional: Provide a username, can be your email or any non-empty string
 const options = {
-    username: "user@example.com", // Or "openf1_ws_user" or similar
-    password: accessToken, // Use the access token as the password
-    protocolVersion: 5, // Or 4, depending on broker/client preference
+    username: "your_username_or_email@example.com", // Optional, can be any string
+    password: accessToken, // Access token is used as the password
     // clientId: 'my_websocket_client_' + Math.random().toString(16).substr(2, 8) // Optional
+    // protocolVersion: 5 // or 4, MQTT.js defaults to 4. Use 5 if broker supports and it's preferred.
 };
 
 const client = mqtt.connect(websocketUrl, options);
 
 client.on('connect', function () {
-    console.log('Connected to OpenF1 via Websockets!');
+    console.log('Connected to OpenF1 via Websockets (MQTT.js)!');
     client.subscribe('v1/location', function (err) {
         if (!err) {
             console.log('Subscribed to v1/location');
         } else {
-            console.error('Subscription error:', err);
+            console.error('Subscription error for v1/location:', err);
         }
     });
-    client.subscribe('v1/laps');
-    // client.subscribe('v1/#');
+    client.subscribe('v1/laps', function (err) {
+        if (!err) {
+            console.log('Subscribed to v1/laps');
+        } else {
+            console.error('Subscription error for v1/laps:', err);
+        }
+    });
+    // client.subscribe('v1/#'); // Subscribe to all v1 topics
 });
 
 client.on('message', function (topic, message) {
-    // message is Buffer
+    // message is a Buffer
     console.log(`Received on ${topic}: ${message.toString()}`);
     // const data = JSON.parse(message.toString());
     // Process data
 });
 
 client.on('error', function (error) {
-    console.error('Connection Error:', error);
+    console.error('MQTT Connection Error:', error);
 });
 
 client.on('close', function () {
-    console.log('Connection closed');
-});</code></pre>
-      </section>
+    console.log('MQTT Connection closed');
+});
 
-      <section id="choosing-tool">
-        <h2>Choosing the Right Tool: REST vs. MQTT vs. Websockets</h2>
-        <p>
-          Understanding when to use each method will help you build more
-          efficient and responsive applications.
-        </p>
+client.on('offline', function() {
+    console.log('MQTT Client is offline');
+});
 
-        <table>
-          <thead>
-            <tr>
-              <th>Method</th>
-              <th>Best For</th>
-              <th>Pros</th>
-              <th>Cons</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>REST API (Unauthenticated)</strong></td>
-              <td>
-                Accessing historical F1 data. Simple data retrieval without
-                real-time needs.
-              </td>
-              <td>
-                Easy to use, widely understood, no authentication overhead for
-                historical data.
-              </td>
-              <td>
-                Not for real-time data. Requires polling for updates, which is
-                inefficient.
-              </td>
-            </tr>
-            <tr>
-              <td><strong>REST API (Authenticated)</strong></td>
-              <td>
-                Fetching specific historical or current season data points on
-                demand where real-time streaming isn't critical. Initial data
-                loads for an application.
-              </td>
-              <td>
-                Standard HTTP, good for request-response patterns. Can access
-                all data including current season.
-              </td>
-              <td>
-                Less efficient for live updates compared to MQTT/Websockets due
-                to polling. Higher latency for real-time events.
-              </td>
-            </tr>
-            <tr>
-              <td><strong>MQTT</strong></td>
-              <td>
-                <strong
-                  >Highly recommended for real-time data feeds, especially in
-                  backend systems or IoT-like applications.</strong
-                >
-                Efficient for continuous streams of data.
-              </td>
-              <td>
-                Extremely efficient for real-time, low overhead,
-                publish/subscribe model, reliable delivery options (QoS). Ideal
-                for server-to-server communication. Good for environments where
-                bandwidth or battery life is a concern (though less so for
-                typical web apps).
-              </td>
-              <td>
-                Requires an MQTT client library. Can be slightly more complex to
-                set up initially than a simple REST call.
-              </td>
-            </tr>
-            <tr>
-              <td><strong>Websockets (MQTT over Websockets)</strong></td>
-              <td>
-                <strong
-                  >Highly recommended for real-time data feeds in web
-                  browser-based applications.</strong
-                >
-                When you need a persistent, two-way connection directly from a
-                user's browser to the live data stream.
-              </td>
-              <td>
-                Enables real-time, push-based updates directly in the browser,
-                avoiding HTTP polling. Lower latency than REST for live data.
-                Full-duplex communication.
-              </td>
-              <td>
-                Requires a Websocket-compatible MQTT library. Can be blocked by
-                some restrictive network firewalls (though less common with WSS
-                on port 443 or 8084).
-              </td>
-            </tr>
-          </tbody>
-        </table>
+client.on('reconnect', function() {
+    console.log('MQTT Client is attempting to reconnect');
+});
+</code></pre>
+          </section>
 
-        <h3>In Summary:</h3>
-        <ul>
-          <li>
-            For <strong>historical data</strong> where real-time updates aren't
-            needed: Use the <strong>unauthenticated REST API</strong>.
-          </li>
-          <li>
-            For
-            <strong>on-demand requests of current or historical data</strong>
-            without continuous streaming: Use the
-            <strong>authenticated REST API</strong>.
-          </li>
-          <li>
-            For
-            <strong
-              >real-time data in backend or non-browser applications</strong
-            >: Prioritize <strong>MQTT</strong> for its efficiency.
-          </li>
-          <li>
-            For <strong>real-time data in browser-based applications</strong>:
-            Use <strong>Websockets (MQTT over Websockets)</strong>.
-          </li>
-        </ul>
-        <p class="tip">
-          <strong
-            >Prioritize MQTT/Websockets for any application needing live F1
-            data.</strong
-          >
-          They are significantly more efficient and provide data as soon as it's
-          available.
-        </p>
-      </section>
+          <section id="choosing-tool">
+            <h2>Choosing the Right Tool: REST vs. MQTT vs. Websockets</h2>
+            <p>
+              Understanding when to use each method will help you build more
+              efficient and responsive applications.
+            </p>
 
-      <section id="security">
-        <h2>Security Best Practices</h2>
-        <p class="important">
-          <strong>CRITICAL: Protect Your Credentials!</strong>
-        </p>
-        <p>
-          The most important security consideration is the handling of your API
-          credentials (username and password used to obtain the OAuth2 token)
-          and the access token itself.
-        </p>
-        <ul>
-          <li>
-            <strong>Backend Authentication:</strong> The process of obtaining
-            the OAuth2 access token (exchanging your username and password)
-            <strong>MUST be implemented in your backend application code</strong
-            >. Never embed your direct username and password into client-side
-            applications (like JavaScript running in a user's browser or in a
-            desktop application that can be easily decompiled).
-          </li>
-          <li>
-            <strong>Token Storage:</strong>
+            <table>
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Best For</th>
+                  <th>Pros</th>
+                  <th>Cons</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>REST API (Unauthenticated)</strong></td>
+                  <td>
+                    Accessing historical F1 data. Simple data retrieval without
+                    real-time needs.
+                  </td>
+                  <td>
+                    Easy to use, widely understood, no authentication overhead
+                    for historical data.
+                  </td>
+                  <td>
+                    Not for real-time data. Requires polling for updates, which
+                    is inefficient.
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>REST API (Authenticated)</strong></td>
+                  <td>
+                    Fetching specific historical or current season data points
+                    on demand where real-time streaming isn't critical. Initial
+                    data loads for an application.
+                  </td>
+                  <td>
+                    Standard HTTP, good for request-response patterns. Can
+                    access all data including current season.
+                  </td>
+                  <td>
+                    Less efficient for live updates compared to MQTT/Websockets
+                    due to polling. Higher latency for real-time events.
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>MQTT (over MQTTS/TLS)</strong></td>
+                  <td>
+                    <strong
+                      >Highly recommended for real-time data feeds, especially
+                      in backend systems or non-browser applications.</strong
+                    >
+                    Efficient for continuous streams of data.
+                  </td>
+                  <td>
+                    Extremely efficient for real-time, low overhead,
+                    publish/subscribe model, reliable delivery options (QoS).
+                    Ideal for server-to-server or device communication.
+                  </td>
+                  <td>
+                    Requires an MQTT client library. Initial setup can be more
+                    involved than a simple REST call. Uses port 8883.
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Websockets (MQTT over WSS)</strong></td>
+                  <td>
+                    <strong
+                      >Highly recommended for real-time data feeds in web
+                      browser-based applications.</strong
+                    >
+                    For a persistent, two-way connection directly from a user's
+                    browser.
+                  </td>
+                  <td>
+                    Enables real-time, push-based updates directly in the
+                    browser, avoiding HTTP polling. Lower latency than REST for
+                    live data. Uses standard web ports (via WSS on 8084).
+                  </td>
+                  <td>
+                    Requires a Websocket-compatible MQTT library (like MQTT.js).
+                    Can be slightly more resource-intensive on the server per
+                    connection than raw MQTT.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>In Summary:</h3>
             <ul>
               <li>
-                <strong>Backend:</strong> If your backend needs to make
-                authenticated calls, store the access token securely (e.g., in
-                memory with appropriate access controls, or an encrypted store
-                if persisted).
+                For <strong>historical data</strong> where real-time updates
+                aren't needed: Use the
+                <strong>unauthenticated REST API</strong>.
               </li>
               <li>
+                For
                 <strong
-                  >Client-Side (if your backend proxies tokens to
-                  clients):</strong
+                  >on-demand requests of current or historical data</strong
                 >
-                If your backend generates a token and then passes it to a client
-                application (e.g., a single-page web app) to make direct calls
-                to OpenF1 (less common for MQTT/Websockets which might be
-                handled server-side), ensure the token is transmitted securely
-                (HTTPS) and stored appropriately (e.g., in memory, or HttpOnly
-                secure cookies if applicable). Be mindful of XSS risks.
+                without continuous streaming: Use the
+                <strong>authenticated REST API</strong>.
+              </li>
+              <li>
+                For
+                <strong
+                  >real-time data in backend or non-browser applications</strong
+                >: Prioritize <strong>MQTT (over MQTTS)</strong> for its
+                efficiency.
+              </li>
+              <li>
+                For
+                <strong>real-time data in browser-based applications</strong>:
+                Use <strong>Websockets (MQTT over WSS)</strong>.
               </li>
             </ul>
-          </li>
-          <li>
-            <strong>Token Exposure:</strong> Do not embed access tokens directly
-            into your client-side source code if it's publicly accessible. If
-            your client application (e.g., a mobile app or a web app) needs to
-            make authenticated calls, it should ideally request the data through
-            *your* backend, which then uses the OpenF1 token. Alternatively,
-            your backend can provide a short-lived token to the client
-            specifically for its session.
-          </li>
-          <li>
-            <strong>HTTPS Everywhere:</strong> Always use HTTPS for all API
-            requests (token endpoint, REST API, WSS for Websockets, MQTTS for
-            MQTT) to protect data in transit.
-          </li>
-          <li>
-            <strong>Token Expiration:</strong> Implement logic to handle token
-            expiration and refresh tokens as needed. Do not assume a token will
-            last forever.
-          </li>
-          <li>
-            <strong>Principle of Least Privilege:</strong> Only request the
-            scopes or access the data that your application absolutely needs.
-            (Currently, OpenF1 tokens seem to grant broad access, but this is a
-            general OAuth2 best practice).
-          </li>
-        </ul>
-        <p>
-          By following these guidelines, you can ensure that your applications
-          interact with the OpenF1 API securely.
-        </p>
-      </section>
-    </div>
+            <p class="tip">
+              <strong
+                >Prioritize MQTT or MQTT over Websockets for any application
+                needing live F1 data.</strong
+              >
+              They are significantly more efficient and provide data as soon as
+              it's available.
+            </p>
+          </section>
 
-    <footer>
-      <p>&copy; 2024 OpenF1 API. Happy Coding!</p>
-    </footer>
-  </body>
+          <section id="security">
+            <h2>Security Best Practices</h2>
+            <p class="important">
+              <strong>CRITICAL: Protect Your Credentials!</strong>
+            </p>
+            <p>
+              The most important security consideration is the handling of your
+              API credentials (username and password used to obtain the OAuth2
+              token) and the access token itself.
+            </p>
+            <ul>
+              <li>
+                <strong>Backend Authentication:</strong> The process of
+                obtaining the OAuth2 access token (exchanging your username and
+                password)
+                <strong
+                  >MUST be implemented in your backend application code</strong
+                >. Never embed your direct username and password into
+                client-side applications (like JavaScript running in a user's
+                browser or in a desktop application that can be easily
+                decompiled).
+              </li>
+              <li>
+                <strong>Token Storage:</strong>
+                <ul>
+                  <li>
+                    <strong>Backend:</strong> If your backend needs to make
+                    authenticated calls, store the access token securely (e.g.,
+                    in memory with appropriate access controls, or an encrypted
+                    store if persisted).
+                  </li>
+                  <li>
+                    <strong>Client-Side (Caution Advised):</strong> If your
+                    architecture involves your backend providing a token to a
+                    client application (e.g., a single-page web app) for
+                    *direct* OpenF1 API calls:
+                    <ul>
+                      <li>Transmit securely (HTTPS).</li>
+                      <li>
+                        Store appropriately (e.g., in memory for the session;
+                        avoid <code>localStorage</code> for sensitive tokens due
+                        to XSS risks. HttpOnly, Secure cookies are better if
+                        applicable for web).
+                      </li>
+                      <li>
+                        Consider that for MQTT/Websocket connections from the
+                        client, the token will be in client-side memory. It's
+                        often more secure for your backend to manage the
+                        MQTT/Websocket connection and stream data to your
+                        clients.
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <strong>Token Exposure:</strong> Do not embed access tokens
+                directly into your client-side source code if it's publicly
+                accessible. For client applications, the ideal pattern is for
+                your application to communicate with *your* backend, and your
+                backend then makes authenticated requests to the OpenF1 API.
+              </li>
+              <li>
+                <strong>HTTPS/MQTTS/WSS Everywhere:</strong> Always use secure,
+                encrypted connections for all API communication (token endpoint,
+                REST API, MQTTS for MQTT, WSS for Websockets) to protect data in
+                transit.
+              </li>
+              <li>
+                <strong>Token Expiration:</strong> Implement logic to handle
+                token expiration. Your application should be able to refresh
+                tokens or request new ones before they expire or when an API
+                call indicates an invalid/expired token.
+              </li>
+              <li>
+                <strong>Principle of Least Privilege:</strong> While current
+                tokens may grant broad access, always design with the idea of
+                requesting only the permissions/scopes your application needs (a
+                general OAuth2 best practice for the future).
+              </li>
+            </ul>
+            <p>
+              By following these guidelines, you can ensure that your
+              applications interact with the OpenF1 API securely and
+              responsibly.
+            </p>
+          </section>
+        </div>
+
+        <footer>
+          <p>
+            &copy;
+            <script>
+              document.write(new Date().getFullYear());
+            </script>
+            OpenF1 API. Happy Coding!
+          </p>
+        </footer>
+      </body>
+    </html>
+  </head>
 </html>
