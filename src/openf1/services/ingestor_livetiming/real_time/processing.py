@@ -70,7 +70,9 @@ async def ingest_line(line: str):
             docs_mongo_json = [
                 json.dumps(d, default=json_serializer) for d in docs_mongo
             ]
-            await publish_messages_to_mqtt(topic=collection, messages=docs_mongo_json)
+            await publish_messages_to_mqtt(
+                topic=f"v1/{collection}", messages=docs_mongo_json
+            )
         await insert_data_async(collection_name=collection, docs=docs_mongo)
 
 
