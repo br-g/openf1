@@ -523,7 +523,7 @@ else:
 
             <h3>Code examples</h3>
 
-            <h4>Python (MQTT with `paho-mqtt`):</h4>
+            <h4>Python (MQTT with `paho-mqtt`)</h4>
             <pre><code class="language-python">import paho.mqtt.client as mqtt
 import ssl
 
@@ -563,7 +563,7 @@ except Exception as e:
     print(f"Connection error: {e}")
 </code></pre>
 
-            <h4>JavaScript (Websockets using `mqtt` library):</h4>
+            <h4>JavaScript (Websockets using `mqtt` library)</h4>
             <p>
               This example uses the popular <code>mqtt</code> library (MQTT.js),
               which works in both Node.js and browsers.
@@ -626,7 +626,7 @@ client.on('reconnect', function() {
           </section>
 
           <section id="choosing-tool">
-            <h2>Choosing the Right Tool: REST vs. MQTT vs. Websockets</h2>
+            <h2>Choosing the right tool: REST vs. MQTT vs. Websockets</h2>
             <p>
               Understanding when to use each method will help you build more
               efficient and responsive applications.
@@ -664,14 +664,14 @@ client.on('reconnect', function() {
           </section>
 
           <section id="security">
-            <h2>Security Best Practices</h2>
+            <h2>Security best practices</h2>
             <p>
               The most important security consideration is the handling of your
               API credentials (username and password used to obtain the OAuth2
               token) and the access token itself.
             </p>
 
-            <h3>Backend Authentication</h3>
+            <h3>Backend authentication</h3>
             <p>
               The process of obtaining the OAuth2 access token (exchanging your
               username and password)
@@ -682,12 +682,11 @@ client.on('reconnect', function() {
               desktop application that can be easily decompiled).
             </p>
 
-            <h3>Token Storage</h3>
+            <h3>Token storage</h3>
             <h4>Backend</h4>
             <p>
               If your backend needs to make authenticated calls, store the
-              access token securely (e.g., in memory with appropriate access
-              controls, or an encrypted store if persisted).
+              access token securely.
             </p>
             <h4>Client-Side</h4>
             <p>
@@ -713,7 +712,7 @@ client.on('reconnect', function() {
                   </ul>
             </p>
 
-            <h3>Token Exposure</h3>
+            <h3>Token exposure</h3>
             <p>
                 Do not embed access tokens
                 directly into your client-side source code if it's publicly
