@@ -1,7 +1,7 @@
 name: "Deploy documentation"
 on:
   push:
-    branches: [main, auth-documentation]
+    branches: [main]
 
 jobs:
   deploy_documentation:
