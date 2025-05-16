@@ -12,11 +12,17 @@ jobs:
 
       - name: Build Slate documentation
         run: |
+          mkdir -p ${{ github.workspace }}/build
           docker run --rm \
+          --user $(id -u):$(id -g) \
           --name slate \
           -v ${{ github.workspace }}/build:/srv/slate/build \
           -v ${{ github.workspace }}/documentation:/srv/slate/source \
           slatedocs/slate build
+
+      - name: Copy additional webpages
+        run: |
+          cp ${{ github.workspace }}/documentation/pages/* build
 
       - name: Deploy documentation to Github Pages
         uses: JamesIves/github-pages-deploy-action@v4

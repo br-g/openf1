@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      type="image/png"
+      sizes="32x32"
+      rel="icon"
+      href="https://storage.googleapis.com/openf1-public/images/favicon.png"
+    />
+    <title>Using OpenF1 with authentication</title>
+    <style>
+      :root {
+        --background-color: #ffffff;
+        --text-color: #212529;
+        --muted-text-color: #6c757d;
+        --primary-accent-color: #d70000;
+        --light-gray-background: #f8f9fa;
+        --border-color: #dee2e6;
+        --code-background-color: #282c34;
+        --code-text-color: #abb2bf;
+        --font-family-sans-serif: -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif,
+          "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+      }
+
+      body {
+        font-family: var(--font-family-sans-serif);
+        line-height: 1.7;
+        margin: 0;
+        padding: 0;
+        background-color: var(--light-gray-background);
+        color: var(--text-color);
+        font-size: 16px;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 50px auto;
+        padding: 30px;
+        background: var(--background-color);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      section {
+        margin-bottom: 40px;
+        padding-bottom: 20px;
+      }
+
+      section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      p {
+        margin-top: 0.5em;
+      }
+
+      h2 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: var(--text-color);
+        margin-top: 0;
+        margin-bottom: 20px;
+        padding-bottom: 0px;
+        border-bottom: 3px solid var(--primary-accent-color);
+      }
+
+      h3 {
+        font-size: 1.375rem;
+        font-weight: 600;
+        color: #343a40;
+        margin-top: 30px;
+        margin-bottom: 0px;
+      }
+
+      h4 {
+        margin-bottom: 0;
+      }
+
+      p,
+      ul,
+      ol {
+        margin-bottom: 1rem;
+        font-size: 1rem;
+      }
+
+      ul,
+      ol {
+        padding-left: 20px;
+      }
+
+      li {
+        margin-bottom: 0.5rem;
+      }
+
+      pre {
+        background: var(--code-background-color);
+        color: var(--code-text-color);
+        padding: 20px;
+        border-radius: 6px;
+        overflow-x: auto;
+        font-family: var(--font-family-monospace);
+        font-size: 0.875rem;
+        line-height: 1.5;
+        margin: 4px 0 20px 0;
+      }
+
+      code {
+        /* Inline code */
+        font-family: var(--font-family-monospace);
+        background-color: #e9ecef;
+        color: #cb2431; /* A subtle red for inline code to differentiate */
+        padding: 0.2em 0.4em;
+        margin: 0;
+        font-size: 85%;
+        border-radius: 3px;
+      }
+
+      pre code {
+        /* Code within pre blocks */
+        background-color: transparent;
+        color: inherit;
+        padding: 0;
+        margin: 0;
+        font-size: inherit;
+        border-radius: 0;
+      }
+
+      .important,
+      .tip {
+        padding: 15px 20px;
+        margin: 0 0 20px 0;
+        border-radius: 6px;
+        font-size: 0.95rem;
+      }
+
+      .important {
+        background-color: #fff3cd; /* Light yellow */
+        border-left: 5px solid #ffeeba; /* Yellow */
+        color: #856404;
+      }
+
+      .tip {
+        background-color: #d1ecf1; /* Light blue */
+        border-left: 5px solid #bee5eb; /* Blue */
+        color: #0c5460;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 0.9rem;
+      }
+
+      th,
+      td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      th {
+        background-color: var(--light-gray-background);
+        font-weight: 600;
+        color: var(--text-color);
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      tr:hover {
+        background-color: #f1f3f5;
+      }
+
+      .button {
+        display: inline-block;
+        background-color: var(--primary-accent-color);
+        color: var(--background-color);
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+      }
+
+      .button:hover,
+      .button:focus {
+        background-color: #0056b3; /* Darker shade of accent */
+        color: var(--background-color);
+        transform: translateY(-1px);
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        body {
+          font-size: 15px; /* Slightly smaller base font for mobile */
+        }
+
+        .container {
+          margin: 0;
+          padding: 20px;
+          width: 100%;
+          box-sizing: border-box;
+          border-radius: 0;
+          box-shadow: none;
+        }
+
+        h2 {
+          font-size: 1.6rem;
+          line-height: 2.3rem;
+          padding-bottom: 8px;
+        }
+
+        h3 {
+          font-size: 1.25rem;
+        }
+
+        table {
+          font-size: 0.85rem;
+          display: block; /* Make table block to allow horizontal scrolling if needed */
+          overflow-x: auto; /* Add horizontal scroll to table itself */
+          -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        }
+
+        th,
+        td {
+          padding: 8px 5px;
+        }
+
+        pre {
+          padding: 15px;
+          font-size: 0.8rem;
+          white-space: pre-wrap;
+          word-break: break-all;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <section id="introduction">
+        <h2>Using OpenF1 with authentication</h2>
+        <p>
+            This guide explains how to access the OpenF1 API as an authenticated user.
+            Authentication removes rate limits, provides access to both historical and real-time data, and enables live data streaming through MQTT or WebSocket.
+        </p>
+        <p>
+            The following sections will walk you through these features and how to make use of them.
+        </p>
+      </section>
+
+      <section id="authentication">
+        <h2>Obtaining an OAuth2 access token</h2>
+        <p>
+          To access real-time data, you'll need to obtain an OAuth2 access token. This
+          token proves your identity to the API.
+        </p>
+        <p>
+          You can get an access token by sending a POST request to the
+          <code>https://dev.openf1.org/token</code> endpoint with your
+          username and password.
+        </p>
+
+        <h3>Bash/cURL example</h3>
+        <pre><code class="language-bash">curl -X POST "https://dev.openf1.org/token" \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "username=YOUR_USERNAME&password=YOUR_PASSWORD"</code></pre>
+
+        <h3>Python example</h3>
+        <pre><code class="language-python">import requests
+
+token_url = "https://dev.openf1.org/token"
+payload = {
+    "username": "YOUR_USERNAME",
+    "password": "YOUR_PASSWORD"
+}
+headers = {
+    "Content-Type": "application/x-www-form-urlencoded"
+}
+
+response = requests.post(token_url, data=payload, headers=headers)
+
+if response.status_code == 200:
+    token_data = response.json()
+    print(f"Access token: {token_data.get('access_token')}")
+    print(f"Expires in: {token_data.get('expires_in')} seconds")
+else:
+    print(f"Error obtaining token: {response.status_code} - {response.text}")</code></pre>
+
+        <h3>JavaScript example</h3>
+        <pre><code class="language-javascript">async function getAccessToken() {
+    const tokenUrl = "https://dev.openf1.org/token";
+    const params = new URLSearchParams();
+    params.append("username", "YOUR_USERNAME");
+    params.append("password", "YOUR_PASSWORD");
+
+    try {
+        const response = await fetch(tokenUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: params,
+        });
+
+        if (response.ok) {
+            const tokenData = await response.json();
+            console.log("Access token:", tokenData.access_token);
+            console.log("Expires in:", tokenData.expires_in, "seconds");
+            return tokenData.access_token;
+        } else {
+            console.error("Error obtaining token:", response.status, await response.text());
+            return null;
+        }
+    } catch (error) {
+        console.error("Network error or other issue:", error);
+        return null;
+    }
+}
+
+// Example usage:
+// getAccessToken().then(token => {
+//     if (token) {
+//         // Use the token
+//     }
+// });</code></pre>
+
+        <h3>Response</h3>
+        <p>
+          A successful request will return a JSON object containing your
+          access token and its expiry time:
+        </p>
+        <pre><code class="language-json">{
+    "expires_in": "3600",
+    "access_token": "YOUR_ACCESS_TOKEN",
+    "token_type": "bearer"
+}</code></pre>
+        <p class="important">
+          <strong>Important:</strong> Tokens expire after 1 hour. Your application should
+          be designed to handle token expiry gracefully by requesting a new
+          one.
+        </p>
+      </section>
+
+      <section id="rest-api">
+        <h2>Authenticated requests to the REST API</h2>
+        <p>
+          To access real-time data, you must include your access token in
+          the
+          <code>Authorization</code> header as a Bearer token.
+        </p>
+
+        <h3>Bash/cURL example</h3>
+        <pre><code class="language-bash"># Replace YOUR_ACCESS_TOKEN with the token you obtained
+curl -X 'GET' \
+    'https://dev.openf1.org/v1/sessions?year=2024' \
+    -H 'accept: application/json' \
+    -H 'Authorization: Bearer YOUR_ACCESS_TOKEN'</code></pre>
+
+        <h3>Python example</h3>
+        <pre><code class="language-python">import requests
+
+# Assume 'access_token' is a variable holding your obtained token
+access_token = "YOUR_ACCESS_TOKEN"
+api_url = "https://dev.openf1.org/v1/sessions?year=2024" # Example
+
+headers = {
+    "accept": "application/json",
+    "Authorization": f"Bearer {access_token}"
+}
+
+response = requests.get(api_url, headers=headers)
+
+if response.status_code == 200:
+    data = response.json()
+    print(data)
+else:
+    print(f"Error fetching data: {response.status_code} - {response.text}")</code></pre>
+
+        <h3>JavaScript example</h3>
+        <pre><code class="language-javascript">async function fetchDataWithToken(accessToken) {
+    const apiUrl = "https://dev.openf1.org/v1/sessions?year=2024"; // Example
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: "GET",
+            headers: {
+                "accept": "application/json",
+                "Authorization": `Bearer ${accessToken}`,
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            return data;
+        } else {
+            console.error("Error fetching data:", response.status, await response.text());
+            return null;
+        }
+    } catch (error) {
+        console.error("Network error or other issue:", error);
+        return null;
+    }
+}
+
+// Example usage:
+// getAccessToken().then(token => {
+//     if (token) {
+//         fetchDataWithToken(token);
+//     }
+// });</code></pre>
+      </section>
+
+      <section id="mqtt-websockets">
+        <h2>Real-time data with MQTT & Websockets</h2>
+        <p>
+          For the most efficient access to real-time data, we offer MQTT
+          and Websocket connections. These methods push data to your
+          application as soon as it's available, eliminating the need for
+          constant polling of the REST API.
+        </p>
+        <p class="tip">
+          <strong
+            >This is the recommended method for accessing live data.</strong
+          >
+        </p>
+
+        <h3>Connection Details</h3>
+        <ul>
+          <li>
+            <strong>MQTT server:</strong> <code>mqtt.openf1.org</code>
+          </li>
+          <li><strong>MQTT port (TLS/MQTTS):</strong> <code>8883</code></li>
+          <li>
+            <strong>Websockets URL (WSS for MQTT over Websockets):</strong>
+            <code>wss://mqtt.openf1.org:8084/mqtt</code>
+          </li>
+        </ul>
+
+        <h3>Authentication</h3>
+        <p>
+          Both MQTT and Websocket connections use the OAuth2
+          <strong>access token as the password</strong> for authentication.
+          The username can typically be any non-empty string, or your
+          registered email if preferred/required by your client library for
+          token-based auth.
+        </p>
+
+        <h3>Topics</h3>
+        <p>
+          Topics for MQTT/Websockets directly correspond to the REST API
+          endpoint paths. For example:
+        </p>
+        <ul>
+          <li><code>v1/sessions</code></li>
+          <li><code>v1/laps</code></li>
+          <li><code>v1/location</code></li>
+          <li>...</li>
+        </ul>
+        <p>
+          You can subscribe to specific topics or use wildcards (e.g.,
+          <code>#</code> to subscribe to all topics if your client library
+          supports it).
+        </p>
+
+        <h3>Message Format</h3>
+        <p>
+          Messages received via MQTT/Websockets are JSON objects, mirroring
+          the data from the corresponding REST API endpoint. However, they
+          include two additional fields:
+        </p>
+        <ul>
+          <li>
+            <code>_id</code> (integer): A unique, ever-increasing identifier
+            assigned to each message. It can be used to sort messages
+            chronologically.
+          </li>
+          <li>
+            <code>_key</code> (string): An identifier for the document.
+            Messages with the same <code>_key</code> represent different
+            versions or updates to the same underlying data object. This is
+            particularly useful for topics like <code>v1/laps</code> where
+            lap information (like sector duration) is updated in real-time.
+          </li>
+        </ul>
+
+        <h4>Example message (topic: <code>v1/location</code>)</h4>
+        <pre><code class="language-json">{
+    "meeting_key": 1257,
+    "session_key": 10007,
+    "driver_number": 31,
+    "date": "2025-04-11T11:21:16.603025+00:00",
+    "x": 0,
+    "y": 0,
+    "z": 0,
+    "_key": "1744370476603_31",
+    "_id": 1747235800206
+}</code></pre>
+
+        <h3>Code examples</h3>
+
+        <h4>Python (MQTT with `paho-mqtt`)</h4>
+        <pre><code class="language-python">import paho.mqtt.client as mqtt
+import ssl
+
+# Assume 'access_token' is a variable holding your obtained token
+access_token = "YOUR_ACCESS_TOKEN"
+mqtt_broker = "mqtt.openf1.org"
+mqtt_port = 8883
+
+# Optional: Provide a username. Can be an email or any non-empty string.
+mqtt_username = "your_username_or_email@example.com"
+
+def on_connect(client, userdata, flags, rc, properties=None):
+    if rc == 0:
+        print("Connected to OpenF1 MQTT broker")
+        client.subscribe("v1/location")
+        client.subscribe("v1/laps")
+        # client.subscribe("#") # Subscribe to all topics
+    else:
+        print(f"Failed to connect, return code {rc}")
+
+def on_message(client, userdata, msg):
+    print(f"Received message on topic '{msg.topic}': {msg.payload.decode()}")
+    # Example: data = json.loads(msg.payload.decode())
+
+client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+client.username_pw_set(username=mqtt_username, password=access_token)
+client.tls_set(cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLS_CLIENT)
+
+client.on_connect = on_connect
+client.on_message = on_message
+
+try:
+    client.connect(mqtt_broker, mqtt_port, 60)
+    client.loop_forever() # Starts a blocking network loop
+except Exception as e:
+    print(f"Connection error: {e}")
+</code></pre>
+
+        <h4>JavaScript (Websockets using `mqtt` library)</h4>
+        <p>
+          This example uses the popular <code>mqtt</code> library (MQTT.js),
+          which works in both Node.js and browsers.
+        </p>
+        <pre><code class="language-javascript">// In Node.js: npm install mqtt
+// In Browser: &lt;script src="https://unpkg.com/mqtt/dist/mqtt.min.js"&gt;&lt;/script&gt;
+
+// Assume 'accessToken' is a variable holding your obtained token
+const accessToken = "YOUR_ACCESS_TOKEN";
+const websocketUrl = "wss://mqtt.openf1.org:8084/mqtt";
+
+const options = {
+    username: "your_username_or_email@example.com", // Optional, can be any string
+    password: accessToken // Access token is used as the password
+};
+
+const client = mqtt.connect(websocketUrl, options);
+
+client.on('connect', function () {
+    console.log('Connected to OpenF1 via Websockets');
+    client.subscribe('v1/location', function (err) {
+        if (!err) {
+            console.log('Subscribed to v1/location');
+        } else {
+            console.error('Subscription error for v1/location:', err);
+        }
+    });
+    client.subscribe('v1/laps', function (err) {
+        if (!err) {
+            console.log('Subscribed to v1/laps');
+        } else {
+            console.error('Subscription error for v1/laps:', err);
+        }
+    });
+    // client.subscribe('#'); // Subscribe to all topics
+});
+
+client.on('message', function (topic, message) {
+    console.log(`Received on ${topic}: ${message.toString()}`);
+    // const data = JSON.parse(message.toString());
+    // Process data
+});
+
+client.on('error', function (error) {
+    console.error('MQTT Connection Error:', error);
+});
+
+client.on('close', function () {
+    console.log('MQTT Connection closed');
+});
+
+client.on('offline', function() {
+    console.log('MQTT Client is offline');
+});
+
+client.on('reconnect', function() {
+    console.log('MQTT Client is attempting to reconnect');
+});
+</code></pre>
+      </section>
+
+      <section id="choosing-tool">
+        <h2>Choosing the right tool: REST vs. MQTT vs. Websockets</h2>
+        <p>
+          Understanding when to use each method will help you build more
+          efficient and responsive applications.
+        </p>
+
+        <ul>
+          <li>
+            For
+            <strong
+              >on-demand requests of current or historical data</strong
+            >
+            without continuous streaming: use the
+            <strong>REST API</strong>.
+          </li>
+          <li>
+            For
+            <strong
+              >real-time data in backend or non-browser applications</strong
+            >: prioritize <strong>MQTT</strong> for its efficiency.
+          </li>
+          <li>
+            For
+            <strong>real-time data in browser-based applications</strong>:
+            use <strong>Websockets (MQTT over WSS)</strong>.
+          </li>
+        </ul>
+        <p class="tip">
+          <strong
+            >Please prioritize MQTT or Websockets for any application
+            needing live F1 data.</strong
+          >
+          They are significantly more efficient and provide data as soon as
+          it's available.
+        </p>
+      </section>
+
+      <section id="security">
+        <h2>Security best practices</h2>
+        <p>
+          The most important security consideration is the handling of your
+          API credentials (username and password used to obtain the OAuth2
+          token) and the access token itself.
+        </p>
+
+        <h3>Backend authentication</h3>
+        <p>
+          The process of obtaining the OAuth2 access token (exchanging your
+          username and password)
+          <strong
+            >MUST be implemented in your backend application code</strong
+          >. Never embed your direct username and password into client-side
+          applications (like JavaScript running in a user's browser or in a
+          desktop application that can be easily decompiled).
+        </p>
+
+        <h3>Token storage</h3>
+        <h4>Backend</h4>
+        <p>
+          If your backend needs to make authenticated calls, store the
+          access token securely.
+        </p>
+        <h4>Client-Side</h4>
+        <p>
+            If your
+            architecture involves your backend providing a token to a
+            client application (e.g., a single-page web app) for direct
+            OpenF1 API calls:
+            <ul>
+                <li>Transmit securely (HTTPS).</li>
+                <li>
+                  Store appropriately (e.g., in memory for the session;
+                  avoid <code>localStorage</code> for sensitive tokens due
+                  to XSS risks. HttpOnly, Secure cookies are better if
+                  applicable for web).
+                </li>
+                <li>
+                  Consider that for MQTT/Websocket connections from the
+                  client, the token will be in client-side memory. It's
+                  often more secure for your backend to manage the
+                  MQTT/Websocket connection and stream data to your
+                  clients.
+                </li>
+              </ul>
+        </p>
+
+        <h3>Token exposure</h3>
+        <p>
+            Do not embed access tokens
+            directly into your client-side source code if it's publicly
+            accessible. For client applications, the ideal pattern is for
+            your application to communicate with *your* backend, and your
+            backend then makes authenticated requests to the OpenF1 API.
+          </li>
+        </p>
+          </section>
+    </div>
+  </body>
+</html>
