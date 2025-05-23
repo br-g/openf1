@@ -273,19 +273,19 @@
         </p>
         <p>
           You can get an access token by sending a POST request to the
-          <code>https://dev.openf1.org/token</code> endpoint with your
+          <code>https://api.openf1.org/token</code> endpoint with your
           username and password.
         </p>
 
         <h3>Bash/cURL example</h3>
-        <pre><code class="language-bash">curl -X POST "https://dev.openf1.org/token" \
+        <pre><code class="language-bash">curl -X POST "https://api.openf1.org/token" \
     -H "Content-Type: application/x-www-form-urlencoded" \
     -d "username=YOUR_USERNAME&password=YOUR_PASSWORD"</code></pre>
 
         <h3>Python example</h3>
         <pre><code class="language-python">import requests
 
-token_url = "https://dev.openf1.org/token"
+token_url = "https://api.openf1.org/token"
 payload = {
     "username": "YOUR_USERNAME",
     "password": "YOUR_PASSWORD"
@@ -305,7 +305,7 @@ else:
 
         <h3>JavaScript example</h3>
         <pre><code class="language-javascript">async function getAccessToken() {
-    const tokenUrl = "https://dev.openf1.org/token";
+    const tokenUrl = "https://api.openf1.org/token";
     const params = new URLSearchParams();
     params.append("username", "YOUR_USERNAME");
     params.append("password", "YOUR_PASSWORD");
@@ -369,7 +369,7 @@ else:
         <h3>Bash/cURL example</h3>
         <pre><code class="language-bash"># Replace YOUR_ACCESS_TOKEN with the token you obtained
 curl -X 'GET' \
-    'https://dev.openf1.org/v1/sessions?year=2024' \
+    'https://api.openf1.org/v1/sessions?year=2024' \
     -H 'accept: application/json' \
     -H 'Authorization: Bearer YOUR_ACCESS_TOKEN'</code></pre>
 
@@ -378,7 +378,7 @@ curl -X 'GET' \
 
 # Assume 'access_token' is a variable holding your obtained token
 access_token = "YOUR_ACCESS_TOKEN"
-api_url = "https://dev.openf1.org/v1/sessions?year=2024" # Example
+api_url = "https://api.openf1.org/v1/sessions?year=2024" # Example
 
 headers = {
     "accept": "application/json",
@@ -395,7 +395,7 @@ else:
 
         <h3>JavaScript example</h3>
         <pre><code class="language-javascript">async function fetchDataWithToken(accessToken) {
-    const apiUrl = "https://dev.openf1.org/v1/sessions?year=2024"; // Example
+    const apiUrl = "https://api.openf1.org/v1/sessions?year=2024"; // Example
 
     try {
         const response = await fetch(apiUrl, {
