@@ -28,7 +28,7 @@ except Exception as e:
 
 
 async def publish_messages_to_mqtt(
-    topic: str, messages: list[str], qos: int = 1
+    topic: str, messages: list[str], qos: int = 0
 ) -> bool:
     """
     Publish multiple messages to an MQTT topic asynchronously.
