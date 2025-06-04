@@ -25,7 +25,7 @@ toc_footers:
     </a>
   - |
     <p id="footer_text">
-        <a href="https://form.typeform.com/to/lCYUbpPz" target="_blank">Contact</a>&nbsp;&nbsp;|&nbsp;&nbsp;Made in Paris, France <img src="https://storage.googleapis.com/openf1-public/images/france_flag.png">
+        <a href="https://tally.so/r/wQWZdp" target="_blank">Contact</a>&nbsp;&nbsp;|&nbsp;&nbsp;Made in Paris, France <img src="https://storage.googleapis.com/openf1-public/images/france_flag.png">
     </p>
 
 includes:
