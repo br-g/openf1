@@ -9,6 +9,7 @@ from openf1.services.ingestor_livetiming.core.objects import (
     Document,
     Message,
 )
+from openf1.util.misc import to_timedelta
 
 
 @dataclass(eq=False)
@@ -127,8 +128,11 @@ class LapsCollection(Collection):
 
                 try:
                     lap_time = data.get("LastLapTime", {}).get("Value")
+                    if isinstance(lap_time, str):
+                        lap_time = to_timedelta(lap_time)
                 except:
                     lap_time = None
+
                 if isinstance(lap_time, timedelta):
                     self._update_lap(
                         driver_number=driver_number,
