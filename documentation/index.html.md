@@ -30,7 +30,7 @@ toc_footers:
 
 includes:
   - introduction
-  - api_methods
+  - api_endpoints
   - data_filtering
   - csv_format
   - faq
