@@ -33,6 +33,7 @@ includes:
   - api_endpoints
   - data_filtering
   - csv_format
+  - tutorials
   - faq
   - community_and_support
   - roadmap
