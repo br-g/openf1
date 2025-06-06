@@ -390,10 +390,13 @@
             <a href="#csv-format" class="toc-h1 toc-link" data-title="CSV Format">CSV Format</a>
           </li>
           <li>
+            <a href="#tutorials" class="toc-h1 toc-link" data-title="Tutorials">Tutorials</a>
+          </li>
+          <li>
             <a href="#faq" class="toc-h1 toc-link" data-title="FAQ">FAQ</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#can-i-access-past-data-during-an-ongoing-session" class="toc-h2 toc-link" data-title="Can I access past data during an ongoing session?">Can I access past data during an ongoing session?</a>
+                    <a href="#how-to-access-real-time-data" class="toc-h2 toc-link" data-title="How to access real-time data?">How to access real-time data?</a>
                   </li>
                   <li>
                     <a href="#what-39-s-the-delay-between-live-events-and-api-updates" class="toc-h2 toc-link" data-title="What's the delay between live events and API updates?">What's the delay between live events and API updates?</a>
@@ -1930,14 +1933,28 @@ To get all sessions in September 2023, use:
 <p><strong>Example</strong><br>
 To get all sessions for the year 2023 in CSV format, use the following URL:
 <a href="https://api.openf1.org/v1/sessions?year=2023&csv=true" target="_blank">https://api.openf1.org/v1/sessions?year=2023&amp;csv=true</a></p>
-<h1 id='faq'>FAQ</h1><h3 id='can-i-access-past-data-during-an-ongoing-session'>Can I access past data during an ongoing session?</h3>
-<p>Yes, real-time storage allows for instant access to past and current session data.</p>
+<h1 id='tutorials'>Tutorials</h1>
+<ul>
+  <li>
+    <a href="https://github.com/bordanattila/OpenF1_tutorial" target="_blank">Creating an interactive strategy dashboard with Python</a>, by <a href="https://github.com/bordanattila" target="_blank">@bordanattila</a>
+  </li>
+  <li>
+    <a href="https://openf1.org/auth.html" target="_blank">Streaming live data with OpenF1</a>
+  </li>
+</ul>
+
+<p>
+  Have a great OpenF1 tutorial to share? <a href="https://github.com/br-g/openf1/blob/main/CONTRIBUTING.md" target="_blank">We’d love to feature it</a>! 
+</p>
+<h1 id='faq'>FAQ</h1><h3 id='how-to-access-real-time-data'>How to access real-time data?</h3>
+<p>Real-time data can be accessed via REST API, MQTT, or WebSockets, and requires a paid account.
+Apply by filling out <a href="https://tally.so/r/w2yWDb" target="_blank">this form</a>.</p>
 <h3 id='what-39-s-the-delay-between-live-events-and-api-updates'>What&#39;s the delay between live events and API updates?</h3>
 <p>The API typically updates about 3 seconds after a live event.
 However, this time could be extended due to factors like serverless cold starts, which occur when the service is scaling up.<br>
 As a point of reference, F1 TV typically has a 6-second delay.</p>
 <h3 id='is-there-a-query-timeout'>Is there a query timeout?</h3>
-<p>Queries are limited to a 1-minute timeout. If your request takes too long, consider breaking it down into smaller queries and then combining the results.</p>
+<p>Queries are limited to a 10 seconds timeout. If your request takes too long, consider breaking it down into smaller queries and then combining the results.</p>
 <h1 id='community-and-support'>Community and Support</h1>
 <p>For community-driven questions or feedback, we encourage you to participate in our <a href="https://github.com/br-g/openf1/discussions" target="_blank">Github Discussions</a>. If you encounter any bugs or issues, please report them by creating a new issue on <a href="https://github.com/br-g/openf1/issues" target="_blank">our Github repository</a>.</p>
 
@@ -1959,9 +1976,10 @@ We welcome all contributions that help advance this goal!</p>
 <p>To get started, please review our <a href="https://github.com/br-g/openf1/blob/main/CONTRIBUTING.md" target="_blank">contribution guidelines</a>.</p>
 <h3 id='contributors'>Contributors</h3>
 <ul>
-<li><a href="https://github.com/br-g" target="_blank">br-g</a></li>
-<li><a href="https://github.com/PrestonHager" target="_blank">PrestonHager</a></li>
-<li><a href="https://github.com/Nik-code" target="_blank">Nik-code</a></li>
+<li><a href="https://github.com/br-g" target="_blank">@br-g</a></li>
+<li><a href="https://github.com/PrestonHager" target="_blank">@PrestonHager</a></li>
+<li><a href="https://github.com/Nik-code" target="_blank">@Nik-code</a></li>
+<li><a href="https://github.com/bordanattila" target="_blank">@bordanattila</a></li>
 </ul>
 <h1 id='usage-guidelines'>Usage Guidelines</h1>
 <p>The OpenF1 API is an open-source service designed to be easily accessible, requiring no authentication and imposing no rate limits. We kindly ask that you use the service responsibly to conserve computational resources. If you find the API useful, please consider <a href="https://www.buymeacoffee.com/openf1" target="_blank">donating</a> to support the long-term sustainability of the project.</p>
