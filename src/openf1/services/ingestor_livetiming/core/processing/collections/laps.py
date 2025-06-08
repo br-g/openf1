@@ -161,7 +161,7 @@ class LapsCollection(Collection):
             return
 
         for driver_number, data in message.content["Lines"].items():
-            if message.topic == "TimingAppData" and "Stints" in data:
+            if message.topic == "TimingAppData" and data.get("Stints"):
                 self.is_session_started = True
 
             elif self.is_session_started and message.topic == "TimingData":
