@@ -56,10 +56,16 @@ def _is_lap_valid(lap: Lap) -> bool:
 @dataclass
 class LapsCollection(Collection):
     name = "laps"
-    source_topics = {"SessionInfo", "TimingAppData", "TimingData"}
+    source_topics = {
+        "SessionInfo",
+        "RaceControlMessages",
+        "TimingAppData",
+        "TimingData",
+    }
 
     is_session_started: bool = False
     is_race: bool = False
+    chequered_flag_date: datetime | None = None
     laps: defaultdict = field(default_factory=lambda: defaultdict(list))
     updated_laps: set = field(default_factory=set)  # laps updated since last message
 
@@ -120,8 +126,6 @@ class LapsCollection(Collection):
         timepoint: datetime | None = None,
     ):
         """Updates a property of the current lap of a driver"""
-        # if is_end_of_lap:
-        #    logger.debug((timepoint, driver_number, property, value))
         lap = self._get_current_lap(
             driver_number, is_end_of_lap=is_end_of_lap, timepoint=timepoint
         )
@@ -134,6 +138,15 @@ class LapsCollection(Collection):
 
             if property.startswith("duration_sector_"):
                 self._infer_missing_lap_duration(lap)
+
+            # During a race, discard laps that start after the checkered flag
+            if (
+                self.is_race
+                and self.chequered_flag_date is not None
+                and lap.date_start is not None
+                and self.chequered_flag_date < lap.date_start
+            ):
+                return
 
             self.updated_laps.add(lap)
 
@@ -174,6 +187,16 @@ class LapsCollection(Collection):
         if message.topic == "SessionInfo":
             self.is_race = message.content["Type"].lower() == "race"
             logger.debug(self.is_race)
+            return
+
+        if message.topic == "RaceControlMessages":
+            inner_messages = message.content["Messages"]
+            if isinstance(inner_messages, dict):
+                inner_messages = inner_messages.values()
+            for data in inner_messages:
+                if data["Message"].upper() == "CHEQUERED FLAG":
+                    self.chequered_flag_date = message.timepoint
+                    logger.debug("checked flag")
             return
 
         if "Lines" not in message.content:
