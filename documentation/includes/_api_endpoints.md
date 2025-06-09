@@ -407,7 +407,7 @@ fetch(
 
 | Name              | Description                                                                                                                                                                           |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| date_start        | The UTC starting date and time, in ISO 8601 format.                                                                                                                                   |
+| date_start        | The UTC starting date and time, in ISO 8601 format. This date is approximate.                                                                                                         |
 | driver_number     | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
 | duration_sector_1 | The time taken, in seconds, to complete the first sector of the lap.                                                                                                                  |
 | duration_sector_2 | The time taken, in seconds, to complete the second sector of the lap.                                                                                                                 |

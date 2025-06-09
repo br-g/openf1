@@ -64,6 +64,7 @@ async def ingest_line(line: str):
         "SessionInfo" not in line
         and "TimingAppData" not in line
         and "TimingData" not in line
+        and "DriverList" not in line
     ):
         return
 

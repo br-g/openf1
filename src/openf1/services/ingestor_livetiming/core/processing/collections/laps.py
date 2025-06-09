@@ -47,7 +47,7 @@ class LapsCollection(Collection):
     laps: defaultdict = field(default_factory=lambda: defaultdict(list))
     updated_laps: set = field(default_factory=set)  # laps updated since last message
 
-    def _add_lap(self, driver_number: int, lap_number: int):
+    def _add_lap(self, driver_number: int, lap_number: int) -> Lap:
         new_lap = Lap(
             meeting_key=self.meeting_key,
             session_key=self.session_key,
@@ -55,12 +55,35 @@ class LapsCollection(Collection):
             lap_number=lap_number,
         )
         self.laps[driver_number].append(new_lap)
+        return new_lap
 
-    def _get_latest_lap(self, driver_number: int) -> dict:
+    def _get_current_lap(
+        self,
+        driver_number: int,
+        timepoint: datetime,
+        is_end_of_lap: bool = False,
+    ) -> dict | None:
         if driver_number not in self.laps:
             self._add_lap(driver_number=driver_number, lap_number=1)
         laps = self.laps[driver_number]
-        return laps[-1]
+        current_lap = laps[-1]
+
+        # Handle case where data from sector 2 is received after the creation
+        # of the next lap
+        if (
+            is_end_of_lap
+            and current_lap.date_start is not None
+            and timepoint - current_lap.date_start < timedelta(seconds=10)
+        ):
+            if len(laps) < 2:
+                logger.warning(
+                    f"Can't find current lap (driver_number: {driver_number}, "
+                    f"is_end_of_lap: {is_end_of_lap}, timepoint: {timepoint}), {current_lap.date_start}"
+                )
+                return
+            current_lap = laps[-2]
+
+        return current_lap
 
     def _infer_missing_lap_duration(self, lap: Lap):
         """Infers and updates missing lap duration when sectors duration are available"""
@@ -75,32 +98,6 @@ class LapsCollection(Collection):
                 3,
             )
 
-    def _infer_missing_sector_duration(self, lap: Lap):
-        """Infers and updates a single missing sector duration for a driver's lap"""
-        if lap.lap_duration is None:
-            return
-
-        n_missing_sector_durations = 0
-        missing_sector_number = None
-        sector_durations_sum = 0
-
-        for sector_number in {1, 2, 3}:
-            sector_duration = getattr(lap, f"duration_sector_{sector_number}", None)
-            if sector_duration is None:
-                n_missing_sector_durations += 1
-                missing_sector_number = sector_number
-            else:
-                sector_durations_sum += sector_duration
-
-        if n_missing_sector_durations == 1:
-            infered_duration = lap.lap_duration - sector_durations_sum
-            if infered_duration > 0:
-                setattr(
-                    lap,
-                    f"duration_sector_{missing_sector_number}",
-                    round(infered_duration, 3),
-                )
-
     def _update_lap(
         self,
         driver_number: int,
@@ -110,32 +107,19 @@ class LapsCollection(Collection):
         timepoint: datetime | None = None,
     ):
         """Updates a property of the current lap of a driver"""
-        lap = self._get_latest_lap(driver_number)
-
-        # Handle case where data from sector 2 is received after the creation
-        # of the next lap
-        if (
-            is_end_of_lap
-            and lap.date_start is not None
-            and timepoint - lap.date_start < timedelta(seconds=10)
-        ):
-            if len(self.laps[driver_number]) < 2:
-                logger.error(
-                    f"Can't update lap (driver_number: {driver_number}, "
-                    f"property: {property}, is_end_of_lap: {is_end_of_lap})"
-                )
-                return
-            lap = self.laps[driver_number][-2]
+        # if is_end_of_lap:
+        #    logger.debug((timepoint, driver_number, property, value))
+        lap = self._get_current_lap(
+            driver_number, is_end_of_lap=is_end_of_lap, timepoint=timepoint
+        )
+        if lap is None:
+            return
 
         old_value = getattr(lap, property)
         if value != old_value:
             setattr(lap, property, value)
 
-            if property == "lap_duration":
-                self._infer_missing_sector_duration(lap)
-
             if property.startswith("duration_sector_"):
-                self._infer_missing_sector_duration(lap)
                 self._infer_missing_lap_duration(lap)
 
             self.updated_laps.add(lap)
@@ -149,7 +133,11 @@ class LapsCollection(Collection):
         is_end_of_lap: bool,
         timepoint: datetime,
     ):
-        lap = self._get_latest_lap(driver_number)
+        lap = self._get_current_lap(
+            driver_number, is_end_of_lap=is_end_of_lap, timepoint=timepoint
+        )
+        if lap is None:
+            return
 
         # Get existing segment status
         property = f"segments_sector_{sector_number}"
@@ -183,7 +171,7 @@ class LapsCollection(Collection):
                 except:
                     continue
 
-                if driver_number != 10:
+                if driver_number != 63:
                     continue
                 print(message.timepoint, data)
 
@@ -272,16 +260,20 @@ class LapsCollection(Collection):
                             )
 
                 if data.get("NumberOfLaps") is not None:
-                    latest_lap = self._get_latest_lap(driver_number=driver_number)
-                    if data["NumberOfLaps"] > latest_lap.lap_number:
-                        self._add_lap(
-                            driver_number=driver_number, lap_number=data["NumberOfLaps"]
-                        )
-                    self._update_lap(
-                        driver_number=driver_number,
-                        property="date_start",
-                        value=message.timepoint,
+                    current_lap = self._get_current_lap(
+                        driver_number=driver_number, timepoint=message.timepoint
                     )
+                    if data["NumberOfLaps"] > current_lap.lap_number:
+                        current_lap = self._add_lap(
+                            driver_number=driver_number,
+                            lap_number=data["NumberOfLaps"],
+                        )
+                    if current_lap.date_start is None:
+                        self._update_lap(
+                            driver_number=driver_number,
+                            property="date_start",
+                            value=message.timepoint,
+                        )
 
                 if data.get("PitOut") is not None:
                     self._update_lap(
