@@ -38,12 +38,28 @@ class Lap(Document):
         return (self.session_key, self.lap_number, self.driver_number)
 
 
+def _is_lap_valid(lap: Lap) -> bool:
+    return (
+        lap.duration_sector_1 is not None
+        or lap.duration_sector_2 is not None
+        or lap.duration_sector_3 is not None
+        or lap.i1_speed is not None
+        or lap.i2_speed is not None
+        or lap.lap_duration is not None
+        or (lap.segments_sector_1 and any(lap.segments_sector_1[1:]))
+        or (lap.segments_sector_2 and any(lap.segments_sector_2))
+        or (lap.segments_sector_3 and any(lap.segments_sector_3[:-1]))
+        or lap.st_speed is not None
+    )
+
+
 @dataclass
 class LapsCollection(Collection):
     name = "laps"
-    source_topics = {"TimingAppData", "TimingData"}
+    source_topics = {"SessionInfo", "TimingAppData", "TimingData"}
 
     is_session_started: bool = False
+    is_race: bool = False
     laps: defaultdict = field(default_factory=lambda: defaultdict(list))
     updated_laps: set = field(default_factory=set)  # laps updated since last message
 
@@ -75,12 +91,9 @@ class LapsCollection(Collection):
             and current_lap.date_start is not None
             and timepoint - current_lap.date_start < timedelta(seconds=10)
         ):
+            # Sometimes, some extra data is sent at the beginning of a session
             if len(laps) < 2:
-                logger.warning(
-                    f"Can't find current lap (driver_number: {driver_number}, "
-                    f"is_end_of_lap: {is_end_of_lap}, timepoint: {timepoint}), {current_lap.date_start}"
-                )
-                return
+                return None
             current_lap = laps[-2]
 
         return current_lap
@@ -158,6 +171,11 @@ class LapsCollection(Collection):
         )
 
     def process_message(self, message: Message) -> Iterator[Lap]:
+        if message.topic == "SessionInfo":
+            self.is_race = message.content["Type"].lower() == "race"
+            logger.debug(self.is_race)
+            return
+
         if "Lines" not in message.content:
             return
 
@@ -171,9 +189,9 @@ class LapsCollection(Collection):
                 except:
                     continue
 
-                if driver_number != 63:
-                    continue
-                print(message.timepoint, data)
+                # if driver_number != 31:
+                #    continue
+                # print(message.timepoint, data)
 
                 if not isinstance(data, dict):
                     continue
@@ -215,7 +233,7 @@ class LapsCollection(Collection):
                                     driver_number=driver_number,
                                     property=f"duration_sector_{sector_number}",
                                     value=duration,
-                                    is_end_of_lap=sector_number == 3,
+                                    is_end_of_lap=sector_number > 1,
                                     timepoint=message.timepoint,
                                 )
 
@@ -237,7 +255,7 @@ class LapsCollection(Collection):
                                         sector_number=sector_number,
                                         segment_number=segment_number,
                                         segment_status=segment_data.get("Status"),
-                                        is_end_of_lap=sector_number == 3,
+                                        is_end_of_lap=sector_number > 1,
                                         timepoint=message.timepoint,
                                     )
 
@@ -263,10 +281,17 @@ class LapsCollection(Collection):
                     current_lap = self._get_current_lap(
                         driver_number=driver_number, timepoint=message.timepoint
                     )
-                    if data["NumberOfLaps"] > current_lap.lap_number:
+
+                    lap_number = data["NumberOfLaps"]
+
+                    # During a race, the first lap is not recorded as such
+                    if self.is_race:
+                        lap_number += 1
+
+                    if lap_number > current_lap.lap_number:
                         current_lap = self._add_lap(
                             driver_number=driver_number,
-                            lap_number=data["NumberOfLaps"],
+                            lap_number=lap_number,
                         )
                     if current_lap.date_start is None:
                         self._update_lap(
