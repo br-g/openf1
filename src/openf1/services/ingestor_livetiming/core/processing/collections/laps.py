@@ -4,8 +4,6 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Iterator
 
-from loguru import logger
-
 from openf1.services.ingestor_livetiming.core.objects import (
     Collection,
     Document,
@@ -38,21 +36,6 @@ class Lap(Document):
         return (self.session_key, self.lap_number, self.driver_number)
 
 
-def _is_lap_valid(lap: Lap) -> bool:
-    return (
-        lap.duration_sector_1 is not None
-        or lap.duration_sector_2 is not None
-        or lap.duration_sector_3 is not None
-        or lap.i1_speed is not None
-        or lap.i2_speed is not None
-        or lap.lap_duration is not None
-        or (lap.segments_sector_1 and any(lap.segments_sector_1[1:]))
-        or (lap.segments_sector_2 and any(lap.segments_sector_2))
-        or (lap.segments_sector_3 and any(lap.segments_sector_3[:-1]))
-        or lap.st_speed is not None
-    )
-
-
 @dataclass
 class LapsCollection(Collection):
     name = "laps"
@@ -64,7 +47,7 @@ class LapsCollection(Collection):
     }
 
     is_session_started: bool = False
-    is_race: bool = False
+    is_session_a_race: bool | None = None
     chequered_flag_date: datetime | None = None
     laps: defaultdict = field(default_factory=lambda: defaultdict(list))
     updated_laps: set = field(default_factory=set)  # laps updated since last message
@@ -97,7 +80,7 @@ class LapsCollection(Collection):
             and current_lap.date_start is not None
             and timepoint - current_lap.date_start < timedelta(seconds=10)
         ):
-            # Sometimes, some extra data is sent at the beginning of a session
+            # Sometimes, some extra data is sent at the beginning of a session. Skip it.
             if len(laps) < 2:
                 return None
             current_lap = laps[-2]
@@ -141,7 +124,7 @@ class LapsCollection(Collection):
 
             # During a race, discard laps that start after the checkered flag
             if (
-                self.is_race
+                self.is_session_a_race
                 and self.chequered_flag_date is not None
                 and lap.date_start is not None
                 and self.chequered_flag_date < lap.date_start
@@ -185,8 +168,7 @@ class LapsCollection(Collection):
 
     def process_message(self, message: Message) -> Iterator[Lap]:
         if message.topic == "SessionInfo":
-            self.is_race = message.content["Type"].lower() == "race"
-            logger.debug(self.is_race)
+            self.is_session_a_race = message.content["Type"].lower() == "race"
             return
 
         if message.topic == "RaceControlMessages":
@@ -196,7 +178,6 @@ class LapsCollection(Collection):
             for data in inner_messages:
                 if data["Message"].upper() == "CHEQUERED FLAG":
                     self.chequered_flag_date = message.timepoint
-                    logger.debug("checked flag")
             return
 
         if "Lines" not in message.content:
@@ -301,15 +282,17 @@ class LapsCollection(Collection):
                             )
 
                 if data.get("NumberOfLaps") is not None:
+                    lap_number = data["NumberOfLaps"]
+                    if not isinstance(lap_number, int):
+                        continue
+
+                    # During a race, the first lap is not recorded as such
+                    if self.is_session_a_race:
+                        lap_number += 1
+
                     current_lap = self._get_current_lap(
                         driver_number=driver_number, timepoint=message.timepoint
                     )
-
-                    lap_number = data["NumberOfLaps"]
-
-                    # During a race, the first lap is not recorded as such
-                    if self.is_race:
-                        lap_number += 1
 
                     if lap_number > current_lap.lap_number:
                         current_lap = self._add_lap(
