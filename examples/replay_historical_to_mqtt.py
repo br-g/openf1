@@ -23,22 +23,24 @@ async def main() -> None:
         topics=topics,
         verbose=True,
     )
-    grouped: dict[str, list[str]] = {}
+    print(f"Publishing {len(messages)} messages")
+    prev = None
     for m in messages:
-        grouped.setdefault(m.topic, []).append(
-            json.dumps(
-                {
-                    "topic": m.topic,
-                    "timepoint": m.timepoint,
-                    "content": m.content,
-                },
-                default=json_serializer,
-            )
+        if prev is not None:
+            delta = (m.timepoint - prev).total_seconds()
+            if delta > 0:
+                await asyncio.sleep(delta)
+        msg = json.dumps(
+            {
+                "topic": m.topic,
+                "timepoint": m.timepoint,
+                "content": m.content,
+            },
+            default=json_serializer,
         )
-
-    for topic, msgs in grouped.items():
-        await publish_messages_to_mqtt(topic=f"historical/{topic}", messages=msgs)
-    print("Publishing completed")
+        await publish_messages_to_mqtt(topic=f"historical/{m.topic}", messages=[msg])
+        prev = m.timepoint
+    print("Replay completed")
 
 
 if __name__ == "__main__":
