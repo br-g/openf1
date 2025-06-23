@@ -22,6 +22,7 @@ _session_key = None
 
 def _parse_message(line: str) -> Message:
     topic, content, timepoint = eval(line)
+    print(timepoint)
 
     if isinstance(content, str):
         content = decode(content)
@@ -82,6 +83,7 @@ async def ingest_line(line: str):
 
 async def ingest_line(line: str):
     """Asynchronously ingests a single line of raw data"""
+    """
     if (
         "SessionInfo" not in line
         and "RaceControlMessages" not in line
@@ -90,6 +92,7 @@ async def ingest_line(line: str):
         and "DriverList" not in line
     ):
         return
+    """
 
     # The rest of the function remains the same.
     # It will now only process lines that don't trigger the hang.
@@ -103,18 +106,22 @@ async def ingest_line(line: str):
             docs_mongo_json = [
                 json.dumps(d, default=json_serializer) for d in docs_mongo
             ]
-            print("ok1")
+            try:
+                await asyncio.wait_for(
+                    publish_messages_to_mqtt(
+                        topic=f"test/{collection}", messages=docs_mongo_json
+                    ),
+                    timeout=NETWORK_TIMEOUT,
+                )
+            except asyncio.TimeoutError:
+                logger.warning("Publishing to MQTT timed out. Skipping messages.")
+        try:
             await asyncio.wait_for(
-                publish_messages_to_mqtt(
-                    topic=f"test/{collection}", messages=docs_mongo_json
-                ),
+                insert_data_async(collection_name=collection, docs=docs_mongo),
                 timeout=NETWORK_TIMEOUT,
             )
-            print("ok2")
-        await asyncio.wait_for(
-            insert_data_async(collection_name=collection, docs=docs_mongo),
-            timeout=NETWORK_TIMEOUT,
-        )
+        except asyncio.TimeoutError:
+            logger.warning("Inserting to MongoDB timed out. Skipping messages.")
 
 
 async def ingest_file(filepath: str):
@@ -124,7 +131,6 @@ async def ingest_file(filepath: str):
     After processing existing content, it continuously watches for new lines
     appended to the file and processes them in real-time.
     """
-
     with open(filepath, "r") as file:
         # Read and ingest existing lines
         lines = file.readlines()
