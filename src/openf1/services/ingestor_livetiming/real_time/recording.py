@@ -5,11 +5,10 @@ from loguru import logger
 
 async def record_to_file(filepath: str, topics: list[str], timeout: int):
     """Records raw F1 data to a file, using a slightly modified version of the FastF1
-    live timing module (https://github.com/br-g/fastf1-livetiming)q
+    live timing module (https://github.com/br-g/fastf1-livetiming)
     """
     while True:
         try:
-            logger.info(f"Starting recorder subprocess for file '{filepath}'")
             command = (
                 ["python", "-m", "fastf1_livetiming", "save", filepath]
                 + sorted(list(topics))
