@@ -63,19 +63,6 @@ def _process_message(message: Message) -> dict[str, list[Document]] | None:
 
 async def ingest_line(line: str):
     """Asynchronously ingests a single line of raw data"""
-    """
-    if (
-        "SessionInfo" not in line
-        and "RaceControlMessages" not in line
-        and "TimingAppData" not in line
-        and "TimingData" not in line
-        and "DriverList" not in line
-    ):
-        return
-    """
-
-    # The rest of the function remains the same.
-    # It will now only process lines that don't trigger the hang.
     message = _parse_message(line)
     docs_by_collection = _process_message(message)
     if docs_by_collection is None:
