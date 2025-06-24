@@ -97,19 +97,34 @@ async def ingest_file(filepath: str):
     After processing existing content, it continuously watches for new lines
     appended to the file and processes them in real-time.
     """
-    with open(filepath, "r") as file:
-        # Read and ingest existing lines
-        lines = file.readlines()
-        for line in lines:
-            await ingest_line(line)
+    try:
+        with open(filepath, "r") as file:
+            # Read and ingest existing lines
+            lines = file.readlines()
+            for line in lines:
+                try:
+                    await ingest_line(line)
+                except Exception:
+                    logger.exception(
+                        "Failed to ingest line, skipping to prevent crash. "
+                        f"Line content: '{line.strip()}'"
+                    )
 
-        # Move to the end of the file
-        file.seek(0, 2)
+            # Move to the end of the file
+            file.seek(0, 2)
 
-        # Watch for new lines
-        while True:
-            line = file.readline()
-            if not line:
-                await asyncio.sleep(0.1)  # Sleep a bit before trying again
-                continue
-            await ingest_line(line)
+            # Watch for new lines
+            while True:
+                try:
+                    line = file.readline()
+                    if not line:
+                        await asyncio.sleep(0.1)  # Sleep a bit before trying again
+                        continue
+                    await ingest_line(line)
+                except Exception:
+                    logger.exception(
+                        "Failed to ingest line, skipping to prevent crash. "
+                        f"Line content: '{line.strip()}'"
+                    )
+    except Exception:
+        logger.exception(f"An unexpected error occurred while ingesting {filepath}")

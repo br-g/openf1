@@ -83,9 +83,9 @@ async def publish_messages_to_mqtt(
             await client.publish(topic, payload=message, qos=qos)
         return True
 
-    except (MqttError, ValueError) as e:
-        logger.error(f"MQTT error while publishing to topic '{topic}': {e}")
+    except (MqttError, ValueError):
+        logger.exception(f"MQTT error while publishing to topic '{topic}'")
         return False
-    except Exception as e:
-        logger.error(f"An unexpected error occurred during MQTT publish: {e}")
+    except Exception:
+        logger.exception("An unexpected error occurred during MQTT publish")
         return False
