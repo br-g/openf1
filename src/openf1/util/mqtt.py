@@ -61,6 +61,7 @@ async def publish_messages_to_mqtt(
 ) -> bool:
     """
     Publish multiple messages to an MQTT topic asynchronously.
+
     Args:
         topic: The MQTT topic to publish to
         messages: List of message contents to publish
