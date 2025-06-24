@@ -41,4 +41,4 @@ async def upload_to_gcs_periodically(
                 str(destination_key),
             )
         except Exception:
-            logger.exception(f"An unexpected error occurred while uploading to GCS")
+            logger.exception("An unexpected error occurred while uploading to GCS")

@@ -121,7 +121,7 @@ def insert_data_sync(collection_name: str, docs: list[dict], batch_size: int = 5
             for error in bwe.details.get("writeErrors", []):
                 logger.error(f"Error during bulk write operation: {error}")
         except Exception as e:
-            logger.error(f"Error during bulk write operation: {str(e)}")
+            logger.exception("Error during bulk write operation")
 
 
 async def insert_data_async(collection_name: str, docs: list[dict]):
@@ -134,4 +134,4 @@ async def insert_data_async(collection_name: str, docs: list[dict]):
         for error in bwe.details.get("writeErrors", []):
             logger.error(f"Error during bulk write operation: {error}")
     except Exception as e:
-        logger.error(f"Error during bulk write operation: {str(e)}")
+        logger.exception("Error during bulk write operation")
