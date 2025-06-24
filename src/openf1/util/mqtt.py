@@ -60,7 +60,11 @@ async def publish_messages_to_mqtt(
     topic: str, messages: list[str], qos: int = 0
 ) -> bool:
     """
-    Publish multiple messages to an MQTT topic asynchronously using a persistent client.
+    Publish multiple messages to an MQTT topic asynchronously.
+    Args:
+        topic: The MQTT topic to publish to
+        messages: List of message contents to publish
+        qos: Quality of Service level (0, 1, or 2)
     """
     if not _url:
         return False
