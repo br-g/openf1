@@ -22,7 +22,6 @@ _session_key = None
 
 def _parse_message(line: str) -> Message:
     topic, content, timepoint = eval(line)
-    print(timepoint)
 
     if isinstance(content, str):
         content = decode(content)
