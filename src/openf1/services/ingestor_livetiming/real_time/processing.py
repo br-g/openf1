@@ -62,37 +62,32 @@ def _process_message(message: Message) -> dict[str, list[Document]] | None:
 
 async def ingest_line(line: str):
     """Asynchronously ingests a single line of raw data"""
-    try:
-        message = _parse_message(line)
-        docs_by_collection = _process_message(message)
-        if docs_by_collection is None:
-            return
-        for collection, docs in docs_by_collection.items():
-            docs_mongo = [await d.to_mongo_doc_async() for d in docs]
-            if "OPENF1_MQTT_URL" in os.environ:
-                docs_mongo_json = [
-                    json.dumps(d, default=json_serializer) for d in docs_mongo
-                ]
-                try:
-                    await asyncio.wait_for(
-                        publish_messages_to_mqtt(
-                            topic=f"v1/{collection}", messages=docs_mongo_json
-                        ),
-                        timeout=NETWORK_TIMEOUT,
-                    )
-                except asyncio.TimeoutError:
-                    logger.warning("Publishing to MQTT timed out. Skipping messages.")
+    message = _parse_message(line)
+    docs_by_collection = _process_message(message)
+    if docs_by_collection is None:
+        return
+    for collection, docs in docs_by_collection.items():
+        docs_mongo = [await d.to_mongo_doc_async() for d in docs]
+        if "OPENF1_MQTT_URL" in os.environ:
+            docs_mongo_json = [
+                json.dumps(d, default=json_serializer) for d in docs_mongo
+            ]
             try:
                 await asyncio.wait_for(
-                    insert_data_async(collection_name=collection, docs=docs_mongo),
+                    publish_messages_to_mqtt(
+                        topic=f"v1/{collection}", messages=docs_mongo_json
+                    ),
                     timeout=NETWORK_TIMEOUT,
                 )
             except asyncio.TimeoutError:
-                logger.warning("Inserting to MongoDB timed out. Skipping messages.")
-    except Exception:
-        logger.error(
-            f"Failed to ingest line, skipping to prevent crash. Line content: '{line.strip()}'"
-        )
+                logger.warning("Publishing to MQTT timed out. Skipping messages.")
+        try:
+            await asyncio.wait_for(
+                insert_data_async(collection_name=collection, docs=docs_mongo),
+                timeout=NETWORK_TIMEOUT,
+            )
+        except asyncio.TimeoutError:
+            logger.warning("Inserting to MongoDB timed out. Skipping messages.")
 
 
 async def ingest_file(filepath: str):
@@ -102,19 +97,34 @@ async def ingest_file(filepath: str):
     After processing existing content, it continuously watches for new lines
     appended to the file and processes them in real-time.
     """
-    with open(filepath, "r") as file:
-        # Read and ingest existing lines
-        lines = file.readlines()
-        for line in lines:
-            await ingest_line(line)
+    try:
+        with open(filepath, "r") as file:
+            # Read and ingest existing lines
+            lines = file.readlines()
+            for line in lines:
+                try:
+                    await ingest_line(line)
+                except Exception:
+                    logger.exception(
+                        "Failed to ingest line, skipping to prevent crash. "
+                        f"Line content: '{line.strip()}'"
+                    )
 
-        # Move to the end of the file
-        file.seek(0, 2)
+            # Move to the end of the file
+            file.seek(0, 2)
 
-        # Watch for new lines
-        while True:
-            line = file.readline()
-            if not line:
-                await asyncio.sleep(0.1)  # Sleep a bit before trying again
-                continue
-            await ingest_line(line)
+            # Watch for new lines
+            while True:
+                try:
+                    line = file.readline()
+                    if not line:
+                        await asyncio.sleep(0.1)  # Sleep a bit before trying again
+                        continue
+                    await ingest_line(line)
+                except Exception:
+                    logger.exception(
+                        "Failed to ingest line, skipping to prevent crash. "
+                        f"Line content: '{line.strip()}'"
+                    )
+    except Exception:
+        logger.exception(f"An unexpected error occurred while ingesting {filepath}")
