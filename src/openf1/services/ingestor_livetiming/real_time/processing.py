@@ -61,26 +61,6 @@ def _process_message(message: Message) -> dict[str, list[Document]] | None:
     return docs_by_collection
 
 
-'''
-async def ingest_line(line: str):
-    """Asynchronously ingests a single line of raw data"""
-    message = _parse_message(line)
-    docs_by_collection = _process_message(message)
-    if docs_by_collection is None:
-        return
-    for collection, docs in docs_by_collection.items():
-        docs_mongo = [await d.to_mongo_doc_async() for d in docs]
-        if "OPENF1_MQTT_URL" in os.environ:
-            docs_mongo_json = [
-                json.dumps(d, default=json_serializer) for d in docs_mongo
-            ]
-            await publish_messages_to_mqtt(
-                topic=f"v1/{collection}", messages=docs_mongo_json
-            )
-        await insert_data_async(collection_name=collection, docs=docs_mongo)
-'''
-
-
 async def ingest_line(line: str):
     """Asynchronously ingests a single line of raw data"""
     """
@@ -109,7 +89,7 @@ async def ingest_line(line: str):
             try:
                 await asyncio.wait_for(
                     publish_messages_to_mqtt(
-                        topic=f"test/{collection}", messages=docs_mongo_json
+                        topic=f"v1/{collection}", messages=docs_mongo_json
                     ),
                     timeout=NETWORK_TIMEOUT,
                 )

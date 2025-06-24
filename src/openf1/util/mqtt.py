@@ -1,4 +1,3 @@
-import asyncio
 import os
 import ssl
 
@@ -11,13 +10,6 @@ _username = os.getenv("OPENF1_MQTT_USERNAME")
 _password = os.getenv("OPENF1_MQTT_PASSWORD")
 
 _tls_context = ssl.create_default_context()
-
-
-async def _simulate_network_hang():
-    """This function simulates a hanging network call and will never return."""
-    logger.warning(">>> SIMULATING NETWORK HANG. THIS TASK WILL NOW FREEZE. <<<")
-    hang_event = asyncio.Event()
-    await hang_event.wait()  # This will wait forever as the event is never set
 
 
 async def publish_messages_to_mqtt(
@@ -37,9 +29,6 @@ async def publish_messages_to_mqtt(
     if not messages:
         logger.warning("No messages to publish")
         return True
-
-    if "driver" in topic.lower():
-        await _simulate_network_hang()
 
     try:
         async with Client(
