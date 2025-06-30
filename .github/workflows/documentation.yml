@@ -1,7 +1,7 @@
 name: "Deploy documentation"
 on:
   push:
-    branches: [main]
+    branches: [main, scrapping]
 
 jobs:
   deploy_documentation:

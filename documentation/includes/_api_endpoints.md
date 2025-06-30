@@ -152,7 +152,6 @@ fetch(
                 </tbody>
             </table>
 
-
 ## Drivers
 
 Provides information about drivers for each session.
@@ -248,7 +247,6 @@ fetch("https://api.openf1.org/v1/drivers?driver_number=1&session_key=9158")
             Fetches real-time interval data between drivers and their gap to the race leader.
             Available during races only, with updates approximately every 4 seconds.
 
-
 ```shell
 curl "https://api.openf1.org/v1/intervals?session_key=9165&interval<0.005"
 ```
@@ -326,7 +324,6 @@ fetch("https://api.openf1.org/v1/intervals?session_key=9165&interval<0.005")
 ## Laps
 
             Provides detailed information about individual laps.
-
 
 ```shell
 curl "https://api.openf1.org/v1/laps?session_key=9161&driver_number=63&lap_number=8"
@@ -474,14 +471,12 @@ fetch(
             Segments are not available during races.
             Also, The segment values may not always align perfectly with the colors shown on TV, for unknown reasons.
 
-
 ## Location
 
             The approximate location of the cars on the circuit, at a sample rate of about 3.7 Hz.
             Useful for gauging their progress along the track, but lacks details about lateral placement — i.e. whether
             the car is on the left or right side of the track. The origin point (0, 0, 0) appears to be arbitrary
             and not tied to any specific location on the track.
-
 
 ```shell
 curl "https://api.openf1.org/v1/location?session_key=9161&driver_number=81&date>2023-09-16T13:03:35.200&date<2023-09-16T13:03:35.800"
@@ -575,7 +570,6 @@ fetch(
             Provides information about meetings.
             A meeting refers to a Grand Prix or testing weekend and usually includes multiple sessions (practice, qualifying, race, ...).
 
-
 ```shell
 curl "https://api.openf1.org/v1/meetings?year=2023&country_name=Singapore"
 ```
@@ -666,7 +660,6 @@ fetch("https://api.openf1.org/v1/meetings?year=2023&country_name=Singapore")
 
             Provides information about cars going through the pit lane.
 
-
 ```shell
 curl "https://api.openf1.org/v1/pit?session_key=9158&pit_duration<31"
 ```
@@ -754,7 +747,6 @@ fetch("https://api.openf1.org/v1/pit?session_key=9158&pit_duration<31")
             Provides driver positions throughout a session, including initial
             placement and subsequent changes.
 
-
 ```shell
 curl "https://api.openf1.org/v1/position?meeting_key=1217&driver_number=40&position<=3"
 ```
@@ -839,7 +831,6 @@ fetch(
 ## Race control
 
             Provides information about race control (racing incidents, flags, safety car, ...).
-
 
 ```shell
 curl "https://api.openf1.org/v1/race_control?flag=BLACK AND WHITE&driver_number=1&date>=2023-01-01&date<2023-09-01"
@@ -929,7 +920,6 @@ fetch(
 
             Provides information about sessions.
             A session refers to a distinct period of track activity during a Grand Prix or testing weekend (practice, qualifying, sprint, race, ...).
-
 
 ```shell
 curl "https://api.openf1.org/v1/sessions?country_name=Belgium&session_name=Sprint&year=2023"
@@ -1023,11 +1013,194 @@ fetch(
 | session_type       | The type of the session (`Practice`, `Qualifying`, `Race`, ...).                                                   |
 | year               | The year the event takes place.                                                                                    |
 
+## Session result (beta)
+
+            Provides standings after a session.
+
+```shell
+curl "https://api.openf1.org/v1/session_result?session_key=7782&position<=3"
+```
+
+```python
+from urllib.request import urlopen
+import json
+
+response = urlopen('https://api.openf1.org/v1/session_result?session_key=7782&position<=3')
+data = json.loads(response.read().decode('utf-8'))
+print(data)
+
+# If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
+# import pandas as pd
+# df = pd.DataFrame(data)
+```
+
+```r
+# If needed, install libraries
+# install.packages('httr')
+# install.packages('jsonlite')
+
+library(httr)
+library(jsonlite)
+
+response <- GET('https://api.openf1.org/v1/session_result?session_key=7782&position<=3')
+parsed_data <- fromJSON(content(response, 'text'))
+print(parsed_data)
+
+# If you want, you can import the results in a DataFrame
+# df <- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))
+# df <- as.data.frame(t(as.matrix(df)))
+```
+
+```javascript
+fetch("https://api.openf1.org/v1/session_result?session_key=7782&position<=3")
+  .then((response) => response.json())
+  .then((jsonContent) => console.log(jsonContent));
+```
+
+> Output:
+
+```json
+[
+  {
+    "position": 1,
+    "driver_number": 1,
+    "time_gap": 77.565,
+    "number_of_laps": 24,
+    "meeting_key": 1143,
+    "session_key": 7782
+  },
+  {
+    "position": 2,
+    "driver_number": 14,
+    "time_gap": 0.162,
+    "number_of_laps": 26,
+    "meeting_key": 1143,
+    "session_key": 7782
+  },
+  {
+    "position": 3,
+    "driver_number": 31,
+    "time_gap": 0.373,
+    "number_of_laps": 23,
+    "meeting_key": 1143,
+    "session_key": 7782
+  }
+]
+```
+
+### HTTP Request
+
+`GET https://api.openf1.org/v1/session_result`
+
+### Sample URL
+
+<a href="https://api.openf1.org/v1/session_result?session_key=7782&position<=3" target="_blank">https://api.openf1.org/v1/session_result?session_key=7782&position<=3</a>
+
+### Attributes
+
+| Name           | Description                                                                                                                                                                                                                                                 |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| driver_number  | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).                                                                       |
+| meeting_key    | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                                                                              |
+| number_of_laps | Number of laps completed during the session.                                                                                                                                                                                                                |
+| position       | Position at the end of the session.                                                                                                                                                                                                                         |
+| session_key    | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                                                                                              |
+| time_gap       | For the first driver: duration, in seconds, of the best lap (in practice or in quali) or total duration of the race (in a race). For the following drivers: gap in seconds or in number of laps to the first driver. `null` means DNF or no laps completed. |
+
+## Starting grid (beta)
+
+            Provides the starting grid of a race or sprint race.
+
+```shell
+curl "https://api.openf1.org/v1/starting_grid?session_key=7787&position<=3"
+```
+
+```python
+from urllib.request import urlopen
+import json
+
+response = urlopen("https://api.openf1.org/v1/starting_grid?session_key=7787&position<=3")
+data = json.loads(response.read().decode('utf-8'))
+print(data)
+
+# If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
+# import pandas as pd
+# df = pd.DataFrame(data)
+```
+
+```r
+# If needed, install libraries
+# install.packages('httr')
+# install.packages('jsonlite')
+
+library(httr)
+library(jsonlite)
+
+response <- GET("https://api.openf1.org/v1/starting_grid?session_key=7787&position<=3")
+parsed_data <- fromJSON(content(response, 'text'))
+print(parsed_data)
+
+# If you want, you can import the results in a DataFrame
+# df <- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))
+# df <- as.data.frame(t(as.matrix(df)))
+```
+
+```javascript
+fetch("https://api.openf1.org/v1/starting_grid?session_key=7787&position<=3")
+  .then((response) => response.json())
+  .then((jsonContent) => console.log(jsonContent));
+```
+
+> Output:
+
+```json
+[
+  {
+    "position": 1,
+    "driver_number": 1,
+    "lap_duration": 76.732,
+    "meeting_key": 1143,
+    "session_key": 7787
+  },
+  {
+    "position": 2,
+    "driver_number": 63,
+    "lap_duration": 76.968,
+    "meeting_key": 1143,
+    "session_key": 7787
+  },
+  {
+    "position": 3,
+    "driver_number": 44,
+    "lap_duration": 77.104,
+    "meeting_key": 1143,
+    "session_key": 7787
+  }
+]
+```
+
+### HTTP Request
+
+`GET https://api.openf1.org/v1/starting_grid`
+
+### Sample URL
+
+<a href="https://api.openf1.org/v1/starting_grid?session_key=7787&position<=3" target="_blank">https://api.openf1.org/v1/starting_grid?session_key=7787&position<=3</a>
+
+### Attributes
+
+| Name          | Description                                                                                                                                                                           |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| driver_number | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| lap_duration  | Duration, in seconds, of the qualifying lap.                                                                                                                                          |
+| meeting_key   | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
+| position      | Position on the grid.                                                                                                                                                                 |
+| session_key   | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
+
 ## Stints
 
             Provides information about individual stints.
             A stint refers to a period of continuous driving by a driver during a session.
-
 
 ```shell
 curl "https://api.openf1.org/v1/stints?session_key=9165&tyre_age_at_start>=3"
@@ -1121,7 +1294,6 @@ fetch("https://api.openf1.org/v1/stints?session_key=9165&tyre_age_at_start>=3")
 
             Provides a collection of radio exchanges between Formula 1 drivers and their respective teams during sessions.
             Please note that only a limited selection of communications are included, not the complete record of radio interactions.
-
 
 ```shell
 curl "https://api.openf1.org/v1/team_radio?session_key=9158&driver_number=11"
