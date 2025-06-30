@@ -1620,11 +1620,11 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
 </tbody></table>
 <h2 id='session-result-beta'>Session result (beta)</h2>
 <p>Provides standings after a session.</p>
-<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/session_result?session_key=7782&amp;position&lt;=3"</span>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/session_result?session_key=7782&amp;position%3C=3"</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
 <span class="kn">import</span> <span class="nn">json</span>
 
-<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/session_result?session_key=7782&amp;position&lt;=3'</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/session_result?session_key=7782&amp;position%3C=3'</span><span class="p">)</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
 <span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
@@ -1638,14 +1638,14 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
 </span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
 </span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
 
-</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/session_result?session_key=7782&amp;position&lt;=3'</span><span class="p">)</span><span class="w">
+</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/session_result?session_key=7782&amp;position%3C=3'</span><span class="p">)</span><span class="w">
 </span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
 </span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
 
 </span><span class="c1"># If you want, you can import the results in a DataFrame</span><span class="w">
 </span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
 </span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
-</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">"</span><span class="s2">https://api.openf1.org/v1/session_result?session_key=7782&amp;position&lt;=3</span><span class="dl">"</span><span class="p">)</span>
+</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">"</span><span class="s2">https://api.openf1.org/v1/session_result?session_key=7782&amp;position%3C=3</span><span class="dl">"</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">jsonContent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
 </code></pre></div>
@@ -1716,11 +1716,11 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
 </tbody></table>
 <h2 id='starting-grid-beta'>Starting grid (beta)</h2>
 <p>Provides the starting grid of a race or sprint race.</p>
-<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/starting_grid?session_key=7787&amp;position&lt;=3"</span>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/starting_grid?session_key=7787&amp;position%3C=3"</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
 <span class="kn">import</span> <span class="nn">json</span>
 
-<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">"https://api.openf1.org/v1/starting_grid?session_key=7787&amp;position&lt;=3"</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">"https://api.openf1.org/v1/starting_grid?session_key=7787&amp;position%3C=3"</span><span class="p">)</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
 <span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
@@ -1734,14 +1734,14 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
 </span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
 </span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
 
-</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s2">"https://api.openf1.org/v1/starting_grid?session_key=7787&amp;position&lt;=3"</span><span class="p">)</span><span class="w">
+</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s2">"https://api.openf1.org/v1/starting_grid?session_key=7787&amp;position%3C=3"</span><span class="p">)</span><span class="w">
 </span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
 </span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
 
 </span><span class="c1"># If you want, you can import the results in a DataFrame</span><span class="w">
 </span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
 </span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
-</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">"</span><span class="s2">https://api.openf1.org/v1/starting_grid?session_key=7787&amp;position&lt;=3</span><span class="dl">"</span><span class="p">)</span>
+</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">"</span><span class="s2">https://api.openf1.org/v1/starting_grid?session_key=7787&amp;position%3C=3</span><span class="dl">"</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">jsonContent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
 </code></pre></div>
