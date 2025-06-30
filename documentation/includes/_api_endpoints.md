@@ -1018,14 +1018,14 @@ fetch(
             Provides standings after a session.
 
 ```shell
-curl "https://api.openf1.org/v1/session_result?session_key=7782&position<=3"
+curl "https://api.openf1.org/v1/session_result?session_key=7782&position%3C=3"
 ```
 
 ```python
 from urllib.request import urlopen
 import json
 
-response = urlopen('https://api.openf1.org/v1/session_result?session_key=7782&position<=3')
+response = urlopen('https://api.openf1.org/v1/session_result?session_key=7782&position%3C=3')
 data = json.loads(response.read().decode('utf-8'))
 print(data)
 
@@ -1042,7 +1042,7 @@ print(data)
 library(httr)
 library(jsonlite)
 
-response <- GET('https://api.openf1.org/v1/session_result?session_key=7782&position<=3')
+response <- GET('https://api.openf1.org/v1/session_result?session_key=7782&position%3C=3')
 parsed_data <- fromJSON(content(response, 'text'))
 print(parsed_data)
 
@@ -1052,7 +1052,7 @@ print(parsed_data)
 ```
 
 ```javascript
-fetch("https://api.openf1.org/v1/session_result?session_key=7782&position<=3")
+fetch("https://api.openf1.org/v1/session_result?session_key=7782&position%3C=3")
   .then((response) => response.json())
   .then((jsonContent) => console.log(jsonContent));
 ```
@@ -1112,14 +1112,14 @@ fetch("https://api.openf1.org/v1/session_result?session_key=7782&position<=3")
             Provides the starting grid of a race or sprint race.
 
 ```shell
-curl "https://api.openf1.org/v1/starting_grid?session_key=7787&position<=3"
+curl "https://api.openf1.org/v1/starting_grid?session_key=7787&position%3C=3"
 ```
 
 ```python
 from urllib.request import urlopen
 import json
 
-response = urlopen("https://api.openf1.org/v1/starting_grid?session_key=7787&position<=3")
+response = urlopen("https://api.openf1.org/v1/starting_grid?session_key=7787&position%3C=3")
 data = json.loads(response.read().decode('utf-8'))
 print(data)
 
@@ -1136,7 +1136,7 @@ print(data)
 library(httr)
 library(jsonlite)
 
-response <- GET("https://api.openf1.org/v1/starting_grid?session_key=7787&position<=3")
+response <- GET("https://api.openf1.org/v1/starting_grid?session_key=7787&position%3C=3")
 parsed_data <- fromJSON(content(response, 'text'))
 print(parsed_data)
 
@@ -1146,7 +1146,7 @@ print(parsed_data)
 ```
 
 ```javascript
-fetch("https://api.openf1.org/v1/starting_grid?session_key=7787&position<=3")
+fetch("https://api.openf1.org/v1/starting_grid?session_key=7787&position%3C=3")
   .then((response) => response.json())
   .then((jsonContent) => console.log(jsonContent));
 ```
