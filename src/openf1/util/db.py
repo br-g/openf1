@@ -4,7 +4,7 @@ from functools import lru_cache
 
 from loguru import logger
 from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo import InsertOne, MongoClient
+from pymongo import InsertOne, MongoClient, ReplaceOne
 from pymongo.errors import BulkWriteError
 
 from openf1.util.misc import timed_cache
@@ -17,6 +17,7 @@ _SORT_KEYS = [
     "date_start",
     "meeting_key",
     "session_key",
+    "position",
     "lap_start",
     "lap_number",
     "lap_end",
@@ -122,6 +123,26 @@ def insert_data_sync(collection_name: str, docs: list[dict], batch_size: int = 5
                 logger.error(f"Error during bulk write operation: {error}")
         except Exception:
             logger.exception("Error during bulk write operation")
+
+
+def upsert_data_sync(collection_name: str, docs: list[dict], batch_size: int = 50_000):
+    """Upserts (inserts or replaces) documents into a MongoDB collection in batches
+    based on _key."""
+    collection = _get_mongo_db_sync()[collection_name]
+
+    for i in range(0, len(docs), batch_size):
+        batch = docs[i : i + batch_size]
+
+        try:
+            operations = [
+                ReplaceOne({"_key": doc["_key"]}, doc, upsert=True) for doc in batch
+            ]
+            collection.bulk_write(operations, ordered=False)
+        except BulkWriteError as bwe:
+            for error in bwe.details.get("writeErrors", []):
+                logger.error(f"Error during bulk upsert operation: {error}")
+        except Exception:
+            logger.exception("Error during bulk upsert operation")
 
 
 async def insert_data_async(collection_name: str, docs: list[dict]):
