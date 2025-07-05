@@ -144,6 +144,7 @@ def _replace_latest_by_actual_value(param: QueryParam) -> QueryParam:
 def parse_query_params(query_params_raw: dict) -> dict[str, QueryParam]:
     query_params_str = _split_query_params(query_params_raw)
     query_params = sum((_str_to_query_params(s) for s in query_params_str), [])
+    print(query_params)
     query_params = [_replace_latest_by_actual_value(p) for p in query_params]
 
     params_by_field = defaultdict(list)

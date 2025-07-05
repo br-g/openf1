@@ -1062,27 +1062,33 @@ fetch("https://api.openf1.org/v1/session_result?session_key=7782&position%3C=3")
 ```json
 [
   {
-    "position": 1,
+    "dnf": false,
     "driver_number": 1,
-    "time_gap": 77.565,
+    "duration": 77.565,
+    "gap_to_leader": 0,
     "number_of_laps": 24,
     "meeting_key": 1143,
+    "position": 1,
     "session_key": 7782
   },
   {
-    "position": 2,
+    "dnf": false,
     "driver_number": 14,
-    "time_gap": 0.162,
+    "duration": 77.727,
+    "gap_to_leader": 0.162,
     "number_of_laps": 26,
     "meeting_key": 1143,
+    "position": 2,
     "session_key": 7782
   },
   {
-    "position": 3,
+    "dnf": false,
     "driver_number": 31,
-    "time_gap": 0.373,
+    "duration": 77.938,
+    "gap_to_leader": 0.373,
     "number_of_laps": 23,
     "meeting_key": 1143,
+    "position": 3,
     "session_key": 7782
   }
 ]
@@ -1098,14 +1104,16 @@ fetch("https://api.openf1.org/v1/session_result?session_key=7782&position%3C=3")
 
 ### Attributes
 
-| Name           | Description                                                                                                                                                                                                                                                 |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| driver_number  | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).                                                                       |
-| meeting_key    | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                                                                              |
-| number_of_laps | Number of laps completed during the session.                                                                                                                                                                                                                |
-| position       | Position at the end of the session.                                                                                                                                                                                                                         |
-| session_key    | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                                                                                              |
-| time_gap       | For the first driver: duration, in seconds, of the best lap (in practice or in quali) or total duration of the race (in a race). For the following drivers: gap in seconds or in number of laps to the first driver. `null` means DNF or no laps completed. |
+| Name           | Description                                                                                                                                                                           |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| dnf            | Indicates whether the driver _Did Not Finish_ the race. This can be `true` only for race sessions.                                                                                    |
+| driver_number  | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| duration       | Either the best lap time (for practice or qualifying), or the total race time (for races), in seconds. In qualifying, this is an array of three values for Q1, Q2, and Q3.            |
+| gap_to_leader  | The time gap to the session leader in seconds, or `+N LAP` if the driver was lapped. In qualifying, this is an array of three values for Q1, Q2, and Q3.                              |
+| number_of_laps | Total number of laps completed during the session.                                                                                                                                    |
+| meeting_key    | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
+| position       | The driver’s final position at the end of the session.                                                                                                                                |
+| session_key    | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
 
 ## Starting grid (beta)
 
