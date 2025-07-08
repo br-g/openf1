@@ -1117,7 +1117,7 @@ fetch("https://api.openf1.org/v1/session_result?session_key=7782&position%3C=3")
 | dsq            | Indicates whether the driver was disqualified.                                                                                                                                        |
 | driver_number  | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
 | duration       | Either the best lap time (for practice or qualifying), or the total race time (for races), in seconds. In qualifying, this is an array of three values for Q1, Q2, and Q3.            |
-| gap_to_leader  | The time gap to the session leader in seconds, or `+N LAP` if the driver was lapped. In qualifying, this is an array of three values for Q1, Q2, and Q3.                              |
+| gap_to_leader  | The time gap to the session leader in seconds, or `+N LAP(S)` if the driver was lapped. In qualifying, this is an array of three values for Q1, Q2, and Q3.                           |
 | number_of_laps | Total number of laps completed during the session.                                                                                                                                    |
 | meeting_key    | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
 | position       | The driver’s final position at the end of the session.                                                                                                                                |

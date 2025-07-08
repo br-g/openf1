@@ -131,7 +131,7 @@ def _session_key_to_page_url(session_key: int) -> str:
 
 @cli.command()
 def ingest_starting_grid(
-    meeting_key: str | None = None, session_key: int | None = None
+    meeting_key: int | None = None, session_key: int | None = None
 ):
     """
     Downloads, parses, and ingests the starting grid for a given meeting.
