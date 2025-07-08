@@ -1,15 +1,4 @@
-# main.py
-#
-# Description:
-# A Python client for the OpenF1 REST API, using functions and global variables.
-#
-# This script manages OAuth2 authentication by automatically fetching and
-# refreshing access tokens. Initialization is handled lazily on the first
-# API request, using environment variables.
-#
-# Installation:
-# Before using this client, you need to install the 'requests' library:
-# pip install requests
+"""A Python client for the OpenF1 REST API"""
 
 import os
 import time
@@ -17,12 +6,11 @@ from urllib.parse import urljoin
 
 import requests
 
-# --- Global variables for API configuration and state ---
 BASE_URL = "https://api.openf1.org/"
-CLIENT_ID = None
-CLIENT_SECRET = None
-ACCESS_TOKEN = None
-TOKEN_EXPIRY_TIME = 0  # Unix timestamp when the token expires
+client_id = None
+client_secret = None
+access_token = None
+token_expiry_time = 0  # Unix timestamp when the token expires
 
 
 def _ensure_initialized():
@@ -31,9 +19,9 @@ def _ensure_initialized():
     variables if they haven't been loaded yet. This is called automatically
     on the first API request.
     """
-    global CLIENT_ID, CLIENT_SECRET
+    global client_id, client_secret
     # This check ensures we only try to load from env vars once per run.
-    if CLIENT_ID is None:
+    if client_id is None:
         print(
             "Client not initialized. Attempting to load credentials from environment variables..."
         )
@@ -43,15 +31,15 @@ def _ensure_initialized():
         if not loaded_id or not loaded_secret:
             # Set to empty strings to prevent re-checking on subsequent calls,
             # then fail loudly.
-            CLIENT_ID = ""
-            CLIENT_SECRET = ""
+            client_id = ""
+            client_secret = ""
             raise ValueError(
                 "Client credentials could not be found. Please ensure "
                 "OPENF1_CLIENT_ID and OPENF1_CLIENT_SECRET environment "
                 "variables are set."
             )
-        CLIENT_ID = loaded_id
-        CLIENT_SECRET = loaded_secret
+        client_id = loaded_id
+        client_secret = loaded_secret
         print("Credentials loaded successfully.")
 
 
@@ -66,12 +54,12 @@ def _authenticate():
     Raises:
         requests.exceptions.HTTPError: If the token request fails.
     """
-    global ACCESS_TOKEN, TOKEN_EXPIRY_TIME
+    global access_token, token_expiry_time
 
     token_url = urljoin(BASE_URL, "token")
     payload = {
-        "username": CLIENT_ID,
-        "password": CLIENT_SECRET,
+        "username": client_id,
+        "password": client_secret,
     }
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
@@ -81,9 +69,9 @@ def _authenticate():
         response.raise_for_status()  # Raise an exception for bad status codes (4xx or 5xx)
 
         token_data = response.json()
-        ACCESS_TOKEN = token_data["access_token"]
+        access_token = token_data["access_token"]
         # Set expiry time with a 60-second buffer to be safe
-        TOKEN_EXPIRY_TIME = time.time() + int(token_data["expires_in"]) - 60
+        token_expiry_time = time.time() + int(token_data["expires_in"]) - 60
         print("Successfully obtained new access token.")
 
     except requests.exceptions.RequestException as e:
@@ -101,27 +89,13 @@ def _get_valid_token():
     """
     _ensure_initialized()
     # Check if token is None or if the current time is past the expiry time
-    if not ACCESS_TOKEN or time.time() >= TOKEN_EXPIRY_TIME:
+    if not access_token or time.time() >= token_expiry_time:
         _authenticate()
-    return ACCESS_TOKEN
+    return access_token
 
 
 def get(endpoint, params=None):
-    """
-    Makes an authenticated GET request to a specified API endpoint.
-
-    This is a generic function to access any GET endpoint on the API.
-
-    Args:
-        endpoint (str): The API endpoint path (e.g., 'v1/sessions').
-        params (dict, optional): A dictionary of query parameters. Defaults to None.
-
-    Returns:
-        dict or list: The JSON response from the API.
-
-    Raises:
-        requests.exceptions.HTTPError: If the API request fails.
-    """
+    """Makes an authenticated GET request to a specified API endpoint"""
     access_token = _get_valid_token()
     full_url = urljoin(BASE_URL, endpoint)
     headers = {

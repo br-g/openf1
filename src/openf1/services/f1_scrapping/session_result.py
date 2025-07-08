@@ -3,6 +3,7 @@ from pathlib import Path
 
 import typer
 from bs4 import BeautifulSoup
+from bs4.element import Tag
 from loguru import logger
 
 from openf1.services.f1_scrapping.util import download_page
@@ -10,8 +11,6 @@ from openf1.util import openf1_client
 from openf1.util.db import upsert_data_sync
 from openf1.util.misc import to_timedelta
 from openf1.util.schedule import get_latest_meeting_key, get_latest_session_key
-
-BASE_URL = "https://www.formula1.com/en/results/"
 
 cli = typer.Typer()
 
@@ -45,23 +44,11 @@ def _parse_time_gap(time_gap: str | None) -> str | float | None:
             logger.error(f"Unrecognized time gap format: {time_gap}")
 
 
-def _parse_page(html_file: Path) -> list[dict]:
-    """Parses an HTML file containing Formula 1 session results and extracts the data"""
-    with open(html_file, "r", encoding="utf-8") as f:
-        html_content = f.read()
-
-    soup = BeautifulSoup(html_content, "lxml")
-    results_data = []
-    table = soup.find("table", class_="f1-table")
-
-    if not table:
-        return results_data
-
+def _extract_raw_results(table: Tag) -> list[dict]:
+    """Extracts data from the table rows into a list of dictionaries"""
     headers = [
-        header.get_text(strip=True).upper()
-        for header in table.find("thead").find_all("th")
+        th.get_text(strip=True).upper() for th in table.find("thead").find_all("th")
     ]
-
     header_map = {
         "POS.": "position",
         "NO.": "driver_number",
@@ -77,146 +64,138 @@ def _parse_page(html_file: Path) -> list[dict]:
         "Q3": "Q3",
     }
 
-    # Step 1: Initial parse of the table into a list of dictionaries
-    rows = table.find("tbody").find_all("tr")
-    for row in rows:
+    results = []
+    for row in table.find("tbody").find_all("tr"):
         cols = row.find_all("td")
         driver_data = {}
+
         for i, header_text in enumerate(headers):
-            output_key = header_map.get(header_text.upper())
-            if output_key and i < len(cols):
-                cell_value = cols[i].get_text(strip=True)
-                if not cell_value:
-                    driver_data[output_key] = None
-                    continue
-                try:
-                    if output_key == "position":
-                        driver_data[output_key] = (
-                            int(cell_value) if cell_value != "NC" else None
-                        )
-                    elif output_key in ["driver_number", "number_of_laps"]:
-                        driver_data[output_key] = int(cell_value)
-                    elif output_key == "points":
-                        driver_data[output_key] = float(cell_value)
-                    elif output_key in {"time_gap", "Q1", "Q2", "Q3"}:
-                        # _parse_time_gap now correctly returns status strings or parsed times
-                        driver_data[output_key] = _parse_time_gap(cell_value)
-                    else:
-                        driver_data[output_key] = cell_value
-                except (ValueError, IndexError):
-                    driver_data[output_key] = cell_value
-        if driver_data:
-            results_data.append(driver_data)
+            output_key = header_map.get(header_text)
+            if not output_key or i >= len(cols):
+                continue
 
-    if not results_data:
-        return []
+            cell_value = cols[i].get_text(strip=True)
+            if not cell_value:
+                driver_data[output_key] = None
+                continue
 
-    # Step 2: Determine session type and process the data accordingly
-    is_qualifying = bool(results_data and "Q1" in results_data[0])
-
-    if is_qualifying:
-        # --- QUALIFYING SESSION PROCESSING ---
-        valid_q1_times = [
-            d["Q1"] for d in results_data if isinstance(d.get("Q1"), float)
-        ]
-        valid_q2_times = [
-            d["Q2"] for d in results_data if isinstance(d.get("Q2"), float)
-        ]
-        valid_q3_times = [
-            d["Q3"] for d in results_data if isinstance(d.get("Q3"), float)
-        ]
-
-        fastest_q1 = min(valid_q1_times) if valid_q1_times else None
-        fastest_q2 = min(valid_q2_times) if valid_q2_times else None
-        fastest_q3 = min(valid_q3_times) if valid_q3_times else None
-
-        for doc in results_data:
-            q1_duration = doc.get("Q1")
-            q2_duration = doc.get("Q2")
-            q3_duration = doc.get("Q3")
-
-            # Set status flags based on explicit strings from the website
-            q_statuses = {
-                str(q)
-                for q in [q1_duration, q2_duration, q3_duration]
-                if isinstance(q, str)
-            }
-            doc["dnf"] = "DNF" in q_statuses
-            doc["dns"] = "DNS" in q_statuses
-            doc["dsq"] = "DSQ" in q_statuses
-
-            # If driver has a status, nullify duration and gap fields
-            if doc["dnf"] or doc["dns"] or doc["dsq"]:
-                doc["duration"] = None
-                doc["gap_to_leader"] = None
-            else:
-                # Otherwise, calculate duration and gap arrays as normal
-                doc["duration"] = [q1_duration, q2_duration, q3_duration]
-                gap_q1 = (
-                    round(q1_duration - fastest_q1, 3)
-                    if isinstance(q1_duration, float) and fastest_q1 is not None
-                    else None
-                )
-                gap_q2 = (
-                    round(q2_duration - fastest_q2, 3)
-                    if isinstance(q2_duration, float) and fastest_q2 is not None
-                    else None
-                )
-                gap_q3 = (
-                    round(q3_duration - fastest_q3, 3)
-                    if isinstance(q3_duration, float) and fastest_q3 is not None
-                    else None
-                )
-                doc["gap_to_leader"] = [gap_q1, gap_q2, gap_q3]
-
-            # Remove original qualifying fields
-            doc.pop("Q1", None)
-            doc.pop("Q2", None)
-            doc.pop("Q3", None)
-
-    else:
-        # --- RACE SESSION PROCESSING ---
-        # Add dnf, dns, and dsq columns based on the parsed status
-        for doc in results_data:
-            time_status = doc.get("time_gap")
-            doc["dnf"] = time_status == "DNF"
-            doc["dns"] = time_status == "DNS"
-            doc["dsq"] = time_status == "DSQ"
-
-        leader_duration = None
-        leader_data = next((d for d in results_data if d.get("position") == 1), None)
-
-        if leader_data and isinstance(leader_data.get("time_gap"), float):
-            leader_duration = leader_data["time_gap"]
-        elif results_data and isinstance(results_data[0].get("time_gap"), float):
-            leader_duration = results_data[0].get("time_gap")
-
-        for doc in results_data:
-            time_info = doc.pop("time_gap", None)
-            is_leader = doc.get("position") == 1
-
-            if is_leader and leader_duration is not None:
-                doc["duration"] = leader_duration
-                doc["gap_to_leader"] = 0.0
-            # If driver has a status, nullify duration and gap fields
-            elif time_info in {"DNF", "DNS", "DSQ"}:
-                doc["duration"] = None
-                doc["gap_to_leader"] = None
-            else:
-                if isinstance(time_info, float):
-                    doc["gap_to_leader"] = time_info
-                    if leader_duration is not None:
-                        doc["duration"] = leader_duration + time_info
-                    else:
-                        doc["duration"] = None
-                elif isinstance(time_info, str):  # Handles cases like "+1 LAP"
-                    doc["gap_to_leader"] = time_info
-                    doc["duration"] = None
+            try:
+                if output_key == "position":
+                    driver_data[output_key] = (
+                        int(cell_value) if cell_value != "NC" else None
+                    )
+                elif output_key in ["driver_number", "number_of_laps"]:
+                    driver_data[output_key] = int(cell_value)
+                elif output_key == "points":
+                    driver_data[output_key] = float(cell_value)
+                elif output_key in {"time_gap", "Q1", "Q2", "Q3"}:
+                    driver_data[output_key] = _parse_time_gap(cell_value)
                 else:
-                    doc["duration"] = None
-                    doc["gap_to_leader"] = None
+                    driver_data[output_key] = cell_value
+            except (ValueError, IndexError):
+                driver_data[output_key] = cell_value
+
+        if driver_data:
+            results.append(driver_data)
+
+    return results
+
+
+def _process_qualifying_results(results_data: list[dict]) -> list[dict]:
+    """Processes qualifying results to calculate gaps and set status flags"""
+    valid_times = {
+        q_key: min(
+            [d[q_key] for d in results_data if isinstance(d.get(q_key), float)],
+            default=None,
+        )
+        for q_key in ["Q1", "Q2", "Q3"]
+    }
+
+    for doc in results_data:
+        q_times = {"Q1": doc.get("Q1"), "Q2": doc.get("Q2"), "Q3": doc.get("Q3")}
+
+        # Set status flags (DNF, DNS, etc.)
+        statuses = {str(q) for q in q_times.values() if isinstance(q, str)}
+        doc["dnf"], doc["dns"], doc["dsq"] = (
+            "DNF" in statuses,
+            "DNS" in statuses,
+            "DSQ" in statuses,
+        )
+
+        if doc["dnf"] or doc["dns"] or doc["dsq"]:
+            doc["duration"], doc["gap_to_leader"] = None, None
+        else:
+            doc["duration"] = [q_times["Q1"], q_times["Q2"], q_times["Q3"]]
+            doc["gap_to_leader"] = [
+                (
+                    round(q_times[k] - valid_times[k], 3)
+                    if isinstance(q_times.get(k), float) and valid_times[k]
+                    else None
+                )
+                for k in ["Q1", "Q2", "Q3"]
+            ]
+
+        # Clean up original Q1, Q2, Q3 fields
+        doc.pop("Q1", None), doc.pop("Q2", None), doc.pop("Q3", None)
 
     return results_data
+
+
+def _process_race_results(results_data: list[dict]) -> list[dict]:
+    """Processes race results to calculate duration, gaps, and set status flags"""
+    # Find the leader's time, which is the baseline duration
+    leader_duration = None
+    leader = next((d for d in results_data if d.get("position") == 1), None)
+    if leader and isinstance(leader.get("time_gap"), float):
+        leader_duration = leader["time_gap"]
+
+    for doc in results_data:
+        time_info = doc.pop("time_gap", None)
+
+        doc["dnf"] = time_info == "DNF"
+        doc["dns"] = time_info == "DNS"
+        doc["dsq"] = time_info == "DSQ"
+
+        is_leader = doc.get("position") == 1
+
+        if doc["dnf"] or doc["dns"] or doc["dsq"]:
+            doc["duration"], doc["gap_to_leader"] = None, None
+        elif is_leader and leader_duration is not None:
+            doc["duration"], doc["gap_to_leader"] = leader_duration, 0.0
+        elif isinstance(time_info, float) and leader_duration is not None:
+            doc["gap_to_leader"] = time_info
+            doc["duration"] = leader_duration + time_info
+        else:
+            # Handles strings like "+1 Lap" or cases where leader time is unknown
+            doc["gap_to_leader"] = time_info
+            doc["duration"] = None
+
+    return results_data
+
+
+def _parse_page(html_file: Path) -> list[dict]:
+    """
+    Parses an HTML file for F1 results, orchestrating the extraction and processing
+    """
+    try:
+        with open(html_file, "r", encoding="utf-8") as f:
+            soup = BeautifulSoup(f, "lxml")
+    except FileNotFoundError:
+        return []
+
+    table = soup.find("table", class_="f1-table")
+    if not table:
+        return []
+
+    raw_results = _extract_raw_results(table)
+    if not raw_results:
+        return []
+
+    is_qualifying = "Q1" in raw_results[0]
+    if is_qualifying:
+        return _process_qualifying_results(raw_results)
+    else:
+        return _process_race_results(raw_results)
 
 
 def _session_key_to_page_url(session_key: int) -> str:
@@ -244,7 +223,7 @@ def _session_key_to_page_url(session_key: int) -> str:
         page_name = "race-result"
 
     return (
-        BASE_URL
+        "https://www.formula1.com/en/results/"
         + f"{session_data['year']}/races/{session_data['meeting_key']}/aa/{page_name}"
     )
 
@@ -274,8 +253,7 @@ def ingest_session_result(
         docs = _parse_page(Path(temp.name))
 
         # Add missing fields
-        for i, doc in enumerate(docs):
-            print(doc)
+        for doc in docs:
             doc["meeting_key"] = meeting_key
             doc["session_key"] = session_key
             doc["_id"] = f"{session_key}_{doc['driver_number']}"

@@ -1063,6 +1063,8 @@ fetch("https://api.openf1.org/v1/session_result?session_key=7782&position%3C=3")
 [
   {
     "dnf": false,
+    "dns": false,
+    "dsq": false,
     "driver_number": 1,
     "duration": 77.565,
     "gap_to_leader": 0,
@@ -1073,6 +1075,8 @@ fetch("https://api.openf1.org/v1/session_result?session_key=7782&position%3C=3")
   },
   {
     "dnf": false,
+    "dns": false,
+    "dsq": false,
     "driver_number": 14,
     "duration": 77.727,
     "gap_to_leader": 0.162,
@@ -1083,6 +1087,8 @@ fetch("https://api.openf1.org/v1/session_result?session_key=7782&position%3C=3")
   },
   {
     "dnf": false,
+    "dns": false,
+    "dsq": false,
     "driver_number": 31,
     "duration": 77.938,
     "gap_to_leader": 0.373,
@@ -1107,6 +1113,8 @@ fetch("https://api.openf1.org/v1/session_result?session_key=7782&position%3C=3")
 | Name           | Description                                                                                                                                                                           |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | dnf            | Indicates whether the driver _Did Not Finish_ the race. This can be `true` only for race sessions.                                                                                    |
+| dns            | Indicates whether the driver _Did Not Start_ the race. This can be `true` only for race or qualifying sessions.                                                                       |
+| dsq            | Indicates whether the driver was disqualified.                                                                                                                                        |
 | driver_number  | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
 | duration       | Either the best lap time (for practice or qualifying), or the total race time (for races), in seconds. In qualifying, this is an array of three values for Q1, Q2, and Q3.            |
 | gap_to_leader  | The time gap to the session leader in seconds, or `+N LAP` if the driver was lapped. In qualifying, this is an array of three values for Q1, Q2, and Q3.                              |
