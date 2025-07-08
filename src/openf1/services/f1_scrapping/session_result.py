@@ -18,13 +18,16 @@ cli = typer.Typer()
 
 def _parse_time_gap(time_gap: str | None) -> str | float | None:
     """
-    Parses a time string, which can be an absolute lap time (e.g., "1:10.899")
-    or a gap time (e.g., "+0.281s").
+    Parses a time string, which can be an absolute lap time (e.g., "1:10.899"),
+    a gap time (e.g., "+0.281s"), or a status string (e.g., "DNF").
     """
-    if time_gap is None or time_gap == "" or time_gap in {"DNS", "DNF", "DSQ"}:
+    if time_gap in {"DNS", "DNF", "DSQ"}:
+        return time_gap
+
+    if time_gap is None or time_gap == "":
         return None
 
-    # Next, check for gap formats (e.g., "+0.281s" or "+1 LAP").
+    # Check for gap formats (e.g., "+0.281s" or "+1 LAP").
     if time_gap.startswith("+"):
         if "LAP" in time_gap.upper():
             return time_gap.upper()
@@ -32,31 +35,18 @@ def _parse_time_gap(time_gap: str | None) -> str | float | None:
             try:
                 return float(time_gap[1:-1])
             except ValueError:
-                # Handle cases like an unexpected "+s" format.
-                pass
+                logger.error(f"Unrecognized time gap format: {time_gap}")
+
+    # Handle durations like "1:10.899"
     else:
         try:
-            # Assuming to_timedelta handles this format correctly.
             return to_timedelta(time_gap).total_seconds()
         except (ValueError, AttributeError):
-            # If it fails, it's not an absolute time; proceed to check other formats.
-            pass
-
-    # If no format matches, log the issue and return None.
-    logger.error(f"Unrecognized time_gap format: {time_gap}")
-    return None
+            logger.error(f"Unrecognized time gap format: {time_gap}")
 
 
 def _parse_page(html_file: Path) -> list[dict]:
-    """
-    Parses an HTML file containing Formula 1 session results and extracts the data.
-
-    This function correctly formats output for both race and qualifying sessions.
-    - For races, 'duration' and 'gap_to_leader' are float values.
-    - For qualifying, 'duration' and 'gap_to_leader' are arrays representing
-      the values for [Q1, Q2, Q3].
-    - The original 'Q1', 'Q2', 'Q3' fields are removed from the final output.
-    """
+    """Parses an HTML file containing Formula 1 session results and extracts the data"""
     with open(html_file, "r", encoding="utf-8") as f:
         html_content = f.read()
 
@@ -109,7 +99,7 @@ def _parse_page(html_file: Path) -> list[dict]:
                     elif output_key == "points":
                         driver_data[output_key] = float(cell_value)
                     elif output_key in {"time_gap", "Q1", "Q2", "Q3"}:
-                        # _parse_time_gap is assumed to correctly convert time strings to seconds
+                        # _parse_time_gap now correctly returns status strings or parsed times
                         driver_data[output_key] = _parse_time_gap(cell_value)
                     else:
                         driver_data[output_key] = cell_value
@@ -145,37 +135,53 @@ def _parse_page(html_file: Path) -> list[dict]:
             q2_duration = doc.get("Q2")
             q3_duration = doc.get("Q3")
 
-            # Duration is an array of the absolute times for each session
-            doc["duration"] = [q1_duration, q2_duration, q3_duration]
+            # Set status flags based on explicit strings from the website
+            q_statuses = {
+                str(q)
+                for q in [q1_duration, q2_duration, q3_duration]
+                if isinstance(q, str)
+            }
+            doc["dnf"] = "DNF" in q_statuses
+            doc["dns"] = "DNS" in q_statuses
+            doc["dsq"] = "DSQ" in q_statuses
 
-            # Gap is an array of the difference from the fastest time in each session
-            gap_q1 = (
-                round(q1_duration - fastest_q1, 3)
-                if isinstance(q1_duration, float) and fastest_q1 is not None
-                else None
-            )
-            gap_q2 = (
-                round(q2_duration - fastest_q2, 3)
-                if isinstance(q2_duration, float) and fastest_q2 is not None
-                else None
-            )
-            gap_q3 = (
-                round(q3_duration - fastest_q3, 3)
-                if isinstance(q3_duration, float) and fastest_q3 is not None
-                else None
-            )
-            doc["gap_to_leader"] = [gap_q1, gap_q2, gap_q3]
+            # If driver has a status, nullify duration and gap fields
+            if doc["dnf"] or doc["dns"] or doc["dsq"]:
+                doc["duration"] = None
+                doc["gap_to_leader"] = None
+            else:
+                # Otherwise, calculate duration and gap arrays as normal
+                doc["duration"] = [q1_duration, q2_duration, q3_duration]
+                gap_q1 = (
+                    round(q1_duration - fastest_q1, 3)
+                    if isinstance(q1_duration, float) and fastest_q1 is not None
+                    else None
+                )
+                gap_q2 = (
+                    round(q2_duration - fastest_q2, 3)
+                    if isinstance(q2_duration, float) and fastest_q2 is not None
+                    else None
+                )
+                gap_q3 = (
+                    round(q3_duration - fastest_q3, 3)
+                    if isinstance(q3_duration, float) and fastest_q3 is not None
+                    else None
+                )
+                doc["gap_to_leader"] = [gap_q1, gap_q2, gap_q3]
 
             # Remove original qualifying fields
             doc.pop("Q1", None)
             doc.pop("Q2", None)
             doc.pop("Q3", None)
-            doc["dnf"] = all(d is None for d in doc["duration"])
 
     else:
         # --- RACE SESSION PROCESSING ---
+        # Add dnf, dns, and dsq columns based on the parsed status
         for doc in results_data:
-            doc["dnf"] = doc.get("time_gap") is None
+            time_status = doc.get("time_gap")
+            doc["dnf"] = time_status == "DNF"
+            doc["dns"] = time_status == "DNS"
+            doc["dsq"] = time_status == "DSQ"
 
         leader_duration = None
         leader_data = next((d for d in results_data if d.get("position") == 1), None)
@@ -192,6 +198,10 @@ def _parse_page(html_file: Path) -> list[dict]:
             if is_leader and leader_duration is not None:
                 doc["duration"] = leader_duration
                 doc["gap_to_leader"] = 0.0
+            # If driver has a status, nullify duration and gap fields
+            elif time_info in {"DNF", "DNS", "DSQ"}:
+                doc["duration"] = None
+                doc["gap_to_leader"] = None
             else:
                 if isinstance(time_info, float):
                     doc["gap_to_leader"] = time_info
@@ -199,7 +209,7 @@ def _parse_page(html_file: Path) -> list[dict]:
                         doc["duration"] = leader_duration + time_info
                     else:
                         doc["duration"] = None
-                elif isinstance(time_info, str):
+                elif isinstance(time_info, str):  # Handles cases like "+1 LAP"
                     doc["gap_to_leader"] = time_info
                     doc["duration"] = None
                 else:
@@ -265,6 +275,7 @@ def ingest_session_result(
 
         # Add missing fields
         for i, doc in enumerate(docs):
+            print(doc)
             doc["meeting_key"] = meeting_key
             doc["session_key"] = session_key
             doc["_id"] = f"{session_key}_{doc['driver_number']}"
