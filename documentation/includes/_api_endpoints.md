@@ -1126,18 +1126,18 @@ fetch("https://api.openf1.org/v1/session_result?session_key=7782&position%3C=3")
 
 ## Starting grid (beta)
 
-            Provides the starting grid of a race or sprint race.
+            Provides the starting grid related to qualifying sessions.
             New data is added after each qualifying session, within minutes.
 
 ```shell
-curl "https://api.openf1.org/v1/starting_grid?session_key=7787&position%3C=3"
+curl "https://api.openf1.org/v1/starting_grid?session_key=7783&position%3C=3"
 ```
 
 ```python
 from urllib.request import urlopen
 import json
 
-response = urlopen("https://api.openf1.org/v1/starting_grid?session_key=7787&position%3C=3")
+response = urlopen("https://api.openf1.org/v1/starting_grid?session_key=7783&position%3C=3")
 data = json.loads(response.read().decode('utf-8'))
 print(data)
 
@@ -1154,7 +1154,7 @@ print(data)
 library(httr)
 library(jsonlite)
 
-response <- GET("https://api.openf1.org/v1/starting_grid?session_key=7787&position%3C=3")
+response <- GET("https://api.openf1.org/v1/starting_grid?session_key=7783&position%3C=3")
 parsed_data <- fromJSON(content(response, 'text'))
 print(parsed_data)
 
@@ -1164,7 +1164,7 @@ print(parsed_data)
 ```
 
 ```javascript
-fetch("https://api.openf1.org/v1/starting_grid?session_key=7787&position%3C=3")
+fetch("https://api.openf1.org/v1/starting_grid?session_key=7783&position%3C=3")
   .then((response) => response.json())
   .then((jsonContent) => console.log(jsonContent));
 ```
@@ -1178,21 +1178,21 @@ fetch("https://api.openf1.org/v1/starting_grid?session_key=7787&position%3C=3")
     "driver_number": 1,
     "lap_duration": 76.732,
     "meeting_key": 1143,
-    "session_key": 7787
+    "session_key": 7783
   },
   {
     "position": 2,
     "driver_number": 63,
     "lap_duration": 76.968,
     "meeting_key": 1143,
-    "session_key": 7787
+    "session_key": 7783
   },
   {
     "position": 3,
     "driver_number": 44,
     "lap_duration": 77.104,
     "meeting_key": 1143,
-    "session_key": 7787
+    "session_key": 7783
   }
 ]
 ```
@@ -1203,7 +1203,7 @@ fetch("https://api.openf1.org/v1/starting_grid?session_key=7787&position%3C=3")
 
 ### Sample URL
 
-<a href="https://api.openf1.org/v1/starting_grid?session_key=7787&position<=3" target="_blank">https://api.openf1.org/v1/starting_grid?session_key=7787&position<=3</a>
+<a href="https://api.openf1.org/v1/starting_grid?session_key=7783&position<=3" target="_blank">https://api.openf1.org/v1/starting_grid?session_key=7783&position<=3</a>
 
 ### Attributes
 
