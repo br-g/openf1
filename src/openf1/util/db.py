@@ -41,7 +41,7 @@ def _get_mongo_db_async():
 
 async def get_documents(collection_name: str, filters: dict) -> list[dict]:
     """Retrieves documents from a specified MongoDB collection, applies filters,
-    and sorts with nulls last.
+    and sorts.
 
     - For 'meetings', the earliest document is returned to reflect the start time of the
       first session.
