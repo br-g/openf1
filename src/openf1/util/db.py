@@ -79,7 +79,7 @@ async def get_documents(collection_name: str, filters: dict) -> list[dict]:
                 }
             }
         },
-        # 1. Add helper fields for sorting nulls last
+        # Add helper fields for sorting nulls last
         {
             "$addFields": {
                 f"__sort_{key}": {
@@ -88,12 +88,11 @@ async def get_documents(collection_name: str, filters: dict) -> list[dict]:
                 for key in _SORT_KEYS
             }
         },
-        # 2. Sort by the helper fields, then by the original keys
+        # Sort by the helper fields, then by the original keys
         {"$sort": sort_order},
-        # 3. Remove the temporary sort fields from the final output
+        # Remove the temporary sort fields from the final output
         {"$project": {f"__sort_{key}": 0 for key in _SORT_KEYS}},
     ]
-
     cursor = collection.aggregate(pipeline)
     results = await cursor.to_list(length=None)
 
@@ -153,17 +152,10 @@ def upsert_data_sync(collection_name: str, docs: list[dict], batch_size: int = 5
 
     for i in range(0, len(docs), batch_size):
         batch = docs[i : i + batch_size]
-
-        try:
-            operations = [
-                ReplaceOne({"_key": doc["_key"]}, doc, upsert=True) for doc in batch
-            ]
-            collection.bulk_write(operations, ordered=False)
-        except BulkWriteError as bwe:
-            for error in bwe.details.get("writeErrors", []):
-                logger.error(f"Error during bulk upsert operation: {error}")
-        except Exception:
-            logger.exception("Error during bulk upsert operation")
+        operations = [
+            ReplaceOne({"_key": doc["_key"]}, doc, upsert=True) for doc in batch
+        ]
+        collection.bulk_write(operations, ordered=False)
 
 
 async def insert_data_async(collection_name: str, docs: list[dict]):

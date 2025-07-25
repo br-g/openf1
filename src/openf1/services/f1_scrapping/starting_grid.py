@@ -16,67 +16,32 @@ BASE_URL = "https://www.formula1.com/en/results/aa/races/"
 cli = typer.Typer()
 
 
-def _parse_time(time_str: str | None) -> float | None:
-    """
-    Parses a time string (e.g., '1:26.720') into total seconds.
-    Returns None if the time string is empty or invalid.
-    """
-    if not time_str:
-        return None
-    try:
-        # The to_timedelta utility is well-suited for 'M:SS.mmm' formats
-        return to_timedelta(time_str).total_seconds()
-    except Exception as e:
-        logger.error(f"Could not parse time string '{time_str}': {e}")
-        return None
-
-
 def _parse_starting_grid_page(html_file: Path) -> list[dict]:
-    """
-    Parses an HTML file containing Formula 1 session results and extracts the data.
-    This function is designed to work with different session types (Race, Practice, Qualifying).
-    """
+    """Parses an HTML file containing session results and extracts the data"""
     with open(html_file, "r", encoding="utf-8") as f:
         html_content = f.read()
 
     soup = BeautifulSoup(html_content, "lxml")
-
-    results_data = []
-
     table = soup.find("table", class_="f1-table")
-
-    if not table:
-        return results_data
-
     headers = [
         header.get_text(strip=True).upper()
         for header in table.find("thead").find_all("th")
     ]
 
-    # A more robust mapping that handles variations in header text
     header_map = {
         "POS.": "position",
         "NO.": "driver_number",
-        "LAPS": "number_of_laps",
-        "TIME/RETIRED": "lap_duration",
-        "TIME / RETIRED": "lap_duration",  # Added variation
-        "TIME / GAP": "lap_duration",
-        "TIME": "lap_duration",  # Added variation
-        "PTS.": "points",
-        "PTS": "points",  # Added variation
-        "Q1": "Q1",
-        "Q2": "Q2",
-        "Q3": "Q3",
+        "TIME": "lap_duration",
     }
 
     rows = table.find("tbody").find_all("tr")
 
+    results_data = []
     for row in rows:
         cols = row.find_all("td")
         driver_data = {}
 
         for i, header_text in enumerate(headers):
-            # Use the normalized (uppercase) header to find the output key
             output_key = header_map.get(header_text.upper())
 
             if output_key and i < len(cols):
@@ -91,15 +56,19 @@ def _parse_starting_grid_page(html_file: Path) -> list[dict]:
                         driver_data[output_key] = (
                             int(cell_value) if cell_value != "NC" else None
                         )
-                    elif output_key in ["driver_number", "number_of_laps"]:
+                    elif output_key == "driver_number":
                         driver_data[output_key] = int(cell_value)
-                    elif output_key == "points":
-                        driver_data[output_key] = float(cell_value)
                     elif output_key == "lap_duration":
-                        driver_data[output_key] = _parse_time(cell_value)
-                    else:
-                        driver_data[output_key] = cell_value
+                        driver_data[output_key] = (
+                            to_timedelta(cell_value).total_seconds()
+                            if cell_value is not None
+                            else None
+                        )
                 except (ValueError, IndexError):
+                    logger.exception(
+                        "Unhandled value format for "
+                        f"output_key '{output_key}': {cell_value}"
+                    )
                     driver_data[output_key] = cell_value
 
         if driver_data:
@@ -134,11 +103,9 @@ def ingest_starting_grid(
     meeting_key: int | None = None, session_key: int | None = None
 ):
     """
-    Downloads, parses, and ingests the starting grid for a given meeting.
-    The session_key provided should correspond to the main Race session.
-    """
-    """
-    If meeting_key and session_key is None, defaults to the latest session
+    Downloads, parses, and ingests the starting grid for a given race session.
+
+    If `meeting_key` and `session_key` is None, defaults to the latest session
     (or session in progress).
     """
     if (meeting_key is None) is not (session_key is None):
@@ -149,32 +116,27 @@ def ingest_starting_grid(
         session_key = get_latest_session_key()
 
     grid_url = _session_key_to_page_url(session_key)
+    logger.info(f"Ingesting starting grid of session {session_key}, from {grid_url}")
 
     with tempfile.NamedTemporaryFile(
         mode="w", delete=True, suffix=".html"
     ) as temp_file:
-        # Download the page content to a temporary file
         download_page(
             url=grid_url,
             output_file=Path(temp_file.name),
         )
-
-        # Parse the downloaded HTML file
         docs = _parse_starting_grid_page(Path(temp_file.name))
-
         if not docs:
-            logger.warning(f"No starting grid data found for meeting_key={meeting_key}")
+            logger.error(f"No starting grid data found for meeting_key={meeting_key}")
             return
 
-        # Enrich each document with meeting and session keys for database linking
+        # Add missing fields
         for doc in docs:
             doc["meeting_key"] = meeting_key
             doc["session_key"] = session_key
-            # Create a unique, idempotent key for each entry
             doc["_id"] = f"{session_key}_{doc['driver_number']}"
             doc["_key"] = doc["_id"]
 
-        # Upsert the data into the 'starting_grid' collection
         upsert_data_sync(collection_name="starting_grid", docs=docs)
 
 
