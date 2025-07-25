@@ -4,7 +4,7 @@ from functools import lru_cache
 
 from loguru import logger
 from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo import InsertOne, MongoClient
+from pymongo import InsertOne, MongoClient, ReplaceOne
 from pymongo.errors import BulkWriteError
 
 from openf1.util.misc import timed_cache
@@ -17,6 +17,7 @@ _SORT_KEYS = [
     "date_start",
     "meeting_key",
     "session_key",
+    "position",
     "lap_start",
     "lap_number",
     "lap_end",
@@ -50,6 +51,15 @@ async def get_documents(collection_name: str, filters: dict) -> list[dict]:
     presort_direction = 1 if collection_name == "meetings" else -1
 
     collection = _get_mongo_db_async()[collection_name]
+
+    # Define the new sort order, which will handle nulls
+    sort_order = {}
+    for key in _SORT_KEYS:
+        # First, sort by whether the field is null. This pushes nulls to the end.
+        sort_order[f"__sort_{key}"] = 1
+        # Second, sort by the actual field value.
+        sort_order[key] = 1
+
     pipeline = [
         # Apply user filters
         {"$match": filters},
@@ -69,8 +79,19 @@ async def get_documents(collection_name: str, filters: dict) -> list[dict]:
                 }
             }
         },
-        # Sort
-        {"$sort": {key: 1 for key in _SORT_KEYS}},
+        # Add helper fields for sorting nulls last
+        {
+            "$addFields": {
+                f"__sort_{key}": {
+                    "$cond": {"if": {"$eq": [f"${key}", None]}, "then": 1, "else": 0}
+                }
+                for key in _SORT_KEYS
+            }
+        },
+        # Sort by the helper fields, then by the original keys
+        {"$sort": sort_order},
+        # Remove the temporary sort fields from the final output
+        {"$project": {f"__sort_{key}": 0 for key in _SORT_KEYS}},
     ]
     cursor = collection.aggregate(pipeline)
     results = await cursor.to_list(length=None)
@@ -122,6 +143,19 @@ def insert_data_sync(collection_name: str, docs: list[dict], batch_size: int = 5
                 logger.error(f"Error during bulk write operation: {error}")
         except Exception:
             logger.exception("Error during bulk write operation")
+
+
+def upsert_data_sync(collection_name: str, docs: list[dict], batch_size: int = 50_000):
+    """Upserts (inserts or replaces) documents into a MongoDB collection in batches
+    based on _key."""
+    collection = _get_mongo_db_sync()[collection_name]
+
+    for i in range(0, len(docs), batch_size):
+        batch = docs[i : i + batch_size]
+        operations = [
+            ReplaceOne({"_key": doc["_key"]}, doc, upsert=True) for doc in batch
+        ]
+        collection.bulk_write(operations, ordered=False)
 
 
 async def insert_data_async(collection_name: str, docs: list[dict]):
