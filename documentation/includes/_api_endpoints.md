@@ -1016,7 +1016,6 @@ fetch(
 ## Session result (beta)
 
             Provides standings after a session.
-            New data is added after each session, within minutes.
 
 ```shell
 curl "https://api.openf1.org/v1/session_result?session_key=7782&position%3C=3"
@@ -1127,7 +1126,6 @@ fetch("https://api.openf1.org/v1/session_result?session_key=7782&position%3C=3")
 ## Starting grid (beta)
 
             Provides the starting grid related to qualifying sessions.
-            New data is added after each qualifying session, within minutes.
 
 ```shell
 curl "https://api.openf1.org/v1/starting_grid?session_key=7783&position%3C=3"
