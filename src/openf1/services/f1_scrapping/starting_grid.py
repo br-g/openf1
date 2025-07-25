@@ -34,6 +34,9 @@ def _parse_starting_grid_page(html_file: Path) -> list[dict]:
         "TIME": "lap_duration",
     }
 
+    if "no results available" in str(table).lower():
+        raise ValueError("No results available")
+
     rows = table.find("tbody").find_all("tr")
 
     results_data = []

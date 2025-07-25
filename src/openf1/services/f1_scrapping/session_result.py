@@ -64,6 +64,9 @@ def _extract_raw_results(table: Tag) -> list[dict]:
         "Q3": "Q3",
     }
 
+    if "no results available" in str(table).lower():
+        raise ValueError("No results available")
+
     results = []
     for row in table.find("tbody").find_all("tr"):
         cols = row.find_all("td")
