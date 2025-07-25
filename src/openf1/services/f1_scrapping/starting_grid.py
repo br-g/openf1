@@ -89,13 +89,14 @@ def _session_key_to_page_url(session_key: int) -> str:
         )
     session_data = api_results[0]
 
-    if session_data["session_name"].lower() == "sprint":
+    if session_data["session_name"].lower() in {"sprint qualifying", "sprint shootout"}:
         page_name = "sprint-grid"
-    elif session_data["session_name"].lower() == "race":
+    elif session_data["session_name"].lower() == "qualifying":
         page_name = "starting-grid"
     else:
         raise ValueError(
-            f"Session {session_key} is not a race and has no starting grid"
+            f"Session {session_key} is not a qualifying session and has "
+            "no starting grid"
         )
 
     return BASE_URL + f"{session_data['meeting_key']}/aa/{page_name}"
@@ -106,7 +107,7 @@ def ingest_starting_grid(
     meeting_key: int | None = None, session_key: int | None = None
 ):
     """
-    Downloads, parses, and ingests the starting grid for a given race session.
+    Downloads, parses, and ingests the starting grid for a given qualifying session.
 
     If `meeting_key` and `session_key` is None, defaults to the latest session
     (or session in progress).
