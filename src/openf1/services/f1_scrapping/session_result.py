@@ -251,10 +251,10 @@ def ingest_session_result(
         docs = _parse_page(Path(temp.name))
 
         # Add missing fields
-        for doc in docs:
+        for idx, doc in enumerate(docs):
             doc["meeting_key"] = meeting_key
             doc["session_key"] = session_key
-            doc["_id"] = f"{session_key}_{doc['driver_number']}"
+            doc["_id"] = f"{session_key}_{str(idx).zfill(2)}"
             doc["_key"] = doc["_id"]
 
         upsert_data_sync(collection_name="session_result", docs=docs)

@@ -13,17 +13,10 @@ _MONGO_CONNECTION_STRING = os.getenv("MONGO_CONNECTION_STRING")
 _MONGO_DATABASE = os.getenv("OPENF1_DB_NAME", "openf1-livetiming")
 
 _SORT_KEYS = [
-    "date",
     "date_start",
     "meeting_key",
     "session_key",
-    "position",
-    "lap_start",
-    "lap_number",
-    "lap_end",
-    "date_end",
-    "stint_number",
-    "driver_number",
+    "_id",
 ]
 
 
@@ -51,15 +44,6 @@ async def get_documents(collection_name: str, filters: dict) -> list[dict]:
     presort_direction = 1 if collection_name == "meetings" else -1
 
     collection = _get_mongo_db_async()[collection_name]
-
-    # Define the new sort order, which will handle nulls
-    sort_order = {}
-    for key in _SORT_KEYS:
-        # First, sort by whether the field is null. This pushes nulls to the end.
-        sort_order[f"__sort_{key}"] = 1
-        # Second, sort by the actual field value.
-        sort_order[key] = 1
-
     pipeline = [
         # Apply user filters
         {"$match": filters},
@@ -67,6 +51,8 @@ async def get_documents(collection_name: str, filters: dict) -> list[dict]:
         # Group all versions of the same document and keep only the first one
         {"$group": {"_id": "$_key", "document": {"$first": "$$ROOT"}}},
         {"$replaceRoot": {"newRoot": "$document"}},
+        # Sort
+        {"$sort": {key: 1 for key in _SORT_KEYS}},
         # Remove fields starting with '_'
         {
             "$replaceWith": {
@@ -79,19 +65,6 @@ async def get_documents(collection_name: str, filters: dict) -> list[dict]:
                 }
             }
         },
-        # Add helper fields for sorting nulls last
-        {
-            "$addFields": {
-                f"__sort_{key}": {
-                    "$cond": {"if": {"$eq": [f"${key}", None]}, "then": 1, "else": 0}
-                }
-                for key in _SORT_KEYS
-            }
-        },
-        # Sort by the helper fields, then by the original keys
-        {"$sort": sort_order},
-        # Remove the temporary sort fields from the final output
-        {"$project": {f"__sort_{key}": 0 for key in _SORT_KEYS}},
     ]
     cursor = collection.aggregate(pipeline)
     results = await cursor.to_list(length=None)
