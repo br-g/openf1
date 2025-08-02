@@ -656,12 +656,11 @@ fetch("https://api.openf1.org/v1/meetings?year=2023&country_name=Singapore")
 | meeting_official_name | The official name of the meeting.                                                                                  |
 | year                  | The year the event takes place.                                                                                    |
 
-## Overtakes
+## Overtakes (beta)
 
-
-            Provides information about overtakes.    
-            An overtake refers to one driver (the overtaking driver) exchanging positions with another driver (the overtaken driver). Overtakes that are not from one driver physically passing another driver are included (pit strategy, post-race penalties, ...). Available during races only.
-        
+            Provides information about overtakes.
+            An overtake refers to one driver (the overtaking driver) exchanging positions with another driver (the overtaken driver). This includes both on-track passes and position changes resulting from pit stops or post-race penalties.
+            This data is only available during races and may be incomplete.
 
 ```shell
 curl "https://api.openf1.org/v1/overtakes?session_key=9636&overtaking_driver_number=63&overtaken_driver_number=4&position=1"
@@ -698,12 +697,15 @@ print(parsed_data)
 ```
 
 ```javascript
-fetch('https://api.openf1.org/v1/overtakes?session_key=9636&overtaking_driver_number=63&overtaken_driver_number=4&position=1')
-  .then(response => response.json())
-  .then(jsonContent => console.log(jsonContent));
+fetch(
+  "https://api.openf1.org/v1/overtakes?session_key=9636&overtaking_driver_number=63&overtaken_driver_number=4&position=1"
+)
+  .then((response) => response.json())
+  .then((jsonContent) => console.log(jsonContent));
 ```
 
 > Output:
+
 ```json
 [
   {
@@ -718,20 +720,23 @@ fetch('https://api.openf1.org/v1/overtakes?session_key=9636&overtaking_driver_nu
 ```
 
 ### HTTP Request
+
 `GET https://api.openf1.org/v1/overtakes`
 
 ### Sample URL
+
 <a href="https://api.openf1.org/v1/overtakes?session_key=9636&amp;overtaking_driver_number=63&amp;overtaken_driver_number=4&amp;position=1" target="_blank">https://api.openf1.org/v1/overtakes?session_key=9636&amp;overtaking_driver_number=63&amp;overtaken_driver_number=4&amp;position=1</a>
 
 ### Attributes
-Name | Description
---------- | -----------
-date | The UTC date and time, in ISO 8601 format.
-meeting_key | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.
-overtaken_driver_number | The unique number assigned to the overtaken F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).
-overtaking_driver_number | The unique number assigned to the overtaking F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).
-position | The position of the overtaking F1 driver after the overtake was completed (starts at 1).
-session_key | The unique identifier for the session. Use `latest` to identify the latest or current session.
+
+| Name                     | Description                                                                                                                                                                                       |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| date                     | The UTC date and time, in ISO 8601 format.                                                                                                                                                        |
+| meeting_key              | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                    |
+| overtaken_driver_number  | The unique number assigned to the overtaken F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).  |
+| overtaking_driver_number | The unique number assigned to the overtaking F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| position                 | The position of the overtaking F1 driver after the overtake was completed (starts at 1).                                                                                                          |
+| session_key              | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                                    |
 
 ## Pit
 
