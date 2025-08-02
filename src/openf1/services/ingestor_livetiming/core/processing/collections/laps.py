@@ -9,6 +9,7 @@ from openf1.services.ingestor_livetiming.core.objects import (
     Document,
     Message,
 )
+from openf1.util.misc import to_timedelta
 
 
 @dataclass(eq=False)
@@ -108,12 +109,59 @@ class LapsCollection(Collection):
             driver_number=driver_number, property=property, value=segments_status
         )
 
+    def _infer_missing_lap_duration(self, driver_number: int):
+        """Infers and updates missing lap duration when sectors duration are available"""
+        lap = self._get_latest_lap(driver_number)
+        if (
+            not lap.lap_duration
+            and lap.duration_sector_1
+            and lap.duration_sector_2
+            and lap.duration_sector_3
+        ):
+            self._update_lap(
+                driver_number=driver_number,
+                property="lap_duration",
+                value=round(
+                    lap.duration_sector_1
+                    + lap.duration_sector_2
+                    + lap.duration_sector_3,
+                    3,
+                ),
+            )
+
+    def _infer_missing_sector_duration(self, driver_number: int):
+        """Infers and updates a single missing sector duration for a driver's lap"""
+        lap = self._get_latest_lap(driver_number)
+        if lap.lap_duration is None:
+            return
+
+        n_missing_sector_durations = 0
+        missing_sector_number = None
+        sector_durations_sum = 0
+
+        for sector_number in {1, 2, 3}:
+            sector_duration = getattr(lap, f"duration_sector_{sector_number}", None)
+            if sector_duration is None:
+                n_missing_sector_durations += 1
+                missing_sector_number = sector_number
+            else:
+                sector_durations_sum += sector_duration
+
+        if n_missing_sector_durations == 1:
+            infered_duration = lap.lap_duration - sector_durations_sum
+            if infered_duration > 0:
+                self._update_lap(
+                    driver_number=driver_number,
+                    property=f"duration_sector_{missing_sector_number}",
+                    value=round(infered_duration, 3),
+                )
+
     def process_message(self, message: Message) -> Iterator[Lap]:
         if "Lines" not in message.content:
             return
 
         for driver_number, data in message.content["Lines"].items():
-            if message.topic == "TimingAppData" and "Stints" in data:
+            if message.topic == "TimingAppData" and data.get("Stints"):
                 self.is_session_started = True
 
             elif self.is_session_started and message.topic == "TimingData":
@@ -127,14 +175,18 @@ class LapsCollection(Collection):
 
                 try:
                     lap_time = data.get("LastLapTime", {}).get("Value")
+                    if isinstance(lap_time, str):
+                        lap_time = to_timedelta(lap_time)
                 except:
                     lap_time = None
+
                 if isinstance(lap_time, timedelta):
                     self._update_lap(
                         driver_number=driver_number,
                         property="lap_duration",
                         value=lap_time.total_seconds(),
                     )
+                    self._infer_missing_sector_duration(driver_number)
 
                 sectors = data.get("Sectors")
                 if isinstance(sectors, dict):
@@ -158,23 +210,7 @@ class LapsCollection(Collection):
                                     property=f"duration_sector_{sector_number}",
                                     value=duration,
                                 )
-                                lap = self._get_latest_lap(driver_number)
-                                if (
-                                    not lap.lap_duration
-                                    and lap.duration_sector_1
-                                    and lap.duration_sector_2
-                                    and lap.duration_sector_3
-                                ):
-                                    self._update_lap(
-                                        driver_number=driver_number,
-                                        property="lap_duration",
-                                        value=round(
-                                            lap.duration_sector_1
-                                            + lap.duration_sector_2
-                                            + lap.duration_sector_3,
-                                            3,
-                                        ),
-                                    )
+                                self._infer_missing_lap_duration(driver_number)
 
                         if "Segments" in sector_data:
                             segments_data = sector_data["Segments"]

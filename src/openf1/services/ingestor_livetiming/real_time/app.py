@@ -16,6 +16,7 @@ GCS_BUCKET = os.getenv("OPENF1_INGESTOR_LIVETIMING_GCS_BUCKET_RAW")
 
 async def main():
     with tempfile.NamedTemporaryFile(mode="w", delete=True) as temp:
+        logger.info(f"Recording raw data to '{temp.name}'")
         tasks = []
 
         # Record raw data and save it to file
