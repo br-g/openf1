@@ -356,9 +356,6 @@
                     <a href="#meetings" class="toc-h2 toc-link" data-title="Meetings">Meetings</a>
                   </li>
                   <li>
-                    <a href="#overtakes-beta" class="toc-h2 toc-link" data-title="Overtakes (beta)">Overtakes (beta)</a>
-                  </li>
-                  <li>
                     <a href="#pit" class="toc-h2 toc-link" data-title="Pit">Pit</a>
                   </li>
                   <li>
@@ -1223,90 +1220,6 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
 <td>The year the event takes place.</td>
 </tr>
 </tbody></table>
-<h2 id='overtakes-beta'>Overtakes (beta)</h2>
-<p>Provides information about overtakes.
-            An overtake refers to one driver (the overtaking driver) exchanging positions with another driver (the overtaken driver). This includes both on-track passes and position changes resulting from pit stops or post-race penalties.
-            This data is only available during races and may be incomplete.</p>
-<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/overtakes?session_key=9636&amp;overtaking_driver_number=63&amp;overtaken_driver_number=4&amp;position=1"</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
-<span class="kn">import</span> <span class="nn">json</span>
-
-<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/overtakes?session_key=9636&amp;overtaking_driver_number=63&amp;overtaken_driver_number=4&amp;position=1'</span><span class="p">)</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-
-<span class="c1"># If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
-# import pandas as pd
-# df = pd.DataFrame(data)
-</span></code></pre></div><div class="highlight"><pre class="highlight r tab-r"><code><span class="c1"># If needed, install libraries</span><span class="w">
-</span><span class="c1"># install.packages('httr')</span><span class="w">
-</span><span class="c1"># install.packages('jsonlite')</span><span class="w">
-
-</span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
-</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
-
-</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/overtakes?session_key=9636&amp;overtaking_driver_number=63&amp;overtaken_driver_number=4&amp;position=1'</span><span class="p">)</span><span class="w">
-</span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
-</span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
-
-</span><span class="c1"># If you want, you can import the results in a DataFrame</span><span class="w">
-</span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
-</span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
-</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span>
-  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/overtakes?session_key=9636&amp;overtaking_driver_number=63&amp;overtaken_driver_number=4&amp;position=1</span><span class="dl">"</span>
-<span class="p">)</span>
-  <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
-  <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">jsonContent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
-</code></pre></div>
-<blockquote>
-<p>Output:</p>
-</blockquote>
-<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-11-03T15:50:07.565000+00:00"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1249</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"overtaken_driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"overtaking_driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">63</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9636</span><span class="w">
-  </span><span class="p">}</span><span class="w">
-</span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-7'>HTTP Request</h3>
-<p><code>GET https://api.openf1.org/v1/overtakes</code></p>
-<h3 id='sample-url-7'>Sample URL</h3>
-<p><a href="https://api.openf1.org/v1/overtakes?session_key=9636&amp;overtaking_driver_number=63&amp;overtaken_driver_number=4&amp;position=1" target="_blank">https://api.openf1.org/v1/overtakes?session_key=9636&amp;overtaking_driver_number=63&amp;overtaken_driver_number=4&amp;position=1</a></p>
-<h3 id='attributes-7'>Attributes</h3>
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>date</td>
-<td>The UTC date and time, in ISO 8601 format.</td>
-</tr>
-<tr>
-<td>meeting_key</td>
-<td>The unique identifier for the meeting. Use <code>latest</code> to identify the latest or current meeting.</td>
-</tr>
-<tr>
-<td>overtaken_driver_number</td>
-<td>The unique number assigned to the overtaken F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).</td>
-</tr>
-<tr>
-<td>overtaking_driver_number</td>
-<td>The unique number assigned to the overtaking F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).</td>
-</tr>
-<tr>
-<td>position</td>
-<td>The position of the overtaking F1 driver after the overtake was completed (starts at 1).</td>
-</tr>
-<tr>
-<td>session_key</td>
-<td>The unique identifier for the session. Use <code>latest</code> to identify the latest or current session.</td>
-</tr>
-</tbody></table>
 <h2 id='pit'>Pit</h2>
 <p>Provides information about cars going through the pit lane.</p>
 <div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/pit?session_key=9158&amp;pit_duration&lt;31"</span>
@@ -1359,11 +1272,11 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
     </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9158</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-8'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-7'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/pit</code></p>
-<h3 id='sample-url-8'>Sample URL</h3>
+<h3 id='sample-url-7'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/pit?session_key=9158&amp;pit_duration&lt;31" target="_blank">https://api.openf1.org/v1/pit?session_key=9158&amp;pit_duration&lt;31</a></p>
-<h3 id='attributes-8'>Attributes</h3>
+<h3 id='attributes-7'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1448,11 +1361,11 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
     </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9144</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-9'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-8'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/position</code></p>
-<h3 id='sample-url-9'>Sample URL</h3>
+<h3 id='sample-url-8'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/position?meeting_key=1217&amp;driver_number=40&amp;position&lt;=3" target="_blank">https://api.openf1.org/v1/position?meeting_key=1217&amp;driver_number=40&amp;position&lt;=3</a></p>
-<h3 id='attributes-9'>Attributes</h3>
+<h3 id='attributes-8'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1530,11 +1443,11 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
     </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9102</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-10'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-9'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/race_control</code></p>
-<h3 id='sample-url-10'>Sample URL</h3>
+<h3 id='sample-url-9'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/race_control?flag=BLACK AND WHITE&amp;driver_number=1&amp;date&gt;=2023-01-01&amp;date&lt;2023-09-01" target="_blank">https://api.openf1.org/v1/race_control?flag=BLACK AND WHITE&amp;driver_number=1&amp;date&gt;=2023-01-01&amp;date&lt;2023-09-01</a></p>
-<h3 id='attributes-10'>Attributes</h3>
+<h3 id='attributes-9'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1637,11 +1550,11 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
     </span><span class="nl">"year"</span><span class="p">:</span><span class="w"> </span><span class="mi">2023</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-11'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-10'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/sessions</code></p>
-<h3 id='sample-url-11'>Sample URL</h3>
+<h3 id='sample-url-10'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint&amp;year=2023" target="_blank">https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint&amp;year=2023</a></p>
-<h3 id='attributes-11'>Attributes</h3>
+<h3 id='attributes-10'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1777,11 +1690,11 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
     </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">7782</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-12'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-11'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/session_result</code></p>
-<h3 id='sample-url-12'>Sample URL</h3>
+<h3 id='sample-url-11'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/session_result?session_key=7782&position<=3" target="_blank">https://api.openf1.org/v1/session_result?session_key=7782&amp;position&lt;=3</a></p>
-<h3 id='attributes-12'>Attributes</h3>
+<h3 id='attributes-11'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1886,11 +1799,11 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
     </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">7783</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-13'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-12'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/starting_grid</code></p>
-<h3 id='sample-url-13'>Sample URL</h3>
+<h3 id='sample-url-12'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/starting_grid?session_key=7783&position<=3" target="_blank">https://api.openf1.org/v1/starting_grid?session_key=7783&amp;position&lt;=3</a></p>
-<h3 id='attributes-13'>Attributes</h3>
+<h3 id='attributes-12'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1975,11 +1888,11 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
     </span><span class="nl">"tyre_age_at_start"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-14'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-13'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/stints</code></p>
-<h3 id='sample-url-14'>Sample URL</h3>
+<h3 id='sample-url-13'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/stints?session_key=9165&amp;tyre_age_at_start&gt;=3" target="_blank">https://api.openf1.org/v1/stints?session_key=9165&amp;tyre_age_at_start&gt;=3</a></p>
-<h3 id='attributes-14'>Attributes</h3>
+<h3 id='attributes-13'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -2070,11 +1983,11 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
     </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9158</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-15'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-14'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/team_radio</code></p>
-<h3 id='sample-url-15'>Sample URL</h3>
+<h3 id='sample-url-14'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/team_radio?session_key=9158&amp;driver_number=11" target="_blank">https://api.openf1.org/v1/team_radio?session_key=9158&amp;driver_number=11</a></p>
-<h3 id='attributes-15'>Attributes</h3>
+<h3 id='attributes-14'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -2152,11 +2065,11 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
     </span><span class="nl">"wind_speed"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.4</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-16'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-15'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/weather</code></p>
-<h3 id='sample-url-16'>Sample URL</h3>
+<h3 id='sample-url-15'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/weather?meeting_key=1208&amp;wind_direction&gt;=130&amp;track_temperature&gt;=52" target="_blank">https://api.openf1.org/v1/weather?meeting_key=1208&amp;wind_direction&gt;=130&amp;track_temperature&gt;=52</a></p>
-<h3 id='attributes-16'>Attributes</h3>
+<h3 id='attributes-15'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -2283,7 +2196,6 @@ We welcome all contributions that help advance this goal!</p>
 <h3 id='contributors'>Contributors</h3>
 <ul>
 <li><a href="https://github.com/br-g" target="_blank">@br-g</a></li>
-<li><a href="https://github.com/JeffreyJPZ" target="_blank">@JeffreyJPZ</a></li>
 <li><a href="https://github.com/PrestonHager" target="_blank">@PrestonHager</a></li>
 <li><a href="https://github.com/Nik-code" target="_blank">@Nik-code</a></li>
 <li><a href="https://github.com/bordanattila" target="_blank">@bordanattila</a></li>
