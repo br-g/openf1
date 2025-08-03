@@ -91,5 +91,5 @@ class DriversCollection(Collection):
                     value=driver_content[topic_key],
                 )
 
-        yield from deepcopy(self.updated_drivers)
+        yield from sorted(deepcopy(self.updated_drivers), key=lambda x: x.driver_number)
         self.updated_drivers = set()

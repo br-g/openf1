@@ -48,7 +48,7 @@ class OvertakesCollection(Collection):
 
         try:
             overtaken_driver_data = [
-                (int(driver_number), int(data.get("Position")))
+                (int(data.get("Position")), int(driver_number))
                 for driver_number, data in message.content.items()
                 if isinstance(data, dict)
                 and data.get("OvertakeState") != 2
@@ -61,7 +61,10 @@ class OvertakesCollection(Collection):
             # Need at least two drivers to have an overtake
             return
 
-        for overtaken_driver_number, position in overtaken_driver_data:
+        # Sort overtakes in chronological order
+        overtaken_driver_data = sorted(overtaken_driver_data)[::-1]
+
+        for position, overtaken_driver_number in overtaken_driver_data:
             # position is the overtaken driver's position after being overtaken, adjust position to account for this
             overtake_position = position - 1
 
