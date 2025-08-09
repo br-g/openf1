@@ -145,9 +145,7 @@ def _generate_query_predicate(filters: dict[str, list[dict]]) -> dict:
         ]
 
         # Get bounded inequality predicate pairs
-        bounded_ineq_predicate_pairs = _get_bounded_query_predicate_pairs(
-            filtered_predicates
-        )
+        bounded_ineq_predicate_pairs = _get_bounded_query_predicate_pairs(filtered_predicates)
 
         # Predicates that are neither paired nor equality predicates are unbounded inequality predicates
         bounded_ineq_predicates = [
@@ -159,7 +157,7 @@ def _generate_query_predicate(filters: dict[str, list[dict]]) -> dict:
             predicate
             for predicate in filtered_predicates
             if predicate not in bounded_ineq_predicates
-            or predicate not in eq_predicates
+            and predicate not in eq_predicates
         ]
 
         # Guaranteed to have at least one predicate at this stage
