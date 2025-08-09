@@ -48,7 +48,7 @@ def _split_query_params(query_params_raw: dict[str, list[str]]) -> list[str]:
             # Handle timezones which are not parsed properly
             if "date" in filter_str and re.search(r" \d{2}:\d{2}$", filter_str):
                 filter_str = filter_str.replace(" ", "+", 1)
-            
+
             filters.append(filter_str)
 
     return filters
@@ -154,11 +154,11 @@ def parse_query_params(query_params_raw: dict[str, list[str]]) -> dict[str, list
     return dict(params_by_field)
 
 
-def query_params_to_mongo_filters(
-    query_params: dict[str, list[QueryParam]],
-) -> dict[str, list[dict]]:
+def query_params_to_mongo_filters(query_params: dict[str, list[QueryParam]]) -> dict[str, list[dict]]:
     return {
-        key: [{COMPARISON_OPERATORS_TO_MONGO[param.op]: param.value} for param in params]
+        key: [
+            {COMPARISON_OPERATORS_TO_MONGO[param.op]: param.value} for param in params
+        ]
         for key, params in query_params.items()
     }
 

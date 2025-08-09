@@ -56,19 +56,23 @@ def _get_bounded_query_predicate_pairs(predicates: list[dict]) -> list[tuple[dic
         [{"$gt": 5}, {"$lt": 10}, {"$gt": 8}, {"$lt": 12}] --> [({"$gt": 5}, {"$lt": 10}), ({"$gt": 8}, {"$lt": 12})]
     """
     lower_bound_predicates = [
-        predicate for predicate in predicates
-        if predicate.get("$gt") is not None
-        or predicate.get("$gte") is not None
+        predicate
+        for predicate in predicates
+        if predicate.get("$gt") is not None or predicate.get("$gte") is not None
     ]
     upper_bound_predicates = [
-        predicate for predicate in predicates
-        if predicate.get("$lt") is not None
-        or predicate.get("$lte") is not None
+        predicate
+        for predicate in predicates
+        if predicate.get("$lt") is not None or predicate.get("$lte") is not None
     ]
 
-    # Sort predicates for greedy matching
-    lower_bound_predicates.sort(key=lambda predicate: list(predicate.values())[0], reverse=True)
-    upper_bound_predicates.sort(key=lambda predicate: list(predicate.values())[0], reverse=True)
+    # Sort predicates in reverse order for some minor optimization
+    lower_bound_predicates.sort(
+        key=lambda predicate: list(predicate.values())[0], reverse=True
+    )
+    upper_bound_predicates.sort(
+        key=lambda predicate: list(predicate.values())[0], reverse=True
+    )
 
     bounded_ineq_predicate_pairs = []
 
@@ -80,16 +84,21 @@ def _get_bounded_query_predicate_pairs(predicates: list[dict]) -> list[tuple[dic
         # If the lower bound predicate is <= the upper bound predicate, a pair has been found
         closest_upper_bound_predicate = None
         for i in reversed(range(len(upper_bound_predicates))):
-            if list(lower_bound_predicate.values())[0] <= list(upper_bound_predicates[i].values())[0]:
+            if (
+                list(lower_bound_predicate.values())[0]
+                <= list(upper_bound_predicates[i].values())[0]
+            ):
                 closest_upper_bound_predicate = upper_bound_predicates.pop(i)
                 break
-        
+
         # Terminate early if no suitable upper bound predicate exists (no more pairs can be made)
         if closest_upper_bound_predicate is None:
             break
 
-        bounded_ineq_predicate_pairs.append((lower_bound_predicate, closest_upper_bound_predicate))
-    
+        bounded_ineq_predicate_pairs.append(
+            (lower_bound_predicate, closest_upper_bound_predicate)
+        )
+
     return bounded_ineq_predicate_pairs
 
 
@@ -106,7 +115,7 @@ def _get_unique_predicates(predicates: list[dict]) -> list[dict]:
         if hashed_predicate not in seen_predicates:
             filtered_predicates.append(predicate)
             seen_predicates.add(hashed_predicate)
-    
+
     return filtered_predicates
 
 
@@ -129,17 +138,26 @@ def _generate_query_predicate(filters: dict[str, list[dict]]) -> dict:
         filtered_predicates = _get_unique_predicates(predicates)
 
         # Get equality predicates
-        eq_predicates = [predicate for predicate in filtered_predicates if predicate.get("$eq") is not None]
+        eq_predicates = [
+            predicate
+            for predicate in filtered_predicates
+            if predicate.get("$eq") is not None
+        ]
 
         # Get bounded inequality predicate pairs
-        bounded_ineq_predicate_pairs = _get_bounded_query_predicate_pairs(filtered_predicates)
+        bounded_ineq_predicate_pairs = _get_bounded_query_predicate_pairs(
+            filtered_predicates
+        )
 
         # Predicates that are neither paired nor equality predicates are unbounded inequality predicates
         bounded_ineq_predicates = [
-            predicate for predicate_pair in bounded_ineq_predicate_pairs for predicate in predicate_pair
+            predicate
+            for predicate_pair in bounded_ineq_predicate_pairs
+            for predicate in predicate_pair
         ]
         unbounded_ineq_predicates = [
-            predicate for predicate in filtered_predicates
+            predicate
+            for predicate in filtered_predicates
             if predicate not in bounded_ineq_predicates
             or predicate not in eq_predicates
         ]
@@ -147,20 +165,30 @@ def _generate_query_predicate(filters: dict[str, list[dict]]) -> dict:
         # Guaranteed to have at least one predicate at this stage
         inner_predicate = defaultdict(list)
         if eq_predicates:
-            inner_predicate["$or"].append({"$or": [{key: predicate} for predicate in eq_predicates]})
+            inner_predicate["$or"].append(
+                {"$or": [{key: predicate} for predicate in eq_predicates]}
+            )
         if unbounded_ineq_predicates:
-            inner_predicate["$or"].append({"$or": [{key: predicate} for predicate in unbounded_ineq_predicates]})
+            inner_predicate["$or"].append(
+                {"$or": [{key: predicate} for predicate in unbounded_ineq_predicates]}
+            )
         if bounded_ineq_predicate_pairs:
             inner_predicate["$or"].append(
-                {"$or": [
-                    {"$and":
-                        [{key: predicate} for predicate in bounded_ineq_predicate_pair]
-                    } for bounded_ineq_predicate_pair in bounded_ineq_predicate_pairs
-                ]}
+                {
+                    "$or": [
+                        {
+                            "$and": [
+                                {key: predicate}
+                                for predicate in bounded_ineq_predicate_pair
+                            ]
+                        }
+                        for bounded_ineq_predicate_pair in bounded_ineq_predicate_pairs
+                    ]
+                }
             )
 
         query_predicates["$and"].append(dict(inner_predicate))
-            
+
     return dict(query_predicates)
 
 
