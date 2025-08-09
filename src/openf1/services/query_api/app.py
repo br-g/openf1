@@ -15,6 +15,7 @@ from openf1.services.query_api.csv import generate_csv_response
 from openf1.services.query_api.query_params import (
     parse_query_params,
     query_params_to_mongo_filters,
+    query_params_raw_items_to_raw_dict
 )
 from openf1.util.db import get_documents
 
@@ -74,10 +75,9 @@ def _parse_path(path: str) -> str:
 
 
 async def _process_request(request: Request, path: str) -> list[dict] | Response:
-    if not path and not request.query_params:
+    if not path and not request.query_params.multi_items():
         return Response(content="Welcome to OpenF1!", media_type="text/plain")
-
-    query_params = parse_query_params(request.query_params)
+    query_params = parse_query_params(query_params_raw_items_to_raw_dict(request.query_params.multi_items()))
     collection = _parse_path(path)
     use_csv = "csv" in query_params and query_params.pop("csv")[0].value
 
