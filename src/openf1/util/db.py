@@ -34,7 +34,7 @@ def _get_mongo_db_async():
     return client[_MONGO_DATABASE]
 
 
-def _get_bounded_query_predicate_pairs(predicates: list[dict]) -> list[tuple[dict, dict]]:
+def _get_bounded_inequality_predicate_pairs(predicates: list[dict]) -> list[tuple[dict, dict]]:
     """
     Greedy matching algorithm for pairing predicates in the form {op: value}
     where op is a MongoDB inequality operator such as "$gt", "$gte", "$lt", or "$lte".
@@ -145,7 +145,7 @@ def _generate_query_predicate(filters: dict[str, list[dict]]) -> dict:
         ]
 
         # Get bounded inequality predicate pairs
-        bounded_ineq_predicate_pairs = _get_bounded_query_predicate_pairs(filtered_predicates)
+        bounded_ineq_predicate_pairs = _get_bounded_inequality_predicate_pairs(filtered_predicates)
 
         # Predicates that are neither paired nor equality predicates are unbounded inequality predicates
         bounded_ineq_predicates = [
