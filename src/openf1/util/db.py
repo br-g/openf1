@@ -161,6 +161,7 @@ def _generate_query_predicate(filters: dict[str, list[dict]]) -> dict:
         ]
 
         # Guaranteed to have at least one predicate at this stage
+        # Predicates for the same query param are joined with logical OR except for bounded pairs (logical AND)
         inner_predicate = defaultdict(list)
         if eq_predicates:
             inner_predicate["$or"].append(
@@ -185,6 +186,7 @@ def _generate_query_predicate(filters: dict[str, list[dict]]) -> dict:
                 }
             )
 
+        # Predicates for different query params are joined with logical AND
         query_predicates["$and"].append(dict(inner_predicate))
 
     return dict(query_predicates)
