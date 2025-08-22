@@ -76,7 +76,7 @@ async def ingest_line(line: str):
             try:
                 await asyncio.wait_for(
                     publish_messages_to_mqtt(
-                        topic=f"test/{collection}", messages=docs_mongo_json
+                        topic=f"v1/{collection}", messages=docs_mongo_json
                     ),
                     timeout=NETWORK_TIMEOUT,
                 )
