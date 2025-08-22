@@ -9,6 +9,7 @@ from openf1.services.ingestor_livetiming.core.objects import Document, Message
 from openf1.services.ingestor_livetiming.core.processing.main import process_message
 from openf1.util.db import insert_data_async
 from openf1.util.misc import json_serializer, to_datetime
+from openf1.util.mqtt import initialize_mqtt
 
 NETWORK_TIMEOUT = 10.0  # 10 seconds
 
@@ -98,6 +99,8 @@ async def ingest_file(filepath: str):
     appended to the file and processes them in real-time.
     """
     try:
+        await initialize_mqtt()
+
         with open(filepath, "r") as file:
             # Read and ingest existing lines
             lines = file.readlines()
