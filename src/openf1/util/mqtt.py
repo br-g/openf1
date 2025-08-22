@@ -38,7 +38,7 @@ async def initialize_mqtt():
             logger.info("Successfully connected to MQTT broker.")
         except (MqttError, ValueError, OSError) as e:
             logger.error(f"Failed to connect to MQTT broker: {e}")
-            _client = None  # Reset client on connection failure
+            _client = None
 
 
 async def publish_messages_to_mqtt(
@@ -57,7 +57,7 @@ async def publish_messages_to_mqtt(
         return False
 
     if not messages:
-        logger.warning("No messages to publish.")
+        logger.warning("No messages to publish")
         return True
 
     try:
