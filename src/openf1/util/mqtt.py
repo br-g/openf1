@@ -20,7 +20,7 @@ async def initialize_mqtt():
     Should be called once when the application starts.
     """
     if not _url:
-        logger.info("MQTT credentials not found, MQTT is disabled.")
+        logger.info("MQTT credentials not found, MQTT is disabled")
         return
 
     global _client
@@ -35,10 +35,12 @@ async def initialize_mqtt():
         )
         try:
             await _client.__aenter__()
-            logger.info("Successfully connected to MQTT broker.")
+            logger.info("Successfully connected to MQTT broker")
         except (MqttError, ValueError, OSError) as e:
             logger.error(f"Failed to connect to MQTT broker: {e}")
             _client = None
+    else:
+        logger.info("MQTT client is already initialized")
 
 
 async def publish_messages_to_mqtt(
