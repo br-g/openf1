@@ -213,10 +213,6 @@ class LapsCollection(Collection):
                 except:
                     continue
 
-                # if driver_number != 31:
-                #    continue
-                # print(message.timepoint, data)
-
                 if not isinstance(data, dict):
                     continue
 
