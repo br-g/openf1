@@ -67,7 +67,23 @@ class LapsCollection(Collection):
         driver_number: int,
         timepoint: datetime,
         is_end_of_lap: bool = False,
-    ) -> dict | None:
+    ) -> Lap | None:
+        """
+        Retrieves the current lap for a given driver.
+
+        This method handles the creation of the first lap if it doesn't exist and
+        correctly identifies the target lap for updates, even when data arrives
+        out of order (e.g., sector data for a previous lap arriving after a new
+        lap has already started).
+
+        Args:
+            driver_number (int): The number of the driver.
+            timepoint (datetime): The timestamp of the current message being processed.
+            is_end_of_lap (bool): Flag indicating if the data relates to the end of a lap.
+
+        Returns:
+            Lap | None: The current Lap object for the driver, or None if it should be skipped.
+        """
         if driver_number not in self.laps:
             self._add_lap(driver_number=driver_number, lap_number=1)
         laps = self.laps[driver_number]
@@ -88,7 +104,10 @@ class LapsCollection(Collection):
         return current_lap
 
     def _infer_missing_lap_duration(self, lap: Lap):
-        """Infers and updates missing lap duration when sectors duration are available"""
+        """
+        Infers and updates missing lap duration if all three sector durations are
+        available.
+        """
         if (
             not lap.lap_duration
             and lap.duration_sector_1
@@ -108,7 +127,7 @@ class LapsCollection(Collection):
         is_end_of_lap: bool = False,
         timepoint: datetime | None = None,
     ):
-        """Updates a property of the current lap of a driver"""
+        """Updates a specific property of a driver's current lap."""
         lap = self._get_current_lap(
             driver_number, is_end_of_lap=is_end_of_lap, timepoint=timepoint
         )
@@ -142,6 +161,7 @@ class LapsCollection(Collection):
         is_end_of_lap: bool,
         timepoint: datetime,
     ):
+        """Adds the status of a track segment to the current lap."""
         lap = self._get_current_lap(
             driver_number, is_end_of_lap=is_end_of_lap, timepoint=timepoint
         )
