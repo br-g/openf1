@@ -1,4 +1,4 @@
-# Fetching and ingesting historical data
+# Fetching and ingesting historical livetiming data
 
 ### Get schedule
 

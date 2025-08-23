@@ -4,7 +4,7 @@ from functools import lru_cache
 
 from loguru import logger
 from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo import InsertOne, MongoClient
+from pymongo import InsertOne, MongoClient, ReplaceOne
 from pymongo.errors import BulkWriteError
 
 from openf1.util.misc import timed_cache
@@ -13,16 +13,10 @@ _MONGO_CONNECTION_STRING = os.getenv("MONGO_CONNECTION_STRING")
 _MONGO_DATABASE = os.getenv("OPENF1_DB_NAME", "openf1-livetiming")
 
 _SORT_KEYS = [
-    "date",
     "date_start",
     "meeting_key",
     "session_key",
-    "lap_start",
-    "lap_number",
-    "lap_end",
-    "date_end",
-    "stint_number",
-    "driver_number",
+    "_id",
 ]
 
 
@@ -57,6 +51,8 @@ async def get_documents(collection_name: str, filters: dict) -> list[dict]:
         # Group all versions of the same document and keep only the first one
         {"$group": {"_id": "$_key", "document": {"$first": "$$ROOT"}}},
         {"$replaceRoot": {"newRoot": "$document"}},
+        # Sort
+        {"$sort": {key: 1 for key in _SORT_KEYS}},
         # Remove fields starting with '_'
         {
             "$replaceWith": {
@@ -69,8 +65,6 @@ async def get_documents(collection_name: str, filters: dict) -> list[dict]:
                 }
             }
         },
-        # Sort
-        {"$sort": {key: 1 for key in _SORT_KEYS}},
     ]
     cursor = collection.aggregate(pipeline)
     results = await cursor.to_list(length=None)
@@ -120,8 +114,21 @@ def insert_data_sync(collection_name: str, docs: list[dict], batch_size: int = 5
         except BulkWriteError as bwe:
             for error in bwe.details.get("writeErrors", []):
                 logger.error(f"Error during bulk write operation: {error}")
-        except Exception as e:
-            logger.error(f"Error during bulk write operation: {str(e)}")
+        except Exception:
+            logger.exception("Error during bulk write operation")
+
+
+def upsert_data_sync(collection_name: str, docs: list[dict], batch_size: int = 50_000):
+    """Upserts (inserts or replaces) documents into a MongoDB collection in batches
+    based on _key."""
+    collection = _get_mongo_db_sync()[collection_name]
+
+    for i in range(0, len(docs), batch_size):
+        batch = docs[i : i + batch_size]
+        operations = [
+            ReplaceOne({"_key": doc["_key"]}, doc, upsert=True) for doc in batch
+        ]
+        collection.bulk_write(operations, ordered=False)
 
 
 async def insert_data_async(collection_name: str, docs: list[dict]):
@@ -133,5 +140,5 @@ async def insert_data_async(collection_name: str, docs: list[dict]):
     except BulkWriteError as bwe:
         for error in bwe.details.get("writeErrors", []):
             logger.error(f"Error during bulk write operation: {error}")
-    except Exception as e:
-        logger.error(f"Error during bulk write operation: {str(e)}")
+    except Exception:
+        logger.exception("Error during bulk write operation")
