@@ -36,55 +36,121 @@ class Lap(Document):
         return (self.session_key, self.lap_number, self.driver_number)
 
 
-def _is_lap_valid(lap: Lap) -> bool:
-    return (
-        lap.duration_sector_1 is not None
-        or lap.duration_sector_2 is not None
-        or lap.duration_sector_3 is not None
-        or lap.i1_speed is not None
-        or lap.i2_speed is not None
-        or lap.lap_duration is not None
-        or (lap.segments_sector_1 and any(lap.segments_sector_1[1:]))
-        or (lap.segments_sector_2 and any(lap.segments_sector_2))
-        or (lap.segments_sector_3 and any(lap.segments_sector_3[:-1]))
-        or lap.st_speed is not None
-    )
-
-
 @dataclass
 class LapsCollection(Collection):
     name = "laps"
-    source_topics = {"TimingAppData", "TimingData"}
+    source_topics = {
+        "SessionInfo",
+        "RaceControlMessages",
+        "TimingAppData",
+        "TimingData",
+    }
 
     is_session_started: bool = False
+    is_session_a_race: bool | None = None
+    chequered_flag_date: datetime | None = None
     laps: defaultdict = field(default_factory=lambda: defaultdict(list))
     updated_laps: set = field(default_factory=set)  # laps updated since last message
 
-    def _add_lap(self, driver_number: int):
-        n_laps = len(self.laps[driver_number])
+    def _add_lap(self, driver_number: int, lap_number: int) -> Lap:
         new_lap = Lap(
             meeting_key=self.meeting_key,
             session_key=self.session_key,
             driver_number=driver_number,
-            lap_number=n_laps + 1,
+            lap_number=lap_number,
         )
         self.laps[driver_number].append(new_lap)
+        return new_lap
 
-    def _get_latest_lap(self, driver_number: int) -> dict:
+    def _get_current_lap(
+        self,
+        driver_number: int,
+        timepoint: datetime,
+        is_end_of_lap: bool = False,
+    ) -> Lap | None:
+        """
+        Retrieves the current lap for a given driver.
+
+        This method handles the creation of the first lap if it doesn't exist and
+        correctly identifies the target lap for updates, even when data arrives
+        out of order (e.g., sector data for a previous lap arriving after a new
+        lap has already started).
+
+        Args:
+            driver_number (int): The number of the driver.
+            timepoint (datetime): The timestamp of the current message being processed.
+            is_end_of_lap (bool): Flag indicating if the data relates to the end of a lap.
+
+        Returns:
+            Lap | None: The current Lap object for the driver, or None if it should be skipped.
+        """
         if driver_number not in self.laps:
-            self._add_lap(driver_number=driver_number)
+            self._add_lap(driver_number=driver_number, lap_number=1)
         laps = self.laps[driver_number]
-        return laps[-1]
+        current_lap = laps[-1]
 
-    def _update_lap(self, driver_number: int, property: str, value: any):
-        """Updates a property of the latest lap of a driver"""
-        lap = self._get_latest_lap(driver_number)
+        # Handle case where data from sector 2 is received after the creation
+        # of the next lap
+        if (
+            is_end_of_lap
+            and current_lap.date_start is not None
+            and timepoint - current_lap.date_start < timedelta(seconds=10)
+        ):
+            # Sometimes, some extra data is sent at the beginning of a session. Skip it.
+            if len(laps) < 2:
+                return None
+            current_lap = laps[-2]
+
+        return current_lap
+
+    def _infer_missing_lap_duration(self, lap: Lap):
+        """
+        Infers and updates missing lap duration if all three sector durations are
+        available.
+        """
+        if (
+            not lap.lap_duration
+            and lap.duration_sector_1
+            and lap.duration_sector_2
+            and lap.duration_sector_3
+        ):
+            lap.lap_duration = round(
+                lap.duration_sector_1 + lap.duration_sector_2 + lap.duration_sector_3,
+                3,
+            )
+
+    def _update_lap(
+        self,
+        driver_number: int,
+        property: str,
+        value: any,
+        is_end_of_lap: bool = False,
+        timepoint: datetime | None = None,
+    ):
+        """Updates a specific property of a driver's current lap."""
+        lap = self._get_current_lap(
+            driver_number, is_end_of_lap=is_end_of_lap, timepoint=timepoint
+        )
+        if lap is None:
+            return
+
         old_value = getattr(lap, property)
         if value != old_value:
-            lap.driver_number = driver_number
             setattr(lap, property, value)
-            if _is_lap_valid(lap):
-                self.updated_laps.add(lap)
+
+            if property.startswith("duration_sector_"):
+                self._infer_missing_lap_duration(lap)
+
+            # During a race, discard laps that start after the checkered flag
+            if (
+                self.is_session_a_race
+                and self.chequered_flag_date is not None
+                and lap.date_start is not None
+                and self.chequered_flag_date < lap.date_start
+            ):
+                return
+
+            self.updated_laps.add(lap)
 
     def _add_segment_status(
         self,
@@ -92,8 +158,15 @@ class LapsCollection(Collection):
         sector_number: int,
         segment_number: int,
         segment_status: int,
+        is_end_of_lap: bool,
+        timepoint: datetime,
     ):
-        lap = self._get_latest_lap(driver_number)
+        """Adds the status of a track segment to the current lap."""
+        lap = self._get_current_lap(
+            driver_number, is_end_of_lap=is_end_of_lap, timepoint=timepoint
+        )
+        if lap is None:
+            return
 
         # Get existing segment status
         property = f"segments_sector_{sector_number}"
@@ -106,57 +179,27 @@ class LapsCollection(Collection):
             segments_status.append(None)
         segments_status[segment_number] = segment_status
         self._update_lap(
-            driver_number=driver_number, property=property, value=segments_status
+            driver_number=driver_number,
+            property=property,
+            value=segments_status,
+            is_end_of_lap=is_end_of_lap,
+            timepoint=timepoint,
         )
 
-    def _infer_missing_lap_duration(self, driver_number: int):
-        """Infers and updates missing lap duration when sectors duration are available"""
-        lap = self._get_latest_lap(driver_number)
-        if (
-            not lap.lap_duration
-            and lap.duration_sector_1
-            and lap.duration_sector_2
-            and lap.duration_sector_3
-        ):
-            self._update_lap(
-                driver_number=driver_number,
-                property="lap_duration",
-                value=round(
-                    lap.duration_sector_1
-                    + lap.duration_sector_2
-                    + lap.duration_sector_3,
-                    3,
-                ),
-            )
-
-    def _infer_missing_sector_duration(self, driver_number: int):
-        """Infers and updates a single missing sector duration for a driver's lap"""
-        lap = self._get_latest_lap(driver_number)
-        if lap.lap_duration is None:
+    def process_message(self, message: Message) -> Iterator[Lap]:
+        if message.topic == "SessionInfo":
+            self.is_session_a_race = message.content["Type"].lower() == "race"
             return
 
-        n_missing_sector_durations = 0
-        missing_sector_number = None
-        sector_durations_sum = 0
+        if message.topic == "RaceControlMessages":
+            inner_messages = message.content["Messages"]
+            if isinstance(inner_messages, dict):
+                inner_messages = inner_messages.values()
+            for data in inner_messages:
+                if data["Message"].upper() == "CHEQUERED FLAG":
+                    self.chequered_flag_date = message.timepoint
+            return
 
-        for sector_number in {1, 2, 3}:
-            sector_duration = getattr(lap, f"duration_sector_{sector_number}", None)
-            if sector_duration is None:
-                n_missing_sector_durations += 1
-                missing_sector_number = sector_number
-            else:
-                sector_durations_sum += sector_duration
-
-        if n_missing_sector_durations == 1:
-            infered_duration = lap.lap_duration - sector_durations_sum
-            if infered_duration > 0:
-                self._update_lap(
-                    driver_number=driver_number,
-                    property=f"duration_sector_{missing_sector_number}",
-                    value=round(infered_duration, 3),
-                )
-
-    def process_message(self, message: Message) -> Iterator[Lap]:
         if "Lines" not in message.content:
             return
 
@@ -185,8 +228,9 @@ class LapsCollection(Collection):
                         driver_number=driver_number,
                         property="lap_duration",
                         value=lap_time.total_seconds(),
+                        is_end_of_lap=True,
+                        timepoint=message.timepoint,
                     )
-                    self._infer_missing_sector_duration(driver_number)
 
                 sectors = data.get("Sectors")
                 if isinstance(sectors, dict):
@@ -209,8 +253,9 @@ class LapsCollection(Collection):
                                     driver_number=driver_number,
                                     property=f"duration_sector_{sector_number}",
                                     value=duration,
+                                    is_end_of_lap=sector_number > 1,
+                                    timepoint=message.timepoint,
                                 )
-                                self._infer_missing_lap_duration(driver_number)
 
                         if "Segments" in sector_data:
                             segments_data = sector_data["Segments"]
@@ -230,6 +275,8 @@ class LapsCollection(Collection):
                                         sector_number=sector_number,
                                         segment_number=segment_number,
                                         segment_status=segment_data.get("Status"),
+                                        is_end_of_lap=sector_number > 1,
+                                        timepoint=message.timepoint,
                                     )
 
                 speeds = data.get("Speeds")
@@ -251,14 +298,29 @@ class LapsCollection(Collection):
                             )
 
                 if data.get("NumberOfLaps") is not None:
-                    latest_lap = self._get_latest_lap(driver_number=driver_number)
-                    if _is_lap_valid(latest_lap):
-                        self._add_lap(driver_number=driver_number)
-                    self._update_lap(
-                        driver_number=driver_number,
-                        property="date_start",
-                        value=message.timepoint,
+                    lap_number = data["NumberOfLaps"]
+                    if not isinstance(lap_number, int):
+                        continue
+
+                    # During a race, the first lap is not recorded as such
+                    if self.is_session_a_race:
+                        lap_number += 1
+
+                    current_lap = self._get_current_lap(
+                        driver_number=driver_number, timepoint=message.timepoint
                     )
+
+                    if lap_number > current_lap.lap_number:
+                        current_lap = self._add_lap(
+                            driver_number=driver_number,
+                            lap_number=lap_number,
+                        )
+                    if current_lap.date_start is None:
+                        self._update_lap(
+                            driver_number=driver_number,
+                            property="date_start",
+                            value=message.timepoint,
+                        )
 
                 if data.get("PitOut") is not None:
                     self._update_lap(
