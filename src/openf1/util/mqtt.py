@@ -1,4 +1,3 @@
-import asyncio
 import os
 import ssl
 
@@ -13,54 +12,43 @@ _password = os.getenv("OPENF1_MQTT_PASSWORD")
 _tls_context = ssl.create_default_context()
 
 _client: Client | None = None
-_client_lock = asyncio.Lock()
 
 
-def _is_client_connected(client: Client | None) -> bool:
+async def initialize_mqtt():
     """
-    Check if the client is connected.
-    Handles inconsistencies in how aiomqtt exposes connection status by checking
-    the internal `_connected` Future object directly.
+    Initializes and connects the global MQTT client.
+    Should be called once when the application starts.
     """
-    if not client or not hasattr(client, "_connected"):
-        return False
-    return client._connected.done() and not client._connected.cancelled()
+    if not _url:
+        logger.info("MQTT credentials not found, MQTT is disabled")
+        return
 
-
-async def _get_or_create_client() -> Client:
-    """
-    Lazily initializes and returns the MQTT client.
-    This ensures the client is only created within a running event loop.
-    """
     global _client
-    async with _client_lock:
-        if _client is None:
-            logger.info("Initializing MQTT client")
-            _client = Client(
-                hostname=_url,
-                port=int(_port_str),
-                username=_username,
-                password=_password,
-                tls_context=_tls_context,
-            )
-            logger.info("MQTT client initialized")
-    return _client
-
-
-async def _connect_client():
-    """Connects the client if it's not already connected."""
-    client = await _get_or_create_client()
-    if not _is_client_connected(client):
-        logger.info("Connecting to MQTT broker")
-        await client.__aenter__()
-        logger.info("Successfully connected to MQTT broker")
+    if _client is None:
+        logger.info("Initializing MQTT client...")
+        _client = Client(
+            hostname=_url,
+            port=int(_port_str),
+            username=_username,
+            password=_password,
+            tls_context=_tls_context,
+        )
+        try:
+            await _client.__aenter__()
+            logger.info("Successfully connected to MQTT broker")
+        except (MqttError, ValueError, OSError) as e:
+            logger.error(f"Failed to connect to MQTT broker: {e}")
+            _client = None
+    else:
+        logger.info("MQTT client is already initialized")
 
 
 async def publish_messages_to_mqtt(
     topic: str, messages: list[str], qos: int = 0
 ) -> bool:
     """
-    Publish multiple messages to an MQTT topic asynchronously.
+    Publishes multiple messages to an MQTT topic asynchronously.
+    Assumes initialize_mqtt() has already been called.
 
     Args:
         topic: The MQTT topic to publish to
@@ -75,16 +63,11 @@ async def publish_messages_to_mqtt(
         return True
 
     try:
-        client = await _get_or_create_client()
-        if not _is_client_connected(client):
-            await _connect_client()
-
         for message in messages:
-            await client.publish(topic, payload=message, qos=qos)
+            await _client.publish(topic, payload=message, qos=qos)
         return True
-
-    except (MqttError, ValueError):
-        logger.exception(f"MQTT error while publishing to topic '{topic}'")
+    except MqttError as e:
+        logger.exception(f"MQTT error while publishing to topic '{topic}': {e}")
         return False
     except Exception:
         logger.exception("An unexpected error occurred during MQTT publish")
