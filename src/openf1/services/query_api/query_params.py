@@ -36,19 +36,20 @@ class QueryParam(BaseModel):
     value: str | bool | int | float | datetime
 
 
-def _split_query_params(query_params_raw: dict) -> list[str]:
+def _split_query_params(query_params_raw: dict[str, list[str]]) -> list[str]:
     """Splits query parameters into a list of filter strings.
     Handles special cases for date parameters with timezones.
     """
     filters = []
-    for key, value in query_params_raw.items():
-        filter_str = f"{key}={value}" if value else key
+    for key, values in query_params_raw.items():
+        for value in values:
+            filter_str = f"{key}={value}" if value else key
 
-        # Handle timezones which are not parsed properly
-        if "date" in filter_str and re.search(r" \d{2}:\d{2}$", filter_str):
-            filter_str = filter_str.replace(" ", "+", 1)
+            # Handle timezones which are not parsed properly
+            if "date" in filter_str and re.search(r" \d{2}:\d{2}$", filter_str):
+                filter_str = filter_str.replace(" ", "+", 1)
 
-        filters.append(filter_str)
+            filters.append(filter_str)
 
     return filters
 
@@ -141,7 +142,7 @@ def _replace_latest_by_actual_value(param: QueryParam) -> QueryParam:
     return param
 
 
-def parse_query_params(query_params_raw: dict) -> dict[str, QueryParam]:
+def parse_query_params(query_params_raw: dict[str, list[str]]) -> dict[str, list[QueryParam]]:
     query_params_str = _split_query_params(query_params_raw)
     query_params = sum((_str_to_query_params(s) for s in query_params_str), [])
     query_params = [_replace_latest_by_actual_value(p) for p in query_params]
@@ -153,10 +154,31 @@ def parse_query_params(query_params_raw: dict) -> dict[str, QueryParam]:
     return dict(params_by_field)
 
 
-def query_params_to_mongo_filters(
-    query_params: dict[str, QueryParam],
-) -> dict[str, dict]:
+def query_params_to_mongo_filters(query_params: dict[str, list[QueryParam]]) -> dict[str, list[dict]]:
     return {
-        key: {COMPARISON_OPERATORS_TO_MONGO[param.op]: param.value for param in params}
+        key: [
+            {COMPARISON_OPERATORS_TO_MONGO[param.op]: param.value} for param in params
+        ]
         for key, params in query_params.items()
     }
+
+
+def query_params_raw_items_to_raw_dict(query_params_raw_items: list[list[str]]) -> dict[str, list[str]]:
+    """
+    Given a list of query param key-value pairs,
+    returns a mapping of query param keys to all associated values.
+
+    Examples:
+        [["driver_number", "1"]] --> {"driver_number": ["1"]}
+        [["driver_number", "4"], ["driver_number", "81"]] --> {"driver_number": ["4", "81"]}
+        [["driver_number", "16"], ["position", "20"]] --> {"driver_number": ["16"], "position": ["20"]}
+    """
+    query_params_raw_dict = defaultdict(list)
+
+    for item in query_params_raw_items:
+        key = item[0]
+        value = item[1]
+
+        query_params_raw_dict[key].append(value)
+    
+    return dict(query_params_raw_dict)

@@ -180,3 +180,16 @@ def add_timezone_info(dt: datetime, gmt_offset: str) -> datetime:
     h, _, _ = map(int, gmt_offset.split(":"))
     offset_tz = pytz.FixedOffset(h * 60)
     return dt.replace(tzinfo=offset_tz).astimezone(tzutc())
+
+
+def hash_obj(obj):
+    """Recursively hashes an object."""
+    if isinstance(obj, dict):
+        return tuple(sorted((k, hash_obj(v)) for k, v in obj.items()))
+    elif isinstance(obj, list):
+        return tuple(hash_obj(v) for v in obj)
+    elif isinstance(obj, datetime):
+        return obj.isoformat()
+    else:
+        # Assume obj is hashable
+        return obj

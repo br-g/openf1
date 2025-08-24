@@ -1,13 +1,15 @@
+from collections import defaultdict
 import os
 from datetime import datetime, timezone
 from functools import lru_cache
+from typing import Any
 
 from loguru import logger
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import InsertOne, MongoClient, ReplaceOne
 from pymongo.errors import BulkWriteError
 
-from openf1.util.misc import timed_cache
+from openf1.util.misc import hash_obj, timed_cache
 
 _MONGO_CONNECTION_STRING = os.getenv("MONGO_CONNECTION_STRING")
 _MONGO_DATABASE = os.getenv("OPENF1_DB_NAME", "openf1-livetiming")
@@ -32,7 +34,7 @@ def _get_mongo_db_async():
     return client[_MONGO_DATABASE]
 
 
-async def get_documents(collection_name: str, filters: dict) -> list[dict]:
+async def get_documents(collection_name: str, filters: dict[str, list[dict]]) -> list[dict]:
     """Retrieves documents from a specified MongoDB collection, applies filters,
     and sorts.
 
@@ -46,7 +48,7 @@ async def get_documents(collection_name: str, filters: dict) -> list[dict]:
     collection = _get_mongo_db_async()[collection_name]
     pipeline = [
         # Apply user filters
-        {"$match": filters},
+        {"$match": _generate_query_predicate(filters)},
         {"$sort": {"_id": presort_direction}},
         # Group all versions of the same document and keep only the first one
         {"$group": {"_id": "$_key", "document": {"$first": "$$ROOT"}}},
@@ -76,6 +78,168 @@ async def get_documents(collection_name: str, filters: dict) -> list[dict]:
                 res[key] = res[key].replace(tzinfo=timezone.utc)
 
     return results
+
+
+def _get_bounded_inequality_predicate_pairs(predicates: list[dict]) -> list[tuple[dict, dict]]:
+    """
+    Greedy matching algorithm for pairing predicates in the form {op: value}
+    where op is a MongoDB inequality operator such as "$gt", "$gte", "$lt", or "$lte".
+
+    Args:
+        predicates: A list of inequality predicates without duplicates (i.e. no two predicates can have the same op and value).
+
+    Returns:
+        A list of predicate pairs where the first predicate of the pair represents a lower bound ("$gt", "$gte"),
+        the second predicate of the pair represents an upper bound ("$lt", "$lte"),
+        and the value difference among all pairs is minimized (i.e. the value difference in each pair is as small as possible).
+
+    Examples:
+        [] --> []
+        [{"$gt": 5}] --> []
+        [{"$gt": 10}, {"$lt": 5}] --> []
+        [{"$gt": 5}, {"$lt": 10}] --> [({"$gt": 5}, {"$lt": 10})]
+        [{"$gt": 5}, {"$lt": 10}, {"$lt": 12}] --> [({"$gt": 5}, {"$lt": 10})]
+        [{"$gt": 5}, {"$lt": 10}, {"$gt": 8}, {"$lt": 12}] --> [({"$gt": 5}, {"$lt": 10}), ({"$gt": 8}, {"$lt": 12})]
+    """
+    lower_bound_predicates = [
+        predicate
+        for predicate in predicates
+        if "$gt" in predicate or "$gte" in predicate
+    ]
+    upper_bound_predicates = [
+        predicate
+        for predicate in predicates
+        if "$lt" in predicate or "$lte" in predicate
+    ]
+
+    # Sort predicates in reverse order for some minor optimization
+    lower_bound_predicates.sort(
+        key=lambda predicate: _get_predicate_value(predicate), reverse=True
+    )
+    upper_bound_predicates.sort(
+        key=lambda predicate: _get_predicate_value(predicate), reverse=True
+    )
+
+    bounded_ineq_predicate_pairs = []
+
+    # Repeat pairing until either predicate list is exhausted
+    while lower_bound_predicates and upper_bound_predicates:
+        lower_bound_predicate = lower_bound_predicates.pop()
+
+        # Check each upper bound predicate starting from the smallest valued predicate
+        # If the lower bound predicate is <= the upper bound predicate, a pair has been found
+        closest_upper_bound_predicate = None
+        for i in reversed(range(len(upper_bound_predicates))):
+            if (
+                _get_predicate_value(lower_bound_predicate)
+                <= _get_predicate_value(upper_bound_predicates[i])
+            ):
+                closest_upper_bound_predicate = upper_bound_predicates.pop(i)
+                break
+
+        # Terminate early if no suitable upper bound predicate exists (no more pairs can be made)
+        if closest_upper_bound_predicate is None:
+            break
+
+        bounded_ineq_predicate_pairs.append(
+            (lower_bound_predicate, closest_upper_bound_predicate)
+        )
+
+    return bounded_ineq_predicate_pairs
+
+
+def _get_predicate_value(predicate: dict) -> Any:
+    """
+    Returns the first value in a predicate if it exists, otherwise returns None.
+    """
+    return next((value for value in predicate.values()), None)
+
+
+def _get_unique_predicates(predicates: list[dict]) -> list[dict]:
+    """
+    Returns a list of predicates in the form {op: value} where no two predicates have the same op and the same value.
+    """
+    seen_predicates = set()
+    filtered_predicates = []
+
+    for predicate in predicates:
+        hashed_predicate = hash_obj(predicate)
+
+        if hashed_predicate not in seen_predicates:
+            filtered_predicates.append(predicate)
+            seen_predicates.add(hashed_predicate)
+
+    return filtered_predicates
+
+
+def _generate_query_predicate(filters: dict[str, list[dict]]) -> dict:
+    """
+    Returns a MongoDB query predicate that supports:
+        - repeated query params
+        - query param intervals
+        - any combination of the above
+
+    Examples:
+        A query string "position=1&position=3" returns documents with position equal to 1 OR 3
+        A query string "position>=4&position<=7&position>=10&position<=15" returns documents with position between 4 and 7 OR 10 and 15)
+        A query string "position=1&position=3&position>=4&position<=7&position>=10&position<=15" returns documents matching either of the above criteria
+    """
+    query_predicates = defaultdict(list)
+
+    for key, predicates in filters.items():
+        filtered_predicates = _get_unique_predicates(predicates)
+
+        eq_predicates = [
+            predicate
+            for predicate in filtered_predicates
+            if "$eq" in predicate
+        ]
+
+        bounded_ineq_predicate_pairs = _get_bounded_inequality_predicate_pairs(filtered_predicates)
+
+        # Predicates that are neither paired nor equality predicates are unbounded inequality predicates
+        bounded_ineq_predicates = [
+            predicate
+            for predicate_pair in bounded_ineq_predicate_pairs
+            for predicate in predicate_pair
+        ]
+        unbounded_ineq_predicates = [
+            predicate
+            for predicate in filtered_predicates
+            if predicate not in bounded_ineq_predicates
+            and predicate not in eq_predicates
+        ]
+
+        # Guaranteed to have at least one predicate at this stage
+        # Predicates for the same query param are joined with logical OR except for bounded pairs (logical AND)
+        inner_predicate = defaultdict(list)
+        if eq_predicates:
+            inner_predicate["$or"].append(
+                {"$or": [{key: predicate} for predicate in eq_predicates]}
+            )
+        if unbounded_ineq_predicates:
+            inner_predicate["$or"].append(
+                {"$or": [{key: predicate} for predicate in unbounded_ineq_predicates]}
+            )
+        if bounded_ineq_predicate_pairs:
+            inner_predicate["$or"].append(
+                {
+                    "$or": [
+                        {
+                            "$and": [
+                                {key: predicate}
+                                for predicate in bounded_ineq_predicate_pair
+                            ]
+                        }
+                        for bounded_ineq_predicate_pair in bounded_ineq_predicate_pairs
+                    ]
+                }
+            )
+
+        # Predicates for different query params are joined with logical AND
+        query_predicates["$and"].append(dict(inner_predicate))
+
+    return dict(query_predicates)
 
 
 @timed_cache(60)  # Cache the output for 1 minute
