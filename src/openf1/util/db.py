@@ -1,5 +1,5 @@
-from collections import defaultdict
 import os
+from collections import defaultdict
 from datetime import datetime, timezone
 from functools import lru_cache
 from typing import Any
@@ -34,7 +34,9 @@ def _get_mongo_db_async():
     return client[_MONGO_DATABASE]
 
 
-async def get_documents(collection_name: str, filters: dict[str, list[dict]]) -> list[dict]:
+async def get_documents(
+    collection_name: str, filters: dict[str, list[dict]]
+) -> list[dict]:
     """Retrieves documents from a specified MongoDB collection, applies filters,
     and sorts.
 
@@ -80,7 +82,9 @@ async def get_documents(collection_name: str, filters: dict[str, list[dict]]) ->
     return results
 
 
-def _get_bounded_inequality_predicate_pairs(predicates: list[dict]) -> list[tuple[dict, dict]]:
+def _get_bounded_inequality_predicate_pairs(
+    predicates: list[dict],
+) -> list[tuple[dict, dict]]:
     """
     Greedy matching algorithm for pairing predicates in the form {op: value}
     where op is a MongoDB inequality operator such as "$gt", "$gte", "$lt", or "$lte".
@@ -130,9 +134,8 @@ def _get_bounded_inequality_predicate_pairs(predicates: list[dict]) -> list[tupl
         # If the lower bound predicate is <= the upper bound predicate, a pair has been found
         closest_upper_bound_predicate = None
         for i in reversed(range(len(upper_bound_predicates))):
-            if (
-                _get_predicate_value(lower_bound_predicate)
-                <= _get_predicate_value(upper_bound_predicates[i])
+            if _get_predicate_value(lower_bound_predicate) <= _get_predicate_value(
+                upper_bound_predicates[i]
             ):
                 closest_upper_bound_predicate = upper_bound_predicates.pop(i)
                 break
@@ -190,12 +193,12 @@ def _generate_query_predicate(filters: dict[str, list[dict]]) -> dict:
         filtered_predicates = _get_unique_predicates(predicates)
 
         eq_predicates = [
-            predicate
-            for predicate in filtered_predicates
-            if "$eq" in predicate
+            predicate for predicate in filtered_predicates if "$eq" in predicate
         ]
 
-        bounded_ineq_predicate_pairs = _get_bounded_inequality_predicate_pairs(filtered_predicates)
+        bounded_ineq_predicate_pairs = _get_bounded_inequality_predicate_pairs(
+            filtered_predicates
+        )
 
         # Predicates that are neither paired nor equality predicates are unbounded inequality predicates
         bounded_ineq_predicates = [

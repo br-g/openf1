@@ -24,7 +24,9 @@ def save_to_cache(path: str, query_params: list[str], results: list[dict]):
         _cache[request_key] = results
 
 
-def get_from_cache(path: str, query_params: dict[str, list[QueryParam]]) -> list[dict] | None:
+def get_from_cache(
+    path: str, query_params: dict[str, list[QueryParam]]
+) -> list[dict] | None:
     request_key = _request_to_string(path, query_params)
     with _lock:
         results = _cache.get(request_key)

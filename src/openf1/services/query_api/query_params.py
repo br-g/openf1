@@ -142,7 +142,9 @@ def _replace_latest_by_actual_value(param: QueryParam) -> QueryParam:
     return param
 
 
-def parse_query_params(query_params_raw: dict[str, list[str]]) -> dict[str, list[QueryParam]]:
+def parse_query_params(
+    query_params_raw: dict[str, list[str]],
+) -> dict[str, list[QueryParam]]:
     query_params_str = _split_query_params(query_params_raw)
     query_params = sum((_str_to_query_params(s) for s in query_params_str), [])
     query_params = [_replace_latest_by_actual_value(p) for p in query_params]
@@ -154,7 +156,9 @@ def parse_query_params(query_params_raw: dict[str, list[str]]) -> dict[str, list
     return dict(params_by_field)
 
 
-def query_params_to_mongo_filters(query_params: dict[str, list[QueryParam]]) -> dict[str, list[dict]]:
+def query_params_to_mongo_filters(
+    query_params: dict[str, list[QueryParam]],
+) -> dict[str, list[dict]]:
     return {
         key: [
             {COMPARISON_OPERATORS_TO_MONGO[param.op]: param.value} for param in params
@@ -163,7 +167,9 @@ def query_params_to_mongo_filters(query_params: dict[str, list[QueryParam]]) -> 
     }
 
 
-def query_params_raw_items_to_raw_dict(query_params_raw_items: list[list[str]]) -> dict[str, list[str]]:
+def query_params_raw_items_to_raw_dict(
+    query_params_raw_items: list[list[str]],
+) -> dict[str, list[str]]:
     """
     Given a list of query param key-value pairs,
     returns a mapping of query param keys to all associated values.
@@ -180,5 +186,5 @@ def query_params_raw_items_to_raw_dict(query_params_raw_items: list[list[str]]) 
         value = item[1]
 
         query_params_raw_dict[key].append(value)
-    
+
     return dict(query_params_raw_dict)
