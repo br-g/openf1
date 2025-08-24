@@ -248,14 +248,14 @@ fetch("https://api.openf1.org/v1/drivers?driver_number=1&session_key=9158")
             Available during races only, with updates approximately every 4 seconds.
 
 ```shell
-curl "https://api.openf1.org/v1/intervals?session_key=9165&interval<0.005"
+curl "https://api.openf1.org/v1/intervals?session_key=9165&interval>0&interval<0.005"
 ```
 
 ```python
 from urllib.request import urlopen
 import json
 
-response = urlopen('https://api.openf1.org/v1/intervals?session_key=9165&interval<0.005')
+response = urlopen('https://api.openf1.org/v1/intervals?session_key=9165&interval>0&interval<0.005')
 data = json.loads(response.read().decode('utf-8'))
 print(data)
 
@@ -272,7 +272,7 @@ print(data)
 library(httr)
 library(jsonlite)
 
-response <- GET('https://api.openf1.org/v1/intervals?session_key=9165&interval<0.005')
+response <- GET('https://api.openf1.org/v1/intervals?session_key=9165&interval>0&interval<0.005')
 parsed_data <- fromJSON(content(response, 'text'))
 print(parsed_data)
 
@@ -282,7 +282,9 @@ print(parsed_data)
 ```
 
 ```javascript
-fetch("https://api.openf1.org/v1/intervals?session_key=9165&interval<0.005")
+fetch(
+  "https://api.openf1.org/v1/intervals?session_key=9165&interval>0&interval<0.005"
+)
   .then((response) => response.json())
   .then((jsonContent) => console.log(jsonContent));
 ```
@@ -1438,14 +1440,14 @@ fetch("https://api.openf1.org/v1/team_radio?session_key=9158&driver_number=11")
 ```json
 [
   {
-    "date": "2023-09-15T09:40:43.005000",
+    "date": "2023-09-15T09:40:43.005000+00:00",
     "driver_number": 11,
     "meeting_key": 1219,
     "recording_url": "https://livetiming.formula1.com/static/2023/2023-09-17_Singapore_Grand_Prix/2023-09-15_Practice_1/TeamRadio/SERPER01_11_20230915_104008.mp3",
     "session_key": 9158
   },
   {
-    "date": "2023-09-15T10:32:47.325000",
+    "date": "2023-09-15T10:32:47.325000+00:00",
     "driver_number": 11,
     "meeting_key": 1219,
     "recording_url": "https://livetiming.formula1.com/static/2023/2023-09-17_Singapore_Grand_Prix/2023-09-15_Practice_1/TeamRadio/SERPER01_11_20230915_113201.mp3",
