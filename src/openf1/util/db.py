@@ -1,5 +1,4 @@
 from collections import defaultdict
-import json
 import os
 from datetime import datetime, timezone
 from functools import lru_cache
@@ -105,20 +104,20 @@ def _get_bounded_inequality_predicate_pairs(predicates: list[dict]) -> list[tupl
     lower_bound_predicates = [
         predicate
         for predicate in predicates
-        if predicate.get("$gt") is not None or predicate.get("$gte") is not None
+        if "$gt" in predicate or "$gte" in predicate
     ]
     upper_bound_predicates = [
         predicate
         for predicate in predicates
-        if predicate.get("$lt") is not None or predicate.get("$lte") is not None
+        if "$lt" in predicate or "$lte" in predicate
     ]
 
     # Sort predicates in reverse order for some minor optimization
     lower_bound_predicates.sort(
-        key=lambda predicate: list(predicate.values())[0], reverse=True
+        key=lambda predicate: _get_predicate_value(predicate), reverse=True
     )
     upper_bound_predicates.sort(
-        key=lambda predicate: list(predicate.values())[0], reverse=True
+        key=lambda predicate: _get_predicate_value(predicate), reverse=True
     )
 
     bounded_ineq_predicate_pairs = []
@@ -132,8 +131,8 @@ def _get_bounded_inequality_predicate_pairs(predicates: list[dict]) -> list[tupl
         closest_upper_bound_predicate = None
         for i in reversed(range(len(upper_bound_predicates))):
             if (
-                list(lower_bound_predicate.values())[0]
-                <= list(upper_bound_predicates[i].values())[0]
+                _get_predicate_value(lower_bound_predicate)
+                <= _get_predicate_value(upper_bound_predicates[i])
             ):
                 closest_upper_bound_predicate = upper_bound_predicates.pop(i)
                 break
@@ -147,6 +146,13 @@ def _get_bounded_inequality_predicate_pairs(predicates: list[dict]) -> list[tupl
         )
 
     return bounded_ineq_predicate_pairs
+
+
+def _get_predicate_value(predicate: dict) -> Any:
+    """
+    Returns the first value in a predicate if it exists, otherwise returns None.
+    """
+    return next((value for value in predicate.values()), None)
 
 
 def _get_unique_predicates(predicates: list[dict]) -> list[dict]:
@@ -186,7 +192,7 @@ def _generate_query_predicate(filters: dict[str, list[dict]]) -> dict:
         eq_predicates = [
             predicate
             for predicate in filtered_predicates
-            if predicate.get("$eq") is not None
+            if "$eq" in predicate
         ]
 
         bounded_ineq_predicate_pairs = _get_bounded_inequality_predicate_pairs(filtered_predicates)
