@@ -25,7 +25,7 @@ class Position(Document):
 @dataclass
 class PositionCollection(Collection):
     name = "position"
-    source_topics = {"TimingAppData"}
+    source_topics = {"TimingData"}
 
     def process_message(self, message: Message) -> Iterator[Position]:
         for driver_number, data in message.content["Lines"].items():
