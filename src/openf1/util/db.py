@@ -3,6 +3,7 @@ import json
 import os
 from datetime import datetime, timezone
 from functools import lru_cache
+from typing import Any
 
 from loguru import logger
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -32,6 +33,52 @@ def _get_mongo_db_sync():
 def _get_mongo_db_async():
     client = AsyncIOMotorClient(_MONGO_CONNECTION_STRING)
     return client[_MONGO_DATABASE]
+
+
+async def get_documents(collection_name: str, filters: dict[str, list[dict]]) -> list[dict]:
+    """Retrieves documents from a specified MongoDB collection, applies filters,
+    and sorts.
+
+    - For 'meetings', the earliest document is returned to reflect the start time of the
+      first session.
+    - For all other collections, the latest document is returned to ensure the most
+      up-to-date information.
+    """
+    presort_direction = 1 if collection_name == "meetings" else -1
+
+    collection = _get_mongo_db_async()[collection_name]
+    pipeline = [
+        # Apply user filters
+        {"$match": _generate_query_predicate(filters)},
+        {"$sort": {"_id": presort_direction}},
+        # Group all versions of the same document and keep only the first one
+        {"$group": {"_id": "$_key", "document": {"$first": "$$ROOT"}}},
+        {"$replaceRoot": {"newRoot": "$document"}},
+        # Sort
+        {"$sort": {key: 1 for key in _SORT_KEYS}},
+        # Remove fields starting with '_'
+        {
+            "$replaceWith": {
+                "$arrayToObject": {
+                    "$filter": {
+                        "input": {"$objectToArray": "$$ROOT"},
+                        "as": "field",
+                        "cond": {"$ne": [{"$substrCP": ["$$field.k", 0, 1]}, "_"]},
+                    }
+                }
+            }
+        },
+    ]
+    cursor = collection.aggregate(pipeline)
+    results = await cursor.to_list(length=None)
+
+    # Add UTC timezone if not set
+    for res in results:
+        for key, val in res.items():
+            if isinstance(val, datetime) and val.tzinfo is None:
+                res[key] = res[key].replace(tzinfo=timezone.utc)
+
+    return results
 
 
 def _get_bounded_inequality_predicate_pairs(predicates: list[dict]) -> list[tuple[dict, dict]]:
@@ -134,17 +181,14 @@ def _generate_query_predicate(filters: dict[str, list[dict]]) -> dict:
     query_predicates = defaultdict(list)
 
     for key, predicates in filters.items():
-        # Filter out duplicate predicates
         filtered_predicates = _get_unique_predicates(predicates)
 
-        # Get equality predicates
         eq_predicates = [
             predicate
             for predicate in filtered_predicates
             if predicate.get("$eq") is not None
         ]
 
-        # Get bounded inequality predicate pairs
         bounded_ineq_predicate_pairs = _get_bounded_inequality_predicate_pairs(filtered_predicates)
 
         # Predicates that are neither paired nor equality predicates are unbounded inequality predicates
@@ -190,52 +234,6 @@ def _generate_query_predicate(filters: dict[str, list[dict]]) -> dict:
         query_predicates["$and"].append(dict(inner_predicate))
 
     return dict(query_predicates)
-
-
-async def get_documents(collection_name: str, filters: dict[str, list[dict]]) -> list[dict]:
-    """Retrieves documents from a specified MongoDB collection, applies filters,
-    and sorts.
-
-    - For 'meetings', the earliest document is returned to reflect the start time of the
-      first session.
-    - For all other collections, the latest document is returned to ensure the most
-      up-to-date information.
-    """
-    presort_direction = 1 if collection_name == "meetings" else -1
-
-    collection = _get_mongo_db_async()[collection_name]
-    pipeline = [
-        # Apply user filters
-        {"$match": _generate_query_predicate(filters)},
-        {"$sort": {"_id": presort_direction}},
-        # Group all versions of the same document and keep only the first one
-        {"$group": {"_id": "$_key", "document": {"$first": "$$ROOT"}}},
-        {"$replaceRoot": {"newRoot": "$document"}},
-        # Sort
-        {"$sort": {key: 1 for key in _SORT_KEYS}},
-        # Remove fields starting with '_'
-        {
-            "$replaceWith": {
-                "$arrayToObject": {
-                    "$filter": {
-                        "input": {"$objectToArray": "$$ROOT"},
-                        "as": "field",
-                        "cond": {"$ne": [{"$substrCP": ["$$field.k", 0, 1]}, "_"]},
-                    }
-                }
-            }
-        },
-    ]
-    cursor = collection.aggregate(pipeline)
-    results = await cursor.to_list(length=None)
-
-    # Add UTC timezone if not set
-    for res in results:
-        for key, val in res.items():
-            if isinstance(val, datetime) and val.tzinfo is None:
-                res[key] = res[key].replace(tzinfo=timezone.utc)
-
-    return results
 
 
 @timed_cache(60)  # Cache the output for 1 minute

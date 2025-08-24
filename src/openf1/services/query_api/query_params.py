@@ -166,7 +166,7 @@ def query_params_to_mongo_filters(query_params: dict[str, list[QueryParam]]) -> 
 def query_params_raw_items_to_raw_dict(query_params_raw_items: list[list[str]]) -> dict[str, list[str]]:
     """
     Given a list of query param key-value pairs,
-    create a mapping of query param keys to all associated values.
+    returns a mapping of query param keys to all associated values.
 
     Examples:
         [["driver_number", "1"]] --> {"driver_number": ["1"]}
