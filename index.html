@@ -758,6 +758,11 @@ The data will be provided shortly after each session instead.
 <h2 id='intervals'>Intervals</h2>
 <p>Fetches real-time interval data between drivers and their gap to the race leader.
             Available during races only, with updates approximately every 4 seconds.</p>
+
+<aside class="notice">
+Live data for this endpoint is currently unavailable during sessions.  
+The data will be provided shortly after each session instead.
+</aside>
 <div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/intervals?session_key=9165&amp;interval&gt;0&amp;interval&lt;0.005"</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
 <span class="kn">import</span> <span class="nn">json</span>
