@@ -252,6 +252,11 @@ fetch("https://api.openf1.org/v1/drivers?driver_number=1&session_key=9158")
             Fetches real-time interval data between drivers and their gap to the race leader.
             Available during races only, with updates approximately every 4 seconds.
 
+<aside class="notice">
+Live data for this endpoint is currently unavailable during sessions.  
+The data will be provided shortly after each session instead.
+</aside>
+
 ```shell
 curl "https://api.openf1.org/v1/intervals?session_key=9165&interval>0&interval<0.005"
 ```
