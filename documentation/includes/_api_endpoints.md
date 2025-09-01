@@ -4,6 +4,11 @@
 
 Some data about each car, at a sample rate of about 3.7 Hz.
 
+<aside class="notice">
+Live data for this endpoint is currently unavailable during sessions.  
+The data will be provided shortly after each session instead.
+</aside>
+
 ```shell
 curl "https://api.openf1.org/v1/car_data?driver_number=55&session_key=9159&speed>=315"
 ```
@@ -479,6 +484,11 @@ fetch(
             Useful for gauging their progress along the track, but lacks details about lateral placement — i.e. whether
             the car is on the left or right side of the track. The origin point (0, 0, 0) appears to be arbitrary
             and not tied to any specific location on the track.
+
+<aside class="notice">
+Live data for this endpoint is currently unavailable during sessions.  
+The data will be provided shortly after each session instead.
+</aside>
 
 ```shell
 curl "https://api.openf1.org/v1/location?session_key=9161&driver_number=81&date>2023-09-16T13:03:35.200&date<2023-09-16T13:03:35.800"
