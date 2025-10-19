@@ -10,7 +10,7 @@ _username = os.getenv("OPENF1_MQTT_USERNAME")
 _password = os.getenv("OPENF1_MQTT_PASSWORD")
 _disable_tls = os.getenv("OPENF1_MQTT_NO_TLS")
 
-if (_disable_tls.lower() == "true"):
+if _disable_tls.lower() == "true":
     _tls_context = None
 else:
     _tls_context = ssl.create_default_context()
