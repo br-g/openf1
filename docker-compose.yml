@@ -1,0 +1,61 @@
+name: openf1
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      MONGO_CONNECTION_STRING: mongodb://mongo:27017
+      ROLE: api
+      OPENF1_BASE_URL: http://api:8000/
+    depends_on:
+      - mongo
+      - mqtt
+
+  ingest-realtime:
+    build: .
+    environment:
+      MONGO_CONNECTION_STRING: mongodb://mongo:27017
+      ROLE: ingest-realtime
+      OPENF1_MQTT_URL: mqtt
+      OPENF1_MQTT_PORT: 1883
+      OPENF1_MQTT_USERNAME: openf1
+      # This is obviously not remotely secure, change
+      # this if you are going to expose your mqtt 
+      # server.
+      OPENF1_MQTT_PASSWORD: openf1
+      OPENF1_MQTT_NO_TLS: true
+      OPENF1_BASE_URL: http://api:8000/
+    depends_on:
+      - api
+
+  # This component backfills the current season's data
+  # for easy initial setup. Delete or disable once you
+  # are up to date.
+  ingest-historical:
+    build: .
+    environment:
+      MONGO_CONNECTION_STRING: mongodb://mongo:27017
+      ROLE: ingest-historical
+      OPENF1_BASE_URL: http://api:8000/
+    depends_on:
+      - mongo
+
+  mongo:
+    image: "mongo:8"
+    volumes:
+      - mongo-data:/data/db
+
+  mqtt:
+    image: "eclipse-mosquitto:2.0.22"
+    ports:
+      - "1883:1883" # Standard MQTT
+      - "8084:8084" # WebSockets
+    volumes:
+      - mqtt-data:/mosquitto/data
+      - ./mqtt-config:/mosquitto/config
+
+volumes:
+  mongo-data:
+  mqtt-data:
