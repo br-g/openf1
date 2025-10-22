@@ -22,7 +22,7 @@ def _parse_starting_grid_page(html_file: Path) -> list[dict]:
         html_content = f.read()
 
     soup = BeautifulSoup(html_content, "lxml")
-    table = soup.find("table", class_="f1-table")
+    table = soup.find("table", class_="Table-module_table__cKsW2")
     headers = [
         header.get_text(strip=True).upper()
         for header in table.find("thead").find_all("th")

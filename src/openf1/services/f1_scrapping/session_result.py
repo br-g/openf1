@@ -185,7 +185,7 @@ def _parse_page(html_file: Path) -> list[dict]:
     with open(html_file, "r", encoding="utf-8") as f:
         soup = BeautifulSoup(f, "lxml")
 
-    table = soup.find("table", class_="f1-table")
+    table = soup.find("table", class_="Table-module_table__cKsW2")
     raw_results = _extract_raw_results(table)
 
     is_qualifying = "Q1" in raw_results[0]
