@@ -7,10 +7,7 @@ from urllib.parse import urljoin
 import requests
 
 _base = os.getenv("OPENF1_BASE_URL")
-if _base != "":
-    BASE_URL = _base
-else:
-    BASE_URL = "https://api.openf1.org/"
+BASE_URL = _base if _base else "https://api.openf1.org/"
 
 client_id = None
 client_secret = None
