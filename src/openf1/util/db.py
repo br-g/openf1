@@ -22,16 +22,10 @@ _SORT_KEYS = [
 ]
 
 
-@lru_cache()
-def _get_mongo_db_sync():
-    client = MongoClient(_MONGO_CONNECTION_STRING)
-    return client[_MONGO_DATABASE]
-
-
-@lru_cache()
-def _get_mongo_db_async():
-    client = AsyncIOMotorClient(_MONGO_CONNECTION_STRING)
-    return client[_MONGO_DATABASE]
+_mongo_db_sync = MongoClient(_MONGO_CONNECTION_STRING, maxPoolSize=100)[_MONGO_DATABASE]
+_mongo_db_async = AsyncIOMotorClient(_MONGO_CONNECTION_STRING, maxPoolSize=100)[
+    _MONGO_DATABASE
+]
 
 
 async def get_documents(
@@ -47,7 +41,7 @@ async def get_documents(
     """
     presort_direction = 1 if collection_name == "meetings" else -1
 
-    collection = _get_mongo_db_async()[collection_name]
+    collection = _mongo_db_async[collection_name]
     pipeline = [
         # Apply user filters
         {"$match": _generate_query_predicate(filters)},
@@ -247,7 +241,7 @@ def _generate_query_predicate(filters: dict[str, list[dict]]) -> dict:
 
 @timed_cache(60)  # Cache the output for 1 minute
 def get_latest_session_info() -> dict:
-    sessions = _get_mongo_db_sync()["sessions"]
+    sessions = _mongo_db_sync["sessions"]
     latest_session = sessions.find_one(sort=[("date_start", -1)])
 
     if latest_session:
@@ -258,7 +252,7 @@ def get_latest_session_info() -> dict:
 
 @lru_cache()
 def session_key_to_path(session_key: int) -> str | None:
-    sessions = _get_mongo_db_sync()["sessions"]
+    sessions = _mongo_db_sync["sessions"]
 
     session = sessions.find_one(
         {"session_key": session_key, "_path": {"$exists": True}},
@@ -270,7 +264,7 @@ def session_key_to_path(session_key: int) -> str | None:
 
 def insert_data_sync(collection_name: str, docs: list[dict], batch_size: int = 50_000):
     """Inserts documents into a MongoDB collection in batches"""
-    collection = _get_mongo_db_sync()[collection_name]
+    collection = _mongo_db_sync[collection_name]
 
     for i in range(0, len(docs), batch_size):
         batch = docs[i : i + batch_size]
@@ -288,7 +282,7 @@ def insert_data_sync(collection_name: str, docs: list[dict], batch_size: int = 5
 def upsert_data_sync(collection_name: str, docs: list[dict], batch_size: int = 50_000):
     """Upserts (inserts or replaces) documents into a MongoDB collection in batches
     based on _key."""
-    collection = _get_mongo_db_sync()[collection_name]
+    collection = _mongo_db_sync[collection_name]
 
     for i in range(0, len(docs), batch_size):
         batch = docs[i : i + batch_size]
@@ -299,7 +293,7 @@ def upsert_data_sync(collection_name: str, docs: list[dict], batch_size: int = 5
 
 
 async def insert_data_async(collection_name: str, docs: list[dict]):
-    collection = _get_mongo_db_async()[collection_name]
+    collection = _mongo_db_async[collection_name]
 
     try:
         operations = [InsertOne(doc) for doc in docs]
