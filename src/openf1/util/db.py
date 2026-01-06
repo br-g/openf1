@@ -78,7 +78,7 @@ async def get_documents(
         {"$sort": {key: 1 for key in _SORT_KEYS}},
     ]
 
-    cursor = collection.aggregate(pipeline)
+    cursor = collection.aggregate(pipeline, maxTimeMS=5000)
     results = await cursor.to_list(length=None)
 
     cleaned_results = []
