@@ -22,6 +22,7 @@ _SORT_KEYS = [
     "_id",
 ]
 
+_MAX_QUERY_TIME_MS = 5000
 
 _client_sync = None
 _client_async = None
@@ -78,7 +79,7 @@ async def get_documents(
         {"$sort": {key: 1 for key in _SORT_KEYS}},
     ]
 
-    cursor = collection.aggregate(pipeline, maxTimeMS=5000)
+    cursor = collection.aggregate(pipeline, maxTimeMS=_MAX_QUERY_TIME_MS)
     results = await cursor.to_list(length=None)
 
     cleaned_results = []
