@@ -1,9 +1,10 @@
 import os
 from collections import defaultdict
-from datetime import datetime, timezone
+from datetime import timezone
 from functools import lru_cache
 from typing import Any
 
+from bson.codec_options import CodecOptions
 from loguru import logger
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import InsertOne, MongoClient, ReplaceOne
@@ -21,6 +22,7 @@ _SORT_KEYS = [
     "_id",
 ]
 
+_MAX_QUERY_TIME_MS = 5000
 
 _client_sync = None
 _client_async = None
@@ -43,11 +45,13 @@ def _get_mongo_client_async():
 
 
 def _get_mongo_db_sync():
-    return _get_mongo_client_sync()[_MONGO_DATABASE]
+    opts = CodecOptions(tz_aware=True, tzinfo=timezone.utc)
+    return _get_mongo_client_sync().get_database(_MONGO_DATABASE, codec_options=opts)
 
 
 def _get_mongo_db_async():
-    return _get_mongo_client_async()[_MONGO_DATABASE]
+    opts = CodecOptions(tz_aware=True, tzinfo=timezone.utc)
+    return _get_mongo_client_async().get_database(_MONGO_DATABASE, codec_options=opts)
 
 
 async def get_documents(
@@ -73,29 +77,17 @@ async def get_documents(
         {"$replaceRoot": {"newRoot": "$document"}},
         # Sort
         {"$sort": {key: 1 for key in _SORT_KEYS}},
-        # Remove fields starting with '_'
-        {
-            "$replaceWith": {
-                "$arrayToObject": {
-                    "$filter": {
-                        "input": {"$objectToArray": "$$ROOT"},
-                        "as": "field",
-                        "cond": {"$ne": [{"$substrCP": ["$$field.k", 0, 1]}, "_"]},
-                    }
-                }
-            }
-        },
     ]
-    cursor = collection.aggregate(pipeline)
+
+    cursor = collection.aggregate(pipeline, maxTimeMS=_MAX_QUERY_TIME_MS)
     results = await cursor.to_list(length=None)
 
-    # Add UTC timezone if not set
-    for res in results:
-        for key, val in res.items():
-            if isinstance(val, datetime) and val.tzinfo is None:
-                res[key] = res[key].replace(tzinfo=timezone.utc)
+    cleaned_results = []
+    for doc in results:
+        cleaned_doc = {k: v for k, v in doc.items() if not k.startswith("_")}
+        cleaned_results.append(cleaned_doc)
 
-    return results
+    return cleaned_results
 
 
 def _get_bounded_inequality_predicate_pairs(

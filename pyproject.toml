@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "openf1"
-version = "1.6.9"
+version = "1.6.10"
 authors = [
   { name="Bruno Godefroy" }
 ]
