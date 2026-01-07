@@ -14,6 +14,9 @@ Sessions:
 python -m openf1.services.f1_scraping.schedule ingest-sessions --year 2025
 ```
 
+If the `year` parameter is not provided, it will default to the latest available season
+schedule (season in progress or next season).
+
 ### Session result
 
 ```bash
