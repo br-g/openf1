@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from bs4.element import Tag
 from loguru import logger
 
-from openf1.services.f1_scrapping.util import download_page
+from openf1.services.f1_scraping.util import download_page
 from openf1.util import openf1_client
 from openf1.util.db import upsert_data_sync
 from openf1.util.misc import to_timedelta

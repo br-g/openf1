@@ -8,14 +8,14 @@ from tqdm import tqdm
 from openf1.util.db import upsert_data_sync
 
 HEADERS = {
-    "apiKey": "v1JVGPgXlahatAqwhakbrGtFdxW5rQBz",  # Is this key rotated sometime?
+    "apiKey": "v1JVGPgXlahatAqwhakbrGtFdxW5rQBz",  # Is this key rotated sometimes?
     "locale": "en",
 }
 
 cli = typer.Typer()
 
 
-def _convert_gmt_offset(offset_str):
+def _convert_gmt_offset(offset_str: str) -> str:
     """
     Converts GMT offset like "+04:00" to "04:00:00"
     and "-04:00" to "-04:00:00".
@@ -24,7 +24,7 @@ def _convert_gmt_offset(offset_str):
     return f"{cleaned_offset}:00"
 
 
-def convert_to_utc(date_str: str, offset_str: str) -> str:
+def _convert_to_utc(date_str: str, offset_str: str) -> str:
     local_dt = datetime.fromisoformat(date_str)
 
     is_negative = offset_str.startswith("-")
@@ -39,7 +39,7 @@ def convert_to_utc(date_str: str, offset_str: str) -> str:
     return utc_dt.isoformat()
 
 
-def fetch_meetings(year: int | None) -> dict:
+def fetch_meetings(year: int | None = None) -> dict:
     """If year param is not provided, returns list of meeting for the latest available season."""
     url = "http://api.formula1.com/v1/editorial-eventlisting/events"
     params = {"season": year} if year else {}
@@ -50,11 +50,11 @@ def fetch_meetings(year: int | None) -> dict:
     results = []
     for event in data["events"]:
         gmt_offset = _convert_gmt_offset(event["gmtOffset"])
-        date_start = convert_to_utc(
-            date_str=event["meetingStartDate"], offset_str=gmt_offset
+        date_start = datetime.fromisoformat(
+            _convert_to_utc(date_str=event["meetingStartDate"], offset_str=gmt_offset)
         )
-        date_end = convert_to_utc(
-            date_str=event["meetingEndDate"], offset_str=gmt_offset
+        date_end = datetime.fromisoformat(
+            _convert_to_utc(date_str=event["meetingEndDate"], offset_str=gmt_offset)
         )
         results.append(
             {
@@ -90,7 +90,7 @@ def _fetch_raw_sessions_data(meeting_key: int) -> dict:
     return timetables
 
 
-def fetch_sessions(year: int | None) -> dict:
+def fetch_sessions(year: int | None = None) -> dict:
     """If year param is not provided, returns list of sessions for the latest available season."""
     meetings = fetch_meetings(year)
 
@@ -98,11 +98,16 @@ def fetch_sessions(year: int | None) -> dict:
     for meeting in tqdm(meetings):
         raw_sessions_data = _fetch_raw_sessions_data(meeting["meeting_key"])
         for raw_sess_data in raw_sessions_data:
-            date_start = convert_to_utc(
-                date_str=raw_sess_data["startTime"], offset_str=meeting["gmt_offset"]
+            date_start = datetime.fromisoformat(
+                _convert_to_utc(
+                    date_str=raw_sess_data["startTime"],
+                    offset_str=meeting["gmt_offset"],
+                )
             )
-            date_end = convert_to_utc(
-                date_str=raw_sess_data["endTime"], offset_str=meeting["gmt_offset"]
+            date_end = datetime.fromisoformat(
+                _convert_to_utc(
+                    date_str=raw_sess_data["endTime"], offset_str=meeting["gmt_offset"]
+                )
             )
             sessions.append(
                 {
@@ -126,7 +131,7 @@ def fetch_sessions(year: int | None) -> dict:
 
 
 @cli.command()
-def ingest_meetings(year: int | None):
+def ingest_meetings(year: int | None = None):
     """If year param is not provided, returns list of meetings for the latest available season."""
     meetings = fetch_meetings(year)
     logger.info(f"Ingesting {len(meetings)} meetings")
@@ -140,7 +145,7 @@ def ingest_meetings(year: int | None):
 
 
 @cli.command()
-def ingest_sessions(year: int | None):
+def ingest_sessions(year: int | None = None):
     """If year param is not provided, returns list of sessions for the latest available season."""
     sessions = fetch_sessions(year)
     logger.info(f"Ingesting {len(sessions)} sessions")

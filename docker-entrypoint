@@ -15,8 +15,8 @@ case $ROLE in
     ;;
   "scrape-latest")
     sleep 2 # api needs to be fully up before this will work
-    python -m openf1.services.f1_scrapping.session_result
-    python -m openf1.services.f1_scrapping.starting_grid
+    python -m openf1.services.f1_scraping.session_result
+    python -m openf1.services.f1_scraping.starting_grid
     ;;
   *)
     echo "\"$ROLE\" not recognized, please set a valid \$ROLE"
