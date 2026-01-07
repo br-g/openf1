@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta, timezone
+
 import requests
 import typer
 from loguru import logger
@@ -21,9 +23,6 @@ def _convert_gmt_offset(offset_str):
     return f"{cleaned_offset}:00"
 
 
-from datetime import datetime, timedelta, timezone
-
-
 def convert_to_utc(date_str: str, offset_str: str) -> str:
     local_dt = datetime.fromisoformat(date_str)
 
@@ -42,9 +41,7 @@ def convert_to_utc(date_str: str, offset_str: str) -> str:
 def fetch_meetings(year: int | None) -> dict:
     """If year param is not provided, returns list of meeting for the latest available season."""
     url = "http://api.formula1.com/v1/editorial-eventlisting/events"
-
     params = {"season": year} if year else {}
-
     response = requests.get(url, params=params, headers=HEADERS)
     response.raise_for_status()
     data = response.json()
@@ -64,6 +61,7 @@ def fetch_meetings(year: int | None) -> dict:
                 "circuit_key": int(event["circuitKey"]),
                 "circuit_short_name": event["circuitShortName"],
                 "circuit_type": event["circuitType"],
+                "circuit_image": event["circuitMediumImage"],
                 "meeting_code": event["meetingCountryCode"],
                 "location": event["meetingLocation"],
                 "country_key": int(event["countryKey"]),
