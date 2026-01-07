@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 import requests
 import typer
 from loguru import logger
+from tqdm import tqdm
 
 from openf1.util.db import upsert_data_sync
 
@@ -80,26 +81,48 @@ def fetch_meetings(year: int | None) -> dict:
     return results
 
 
-def _fetch_meeting_details(meeting_key: int) -> dict:
+def _fetch_raw_sessions_data(meeting_key: int) -> dict:
     url = f"https://api.formula1.com/v1/event-tracker/meeting/{meeting_key}"
-
-    try:
-        response = requests.get(url, headers=HEADERS)
-
-        if response.status_code == 200:
-            data = response.json()
-            timetables = data.get("meetingContext", {}).get("timetables", [])
-            return data
-        else:
-            print(f"Error {response.status_code}: {response.text}")
-
-    except Exception as e:
-        print(f"Connection Error: {e}")
+    response = requests.get(url, headers=HEADERS)
+    response.raise_for_status()
+    data = response.json()
+    timetables = data["meetingContext"]["timetables"]
+    return timetables
 
 
 def fetch_sessions(year: int | None) -> dict:
     """If year param is not provided, returns list of sessions for the latest available season."""
     meetings = fetch_meetings(year)
+
+    sessions = []
+    for meeting in tqdm(meetings):
+        raw_sessions_data = _fetch_raw_sessions_data(meeting["meeting_key"])
+        for raw_sess_data in raw_sessions_data:
+            date_start = convert_to_utc(
+                date_str=raw_sess_data["startTime"], offset_str=meeting["gmt_offset"]
+            )
+            date_end = convert_to_utc(
+                date_str=raw_sess_data["endTime"], offset_str=meeting["gmt_offset"]
+            )
+            sessions.append(
+                {
+                    "meeting_key": meeting["meeting_key"],
+                    "session_key": raw_sess_data["meetingSessionKey"],
+                    "location": meeting["location"],
+                    "date_start": date_start,
+                    "date_end": date_end,
+                    "session_type": raw_sess_data["sessionType"],
+                    "session_name": raw_sess_data["description"],
+                    "country_key": meeting["country_key"],
+                    "country_code": meeting["country_code"],
+                    "country_name": meeting["country_name"],
+                    "circuit_key": meeting["circuit_key"],
+                    "circuit_short_name": meeting["circuit_short_name"],
+                    "gmt_offset": meeting["gmt_offset"],
+                    "year": meeting["year"],
+                }
+            )
+    return sessions
 
 
 @cli.command()
@@ -131,5 +154,4 @@ def ingest_sessions(year: int | None):
 
 
 if __name__ == "__main__":
-    cli()
     cli()
