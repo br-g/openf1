@@ -25,6 +25,15 @@ def _to_utc(date_str: str, offset_str: str) -> datetime:
     return dt.astimezone(timezone.utc)
 
 
+def _convert_gmt_offset(offset_str: str) -> str:
+    """
+    Converts GMT offset like "+04:00" to "04:00:00"
+    and "-04:00" to "-04:00:00".
+    """
+    cleaned_offset = offset_str.lstrip("+")
+    return f"{cleaned_offset}:00"
+
+
 def get_meetings(year: int | None = None) -> list[dict]:
     """Fetches list of meetings for a specific year or the latest season."""
     url = f"{BASE_URL}/editorial-eventlisting/events"
@@ -51,7 +60,7 @@ def get_meetings(year: int | None = None) -> list[dict]:
                 "circuit_short_name": event["circuitShortName"],
                 "circuit_type": event["circuitType"],
                 "circuit_image": event["circuitMediumImage"],
-                "gmt_offset": offset,
+                "gmt_offset": _convert_gmt_offset(offset),
                 "date_start": _to_utc(event["meetingStartDate"], offset),
                 "date_end": _to_utc(event["meetingEndDate"], offset),
                 "year": int(data["year"]),
@@ -92,7 +101,7 @@ def get_sessions(year: int | None = None) -> list[dict]:
                     "country_code": meeting["country_code"],
                     "country_name": meeting["country_name"],
                     "location": meeting["location"],
-                    "gmt_offset": meeting["gmt_offset"],
+                    "gmt_offset": _convert_gmt_offset(meeting["gmt_offset"]),
                     "year": meeting["year"],
                 }
             )
