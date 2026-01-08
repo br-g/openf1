@@ -28,7 +28,7 @@ For more detailed examples and documentation, visit the [API Documentation](http
 
 ## Running the project locally
 
-1. Install and start [MongoDB Community Server](https://www.mongodb.com/try/download/community) v7
+1. Install and start [MongoDB Community Server](https://www.mongodb.com/try/download/community) v7 or v8
 
 2. Install pip>=23 and python>=3.10
 
@@ -49,8 +49,8 @@ export MONGO_CONNECTION_STRING="mongodb://localhost:27017"
 
 5. Run the project
 
+- Fetch and ingest scraped data: [services/f1_scraping/](src/openf1/services/f1_scraping/README.md)
 - Fetch and ingest live timing data: [services/ingestor_livetiming/](src/openf1/services/ingestor_livetiming/README.md)
-- Fetch and ingest scrapped data: [services/f1_scrapping/](src/openf1/services/f1_scrapping/README.md)
 - Start and query the API: [services/query_api/](src/openf1/services/query_api/README.md)
 
 ## Supporting OpenF1

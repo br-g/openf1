@@ -59,19 +59,13 @@ async def get_documents(
 ) -> list[dict]:
     """Retrieves documents from a specified MongoDB collection, applies filters,
     and sorts.
-
-    - For 'meetings', the earliest document is returned to reflect the start time of the
-      first session.
-    - For all other collections, the latest document is returned to ensure the most
-      up-to-date information.
+    The latest document is returned to ensure the most up-to-date information.
     """
-    presort_direction = 1 if collection_name == "meetings" else -1
-
     collection = _get_mongo_db_async()[collection_name]
     pipeline = [
         # Apply user filters
         {"$match": _generate_query_predicate(filters)},
-        {"$sort": {"_id": presort_direction}},
+        {"$sort": {"_id": -1}},
         # Group all versions of the same document and keep only the first one
         {"$group": {"_id": "$_key", "document": {"$first": "$$ROOT"}}},
         {"$replaceRoot": {"newRoot": "$document"}},
