@@ -643,7 +643,7 @@ fetch("https://api.openf1.org/v1/meetings?year=2026&country_name=Singapore")
     "country_name": "Singapore",
     "date_end": "2026-10-11T14:00:00+00:00",
     "date_start": "2026-10-09T09:30:00+00:00",
-    "gmt_offset": "+08:00",
+    "gmt_offset": "08:00:00",
     "location": "Marina Bay",
     "meeting_key": 1296,
     "meeting_name": "Singapore Grand Prix",
