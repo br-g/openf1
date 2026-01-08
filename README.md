@@ -28,7 +28,7 @@ For more detailed examples and documentation, visit the [API Documentation](http
 
 ## Running the project locally
 
-1. Install and start [MongoDB Community Server](https://www.mongodb.com/try/download/community) v7
+1. Install and start [MongoDB Community Server](https://www.mongodb.com/try/download/community) v7 or v8
 
 2. Install pip>=23 and python>=3.10
 
