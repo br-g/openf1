@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import requests
 import typer
@@ -20,9 +20,18 @@ session.headers.update(HEADERS)
 
 def _to_utc(date_str: str, offset_str: str) -> datetime:
     """Combines date and offset strings into a timezone-aware UTC datetime."""
-    # Combine "2023-01-01T10:00:00" and "+04:00" -> ISO 8601
-    dt = datetime.fromisoformat(f"{date_str}{offset_str}")
-    return dt.astimezone(timezone.utc)
+    local_dt = datetime.fromisoformat(date_str)
+
+    is_negative = offset_str.startswith("-")
+    clean_offset = offset_str.lstrip("-")
+    hours, minutes, seconds = map(int, clean_offset.split(":"))
+    offset_delta = timedelta(hours=hours, minutes=minutes, seconds=seconds)
+    if is_negative:
+        offset_delta = -offset_delta
+
+    utc_dt = local_dt - offset_delta
+    utc_dt = utc_dt.replace(tzinfo=timezone.utc)
+    return utc_dt
 
 
 def _convert_gmt_offset(offset_str: str) -> str:
@@ -45,7 +54,7 @@ def get_meetings(year: int | None = None) -> list[dict]:
 
     results = []
     for event in data["events"]:
-        offset = event["gmtOffset"]
+        offset = _convert_gmt_offset(event["gmtOffset"])
         results.append(
             {
                 "meeting_key": int(event["meetingKey"]),
@@ -60,7 +69,7 @@ def get_meetings(year: int | None = None) -> list[dict]:
                 "circuit_short_name": event["circuitShortName"],
                 "circuit_type": event["circuitType"],
                 "circuit_image": event["circuitMediumImage"],
-                "gmt_offset": _convert_gmt_offset(offset),
+                "gmt_offset": offset,
                 "date_start": _to_utc(event["meetingStartDate"], offset),
                 "date_end": _to_utc(event["meetingEndDate"], offset),
                 "year": int(data["year"]),
@@ -101,7 +110,7 @@ def get_sessions(year: int | None = None) -> list[dict]:
                     "country_code": meeting["country_code"],
                     "country_name": meeting["country_name"],
                     "location": meeting["location"],
-                    "gmt_offset": _convert_gmt_offset(meeting["gmt_offset"]),
+                    "gmt_offset": meeting["gmt_offset"],
                     "year": meeting["year"],
                 }
             )
