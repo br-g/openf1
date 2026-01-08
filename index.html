@@ -1624,11 +1624,11 @@ The data will be provided shortly after each session instead.
 <p>Provides information about sessions.
             A session refers to a distinct period of track activity during a Grand Prix or testing weekend (practice, qualifying, sprint, race, ...).
             Sessions are updated every day at midnight UTC.</p>
-<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint&amp;year=2023"</span>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint%20Qualifying&amp;year=2023"</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
 <span class="kn">import</span> <span class="nn">json</span>
 
-<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint&amp;year=2023'</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint%20Qualifying&amp;year=2023'</span><span class="p">)</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
 <span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
@@ -1642,7 +1642,7 @@ The data will be provided shortly after each session instead.
 </span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
 </span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
 
-</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint&amp;year=2023'</span><span class="p">)</span><span class="w">
+</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint%20Qualifying&amp;year=2023'</span><span class="p">)</span><span class="w">
 </span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
 </span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
 
@@ -1650,7 +1650,7 @@ The data will be provided shortly after each session instead.
 </span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
 </span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
 </span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span>
-  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint&amp;year=2023</span><span class="dl">"</span>
+  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint%20Qualifying&amp;year=2023</span><span class="dl">"</span>
 <span class="p">)</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">jsonContent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
@@ -1671,15 +1671,15 @@ The data will be provided shortly after each session instead.
     </span><span class="nl">"location"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Spa-Francorchamps"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1216</span><span class="p">,</span><span class="w">
     </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9140</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"session_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sprint"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"session_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Race"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sprint Qualifying"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sprint Qualifying"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"year"</span><span class="p">:</span><span class="w"> </span><span class="mi">2023</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div><h3 id='http-request-11'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/sessions</code></p>
 <h3 id='sample-url-11'>Sample URL</h3>
-<p><a href="https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint&amp;year=2023" target="_blank">https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint&amp;year=2023</a></p>
+<p><a href="https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint%20Qualifying&amp;year=2023" target="_blank">https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint%20Qualifying&amp;year=2023</a></p>
 <h3 id='attributes-11'>Attributes</h3>
 <table><thead>
 <tr>
