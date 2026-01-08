@@ -1031,14 +1031,14 @@ fetch(
             Sessions are updated every day at midnight UTC.
 
 ```shell
-curl "https://api.openf1.org/v1/sessions?country_name=Belgium&session_name=Sprint&year=2023"
+curl "https://api.openf1.org/v1/sessions?country_name=Belgium&session_name=Sprint%20Qualifying&year=2023"
 ```
 
 ```python
 from urllib.request import urlopen
 import json
 
-response = urlopen('https://api.openf1.org/v1/sessions?country_name=Belgium&session_name=Sprint&year=2023')
+response = urlopen('https://api.openf1.org/v1/sessions?country_name=Belgium&session_name=Sprint%20Qualifying&year=2023')
 data = json.loads(response.read().decode('utf-8'))
 print(data)
 
@@ -1055,7 +1055,7 @@ print(data)
 library(httr)
 library(jsonlite)
 
-response <- GET('https://api.openf1.org/v1/sessions?country_name=Belgium&session_name=Sprint&year=2023')
+response <- GET('https://api.openf1.org/v1/sessions?country_name=Belgium&session_name=Sprint%20Qualifying&year=2023')
 parsed_data <- fromJSON(content(response, 'text'))
 print(parsed_data)
 
@@ -1066,7 +1066,7 @@ print(parsed_data)
 
 ```javascript
 fetch(
-  "https://api.openf1.org/v1/sessions?country_name=Belgium&session_name=Sprint&year=2023"
+  "https://api.openf1.org/v1/sessions?country_name=Belgium&session_name=Sprint%20Qualifying&year=2023"
 )
   .then((response) => response.json())
   .then((jsonContent) => console.log(jsonContent));
@@ -1088,8 +1088,8 @@ fetch(
     "location": "Spa-Francorchamps",
     "meeting_key": 1216,
     "session_key": 9140,
-    "session_name": "Sprint",
-    "session_type": "Race",
+    "session_name": "Sprint Qualifying",
+    "session_type": "Sprint Qualifying",
     "year": 2023
   }
 ]
@@ -1101,7 +1101,7 @@ fetch(
 
 ### Sample URL
 
-<a href="https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint&amp;year=2023" target="_blank">https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint&amp;year=2023</a>
+<a href="https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint%20Qualifying&amp;year=2023" target="_blank">https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint%20Qualifying&amp;year=2023</a>
 
 ### Attributes
 
