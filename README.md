@@ -49,8 +49,8 @@ export MONGO_CONNECTION_STRING="mongodb://localhost:27017"
 
 5. Run the project
 
-- Fetch and ingest live timing data: [services/ingestor_livetiming/](src/openf1/services/ingestor_livetiming/README.md)
 - Fetch and ingest scraped data: [services/f1_scraping/](src/openf1/services/f1_scraping/README.md)
+- Fetch and ingest live timing data: [services/ingestor_livetiming/](src/openf1/services/ingestor_livetiming/README.md)
 - Start and query the API: [services/query_api/](src/openf1/services/query_api/README.md)
 
 ## Supporting OpenF1
