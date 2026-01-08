@@ -42,7 +42,6 @@ def get_meetings(year: int | None = None) -> list[dict]:
                 "meeting_key": int(event["meetingKey"]),
                 "meeting_name": event["meetingName"],
                 "meeting_official_name": event["meetingOfficialName"],
-                "meeting_code": event["meetingCountryCode"],
                 "location": event["meetingLocation"],
                 "country_key": int(event["countryKey"]),
                 "country_code": event["meetingCountryCode"],

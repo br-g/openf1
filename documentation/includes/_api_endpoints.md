@@ -586,16 +586,17 @@ fetch(
 
             Provides information about meetings.
             A meeting refers to a Grand Prix or testing weekend and usually includes multiple sessions (practice, qualifying, race, ...).
+            Meetings are updated every day at midnight UTC.
 
 ```shell
-curl "https://api.openf1.org/v1/meetings?year=2023&country_name=Singapore"
+curl "https://api.openf1.org/v1/meetings?year=2026&country_name=Singapore"
 ```
 
 ```python
 from urllib.request import urlopen
 import json
 
-response = urlopen('https://api.openf1.org/v1/meetings?year=2023&country_name=Singapore')
+response = urlopen('https://api.openf1.org/v1/meetings?year=2026&country_name=Singapore')
 data = json.loads(response.read().decode('utf-8'))
 print(data)
 
@@ -612,7 +613,7 @@ print(data)
 library(httr)
 library(jsonlite)
 
-response <- GET('https://api.openf1.org/v1/meetings?year=2023&country_name=Singapore')
+response <- GET('https://api.openf1.org/v1/meetings?year=2026&country_name=Singapore')
 parsed_data <- fromJSON(content(response, 'text'))
 print(parsed_data)
 
@@ -622,7 +623,7 @@ print(parsed_data)
 ```
 
 ```javascript
-fetch("https://api.openf1.org/v1/meetings?year=2023&country_name=Singapore")
+fetch("https://api.openf1.org/v1/meetings?year=2026&country_name=Singapore")
   .then((response) => response.json())
   .then((jsonContent) => console.log(jsonContent));
 ```
@@ -633,17 +634,21 @@ fetch("https://api.openf1.org/v1/meetings?year=2023&country_name=Singapore")
 [
   {
     "circuit_key": 61,
+    "circuit_image": "https://media.formula1.com/content/dam/fom-website/2018-redesign-assets/Track%20icons%204x3/Singapore%20carbon.png",
     "circuit_short_name": "Singapore",
+    "circuit_type": "Temporary - Street",
     "country_code": "SGP",
+    "country_flag": "https://media.formula1.com/content/dam/fom-website/2018-redesign-assets/Flags%2016x9/singapore-flag.png",
     "country_key": 157,
     "country_name": "Singapore",
-    "date_start": "2023-09-15T09:30:00+00:00",
-    "gmt_offset": "08:00:00",
+    "date_end": "2026-10-11T14:00:00+00:00",
+    "date_start": "2026-10-09T09:30:00+00:00",
+    "gmt_offset": "+08:00",
     "location": "Marina Bay",
-    "meeting_key": 1219,
+    "meeting_key": 1296,
     "meeting_name": "Singapore Grand Prix",
-    "meeting_official_name": "FORMULA 1 SINGAPORE AIRLINES SINGAPORE GRAND PRIX 2023",
-    "year": 2023
+    "meeting_official_name": "FORMULA 1 SINGAPORE AIRLINES SINGAPORE GRAND PRIX 2026",
+    "year": 2026
   }
 ]
 ```
@@ -654,17 +659,21 @@ fetch("https://api.openf1.org/v1/meetings?year=2023&country_name=Singapore")
 
 ### Sample URL
 
-<a href="https://api.openf1.org/v1/meetings?year=2023&amp;country_name=Singapore" target="_blank">https://api.openf1.org/v1/meetings?year=2023&amp;country_name=Singapore</a>
+<a href="https://api.openf1.org/v1/meetings?year=2026&amp;country_name=Singapore" target="_blank">https://api.openf1.org/v1/meetings?year=2026&amp;country_name=Singapore</a>
 
 ### Attributes
 
 | Name                  | Description                                                                                                        |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | circuit_key           | The unique identifier for the circuit where the event takes place.                                                 |
+| circuit_image         | An image of the circuit.                                                                                           |
 | circuit_short_name    | The short or common name of the circuit where the event takes place.                                               |
+| circuit_type          | The type of the circuit ("Permanent", "Temporary - Street", or "Temporary - Road")                                 |
 | country_code          | A code that uniquely identifies the country.                                                                       |
+| country_flag          | An image of the country flag.                                                                                      |
 | country_key           | The unique identifier for the country where the event takes place.                                                 |
 | country_name          | The full name of the country where the event takes place.                                                          |
+| date_end              | The UTC ending date and time, in ISO 8601 format.                                                                  |
 | date_start            | The UTC starting date and time, in ISO 8601 format.                                                                |
 | gmt_offset            | The difference in hours and minutes between local time at the location of the event and Greenwich Mean Time (GMT). |
 | location              | The city or geographical location where the event takes place.                                                     |
@@ -1019,6 +1028,7 @@ fetch(
 
             Provides information about sessions.
             A session refers to a distinct period of track activity during a Grand Prix or testing weekend (practice, qualifying, sprint, race, ...).
+            Sessions are updated every day at midnight UTC.
 
 ```shell
 curl "https://api.openf1.org/v1/sessions?country_name=Belgium&session_name=Sprint&year=2023"
