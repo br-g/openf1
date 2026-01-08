@@ -15,6 +15,8 @@ case $ROLE in
     ;;
   "scrape-latest")
     sleep 2 # api needs to be fully up before this will work
+    python -m openf1.services.f1_scraping.schedule ingest-meetings
+    python -m openf1.services.f1_scraping.schedule ingest-sessions
     python -m openf1.services.f1_scraping.session_result
     python -m openf1.services.f1_scraping.starting_grid
     ;;
