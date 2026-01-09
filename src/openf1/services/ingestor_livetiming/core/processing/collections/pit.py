@@ -18,10 +18,10 @@ class Pit(Document):
     session_key: int
     lap_number: int
     driver_number: int
-    date: datetime
-    pit_duration: float | None  # deprecated, same as 'pit_lane_time'
-    pit_lane_time: float | None
-    pit_stop_time: float | None
+    date: datetime | None
+    pit_duration: float | None  # deprecated, same as 'lane_duration'
+    lane_duration: float | None
+    stop_duration: float | None
 
     @property
     def unique_key(self) -> tuple:
@@ -46,6 +46,9 @@ class PitCollection(Collection):
                     continue
 
                 for pit_info in data:
+                    if not isinstance(pit_info, dict):
+                        continue
+
                     if "PitStop" not in pit_info:
                         continue
 
@@ -54,7 +57,7 @@ class PitCollection(Collection):
                         date = to_datetime(timestamp)
                         date = pytz.utc.localize(date)
                     except:
-                        continue
+                        date = None
 
                     try:
                         lap_number = int(pit_info["PitStop"]["Lap"])
@@ -62,23 +65,23 @@ class PitCollection(Collection):
                         continue
 
                     try:
-                        pit_lane_time = float(pit_info["PitStop"]["PitLaneTime"])
+                        lane_duration = float(pit_info["PitStop"]["PitLaneTime"])
                     except:
-                        pit_lane_time = None
+                        lane_duration = None
 
                     try:
-                        pit_stop_time = float(pit_info["PitStop"]["PitStopTime"])
+                        stop_duration = float(pit_info["PitStop"]["PitStopTime"])
                     except:
-                        pit_stop_time = None
+                        stop_duration = None
 
                     pit = Pit(
                         meeting_key=self.meeting_key,
                         session_key=self.session_key,
                         driver_number=driver_number,
                         date=date,
-                        pit_duration=pit_lane_time,
-                        pit_lane_time=pit_lane_time,
-                        pit_stop_time=pit_stop_time,
+                        pit_duration=lane_duration,
+                        lane_duration=lane_duration,
+                        stop_duration=stop_duration,
                         lap_number=lap_number,
                     )
 
@@ -86,7 +89,7 @@ class PitCollection(Collection):
                     yield pit
 
         # Fallback: use collection "PitLaneTimeCollection" in case "PitStopSeries" is not available.
-        # "PitLaneTimeCollection" has less data and is less accurate.
+        # "PitLaneTimeCollection" has less details and is less accurate.
         elif message.topic == "PitLaneTimeCollection":
             for driver_number, data in message.content["PitTimes"].items():
                 try:
@@ -98,9 +101,9 @@ class PitCollection(Collection):
                     continue
 
                 try:
-                    pit_lane_time = float(data["Duration"])
+                    lane_duration = float(data["Duration"])
                 except:
-                    pit_lane_time = None
+                    lane_duration = None
 
                 try:
                     lap_number = int(data["Lap"])
@@ -112,9 +115,9 @@ class PitCollection(Collection):
                     session_key=self.session_key,
                     driver_number=driver_number,
                     date=message.timepoint,
-                    pit_duration=pit_lane_time,
-                    pit_lane_time=pit_lane_time,
-                    pit_stop_time=None,
+                    pit_duration=lane_duration,
+                    lane_duration=lane_duration,
+                    stop_duration=None,
                     lap_number=lap_number,
                 )
                 if pit.unique_key not in self.pits:
