@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Iterator
 
@@ -32,7 +32,7 @@ class Pit(Document):
 class PitCollection(Collection):
     name = "pit"
     source_topics = {"PitLaneTimeCollection", "PitStopSeries"}
-    pits: dict
+    pits: dict = field(default_factory=dict)
 
     def process_message(self, message: Message) -> Iterator[Pit]:
         if message.topic == "PitStopSeries":
@@ -42,7 +42,9 @@ class PitCollection(Collection):
                 except:
                     continue
 
-                if not isinstance(data, list):
+                if isinstance(data, dict):
+                    data = list(data.values())
+                elif not isinstance(data, list):
                     continue
 
                 for pit_info in data:
