@@ -769,14 +769,14 @@ fetch(
             Provides information about cars going through the pit lane.
 
 ```shell
-curl "https://api.openf1.org/v1/pit?session_key=9158&pit_duration<31"
+curl "https://api.openf1.org/v1/pit?session_key=9877&stop_duration<2.3"
 ```
 
 ```python
 from urllib.request import urlopen
 import json
 
-response = urlopen('https://api.openf1.org/v1/pit?session_key=9158&pit_duration<31')
+response = urlopen('https://api.openf1.org/v1/pit?session_key=9877&stop_duration<2.3')
 data = json.loads(response.read().decode('utf-8'))
 print(data)
 
@@ -793,7 +793,7 @@ print(data)
 library(httr)
 library(jsonlite)
 
-response <- GET('https://api.openf1.org/v1/pit?session_key=9158&pit_duration<31')
+response <- GET('https://api.openf1.org/v1/pit?session_key=9877&stop_duration<2.3')
 parsed_data <- fromJSON(content(response, 'text'))
 print(parsed_data)
 
@@ -803,7 +803,7 @@ print(parsed_data)
 ```
 
 ```javascript
-fetch("https://api.openf1.org/v1/pit?session_key=9158&pit_duration<31")
+fetch("https://api.openf1.org/v1/pit?session_key=9877&stop_duration<2.3")
   .then((response) => response.json())
   .then((jsonContent) => console.log(jsonContent));
 ```
@@ -813,20 +813,24 @@ fetch("https://api.openf1.org/v1/pit?session_key=9158&pit_duration<31")
 ```json
 [
   {
-    "date": "2023-09-15T09:38:23.038000+00:00",
-    "driver_number": 63,
-    "lap_number": 5,
-    "meeting_key": 1219,
-    "pit_duration": 24.5,
-    "session_key": 9158
+    "date": "2025-10-26T20:46:37.358000+00:00",
+    "driver_number": 16,
+    "lane_duration": 22.215,
+    "lap_number": 31,
+    "meeting_key": 1272,
+    "pit_duration": 22.215,
+    "session_key": 9877,
+    "stop_duration": 2.2
   },
   {
-    "date": "2023-09-15T10:05:01.229000+00:00",
+    "date": "2025-10-26T21:09:49.689000+00:00",
     "driver_number": 81,
-    "lap_number": 13,
-    "meeting_key": 1219,
-    "pit_duration": 30.8,
-    "session_key": 9158
+    "lane_duration": 22.159,
+    "lap_number": 47,
+    "meeting_key": 1272,
+    "pit_duration": 22.159,
+    "session_key": 9877,
+    "stop_duration": 2.1
   }
 ]
 ```
@@ -837,18 +841,20 @@ fetch("https://api.openf1.org/v1/pit?session_key=9158&pit_duration<31")
 
 ### Sample URL
 
-<a href="https://api.openf1.org/v1/pit?session_key=9158&amp;pit_duration&lt;31" target="_blank">https://api.openf1.org/v1/pit?session_key=9158&amp;pit_duration&lt;31</a>
+<a href="https://api.openf1.org/v1/pit?session_key=9877&amp;stop_duration&lt;2.3" target="_blank">https://api.openf1.org/v1/pit?session_key=9877&amp;stop_duration&lt;2.3</a>
 
 ### Attributes
 
-| Name          | Description                                                                                                                                                                           |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| date          | The UTC date and time, in ISO 8601 format.                                                                                                                                            |
-| driver_number | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
-| lap_number    | The sequential number of the lap within the session (starts at 1).                                                                                                                    |
-| meeting_key   | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
-| pit_duration  | The time spent in the pit, from entering to leaving the pit lane, in seconds.                                                                                                         |
-| session_key   | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
+| Name                      | Description                                                                                                                                                                           |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| date                      | The UTC date and time, in ISO 8601 format.                                                                                                                                            |
+| driver_number             | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| lane_duration             | The time spent in the pit lane, in seconds.                                                                                                                                           |
+| lap_number                | The sequential number of the lap within the session (starts at 1).                                                                                                                    |
+| meeting_key               | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
+| pit_duration (deprecated) | Same as 'lane_duration'. This field will be removed at the end of the 2026 season.                                                                                                    |
+| session_key               | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
+| stop_duration             | The stationary pit stop time, in seconds. This field is only available from the 2024 US GP onwards.                                                                                   |
 
 ## Position
 
