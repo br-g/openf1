@@ -1347,11 +1347,11 @@ The data will be provided shortly after each session instead.
 </tbody></table>
 <h2 id='pit'>Pit</h2>
 <p>Provides information about cars going through the pit lane.</p>
-<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/pit?session_key=9158&amp;pit_duration&lt;31"</span>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/pit?session_key=9877&amp;stop_duration&lt;2.3"</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
 <span class="kn">import</span> <span class="nn">json</span>
 
-<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/pit?session_key=9158&amp;pit_duration&lt;31'</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/pit?session_key=9877&amp;stop_duration&lt;2.3'</span><span class="p">)</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
 <span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
@@ -1365,14 +1365,14 @@ The data will be provided shortly after each session instead.
 </span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
 </span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
 
-</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/pit?session_key=9158&amp;pit_duration&lt;31'</span><span class="p">)</span><span class="w">
+</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/pit?session_key=9877&amp;stop_duration&lt;2.3'</span><span class="p">)</span><span class="w">
 </span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
 </span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
 
 </span><span class="c1"># If you want, you can import the results in a DataFrame</span><span class="w">
 </span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
 </span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
-</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">"</span><span class="s2">https://api.openf1.org/v1/pit?session_key=9158&amp;pit_duration&lt;31</span><span class="dl">"</span><span class="p">)</span>
+</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span><span class="dl">"</span><span class="s2">https://api.openf1.org/v1/pit?session_key=9877&amp;stop_duration&lt;2.3</span><span class="dl">"</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">jsonContent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
 </code></pre></div>
@@ -1381,26 +1381,30 @@ The data will be provided shortly after each session instead.
 </blockquote>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
   </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-09-15T09:38:23.038000+00:00"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">63</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"lap_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1219</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"pit_duration"</span><span class="p">:</span><span class="w"> </span><span class="mf">24.5</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9158</span><span class="w">
+    </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2025-10-26T20:46:37.358000+00:00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lane_duration"</span><span class="p">:</span><span class="w"> </span><span class="mf">22.215</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lap_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">31</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1272</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"pit_duration"</span><span class="p">:</span><span class="w"> </span><span class="mf">22.215</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9877</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"stop_duration"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.2</span><span class="w">
   </span><span class="p">},</span><span class="w">
   </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2023-09-15T10:05:01.229000+00:00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2025-10-26T21:09:49.689000+00:00"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">81</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"lap_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1219</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"pit_duration"</span><span class="p">:</span><span class="w"> </span><span class="mf">30.8</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9158</span><span class="w">
+    </span><span class="nl">"lane_duration"</span><span class="p">:</span><span class="w"> </span><span class="mf">22.159</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lap_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">47</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1272</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"pit_duration"</span><span class="p">:</span><span class="w"> </span><span class="mf">22.159</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9877</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"stop_duration"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.1</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div><h3 id='http-request-8'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/pit</code></p>
 <h3 id='sample-url-8'>Sample URL</h3>
-<p><a href="https://api.openf1.org/v1/pit?session_key=9158&amp;pit_duration&lt;31" target="_blank">https://api.openf1.org/v1/pit?session_key=9158&amp;pit_duration&lt;31</a></p>
+<p><a href="https://api.openf1.org/v1/pit?session_key=9877&amp;stop_duration&lt;2.3" target="_blank">https://api.openf1.org/v1/pit?session_key=9877&amp;stop_duration&lt;2.3</a></p>
 <h3 id='attributes-8'>Attributes</h3>
 <table><thead>
 <tr>
@@ -1417,6 +1421,10 @@ The data will be provided shortly after each session instead.
 <td>The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).</td>
 </tr>
 <tr>
+<td>lane_duration</td>
+<td>The time spent in the pit lane, in seconds.</td>
+</tr>
+<tr>
 <td>lap_number</td>
 <td>The sequential number of the lap within the session (starts at 1).</td>
 </tr>
@@ -1425,12 +1433,16 @@ The data will be provided shortly after each session instead.
 <td>The unique identifier for the meeting. Use <code>latest</code> to identify the latest or current meeting.</td>
 </tr>
 <tr>
-<td>pit_duration</td>
-<td>The time spent in the pit, from entering to leaving the pit lane, in seconds.</td>
+<td>pit_duration (deprecated)</td>
+<td>Same as &#39;lane_duration&#39;. This field will be removed at the end of the 2026 season.</td>
 </tr>
 <tr>
 <td>session_key</td>
 <td>The unique identifier for the session. Use <code>latest</code> to identify the latest or current session.</td>
+</tr>
+<tr>
+<td>stop_duration</td>
+<td>The stationary pit stop time, in seconds. This field is only available from the 2024 US GP onwards.</td>
 </tr>
 </tbody></table>
 <h2 id='position'>Position</h2>
