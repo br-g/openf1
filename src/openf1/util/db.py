@@ -1,6 +1,6 @@
 import os
 from collections import defaultdict
-from datetime import timezone
+from datetime import datetime, timedelta, timezone
 from functools import lru_cache
 from typing import Any
 
@@ -250,12 +250,15 @@ def _generate_query_predicate(filters: dict[str, list[dict]]) -> dict:
 @timed_cache(60)  # Cache the output for 1 minute
 def get_latest_session_info() -> dict:
     sessions = _get_mongo_db_sync()["sessions"]
-    latest_session = sessions.find_one(sort=[("date_start", -1)])
+    threshold = datetime.now(timezone.utc) + timedelta(seconds=60)
+    latest_session = sessions.find_one(
+        {"date_start": {"$lte": threshold}}, sort=[("date_start", -1)]
+    )
 
     if latest_session:
         return latest_session
     else:
-        raise SystemError("Could not find any session in MongoDB")
+        raise SystemError("Could not find any past or current session in MongoDB")
 
 
 @lru_cache()
