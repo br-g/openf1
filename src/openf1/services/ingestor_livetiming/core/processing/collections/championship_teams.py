@@ -28,7 +28,6 @@ class ChampionshipTeam(Document):
 class ChampionshipTeamCollection(Collection):
     name = "championship_teams"
     source_topics = {"ChampionshipPrediction"}
-    team_key_to_name: dict = field(default_factory=dict)
     cache: dict = field(default_factory=dict)
 
     def process_message(self, message: Message) -> Iterator[ChampionshipTeam]:
@@ -39,17 +38,13 @@ class ChampionshipTeamCollection(Collection):
             if not isinstance(data, dict):
                 continue
 
-            if "TeamName" in data:
-                self.team_key_to_name[team_key] = data["TeamName"]
-            if team_key in self.team_key_to_name:
-                team_name = self.team_key_to_name[team_key]
-            else:
-                team_name = team_key
+            team_name = data.get("TeamName")
 
             key = (self.session_key, team_key)
             if key in self.cache:
                 result = self.cache[key]
-                result.team_name = team_name
+                if team_name:
+                    result.team_name = team_name
             else:
                 result = ChampionshipTeam(
                     meeting_key=self.meeting_key,
