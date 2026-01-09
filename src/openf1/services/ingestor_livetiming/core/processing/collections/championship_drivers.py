@@ -30,6 +30,9 @@ class ChampionshipDriverCollection(Collection):
     cache: dict = field(default_factory=dict)
 
     def process_message(self, message: Message) -> Iterator[ChampionshipDriver]:
+        if "Drivers" not in message.content:
+            return
+
         for driver_number, data in message.content["Drivers"].items():
             try:
                 driver_number = int(driver_number)

@@ -12,7 +12,8 @@ from openf1.services.ingestor_livetiming.core.objects import (
 class ChampionshipTeam(Document):
     meeting_key: int
     session_key: int
-    team_name: int
+    team_name: str
+    _team_key: str
     position_start: int | None = None
     position_current: int | None = None
     points_start: float | None = None
@@ -20,28 +21,41 @@ class ChampionshipTeam(Document):
 
     @property
     def unique_key(self) -> tuple:
-        return (self.session_key, self.team_name)
+        return (self.session_key, self._team_key)
 
 
 @dataclass
 class ChampionshipTeamCollection(Collection):
     name = "championship_teams"
     source_topics = {"ChampionshipPrediction"}
+    team_key_to_name: dict = field(default_factory=dict)
     cache: dict = field(default_factory=dict)
 
     def process_message(self, message: Message) -> Iterator[ChampionshipTeam]:
-        for _, data in message.content["Teams"].items():
+        if "Teams" not in message.content:
+            return
+
+        for team_key, data in message.content["Teams"].items():
             if not isinstance(data, dict):
                 continue
 
-            key = (self.session_key, data["TeamName"])
+            if "TeamName" in data:
+                self.team_key_to_name[team_key] = data["TeamName"]
+            if team_key in self.team_key_to_name:
+                team_name = self.team_key_to_name[team_key]
+            else:
+                team_name = team_key
+
+            key = (self.session_key, team_key)
             if key in self.cache:
                 result = self.cache[key]
+                result.team_name = team_name
             else:
                 result = ChampionshipTeam(
                     meeting_key=self.meeting_key,
                     session_key=self.session_key,
-                    team_name=data["TeamName"],
+                    team_name=team_name,
+                    _team_key=team_key,
                 )
 
             if "CurrentPosition" in data and data["CurrentPosition"] > 0:
