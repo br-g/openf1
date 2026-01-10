@@ -341,6 +341,12 @@
                     <a href="#car-data" class="toc-h2 toc-link" data-title="Car data">Car data</a>
                   </li>
                   <li>
+                    <a href="#drivers-championship-beta" class="toc-h2 toc-link" data-title="Drivers championship (beta)">Drivers championship (beta)</a>
+                  </li>
+                  <li>
+                    <a href="#teams-championship-beta" class="toc-h2 toc-link" data-title="Teams championship (beta)">Teams championship (beta)</a>
+                  </li>
+                  <li>
                     <a href="#drivers" class="toc-h2 toc-link" data-title="Drivers">Drivers</a>
                   </li>
                   <li>
@@ -356,7 +362,7 @@
                     <a href="#meetings" class="toc-h2 toc-link" data-title="Meetings">Meetings</a>
                   </li>
                   <li>
-                    <a href="#overtakes-beta" class="toc-h2 toc-link" data-title="Overtakes (beta)">Overtakes (beta)</a>
+                    <a href="#overtakes" class="toc-h2 toc-link" data-title="Overtakes">Overtakes</a>
                   </li>
                   <li>
                     <a href="#pit" class="toc-h2 toc-link" data-title="Pit">Pit</a>
@@ -371,10 +377,10 @@
                     <a href="#sessions" class="toc-h2 toc-link" data-title="Sessions">Sessions</a>
                   </li>
                   <li>
-                    <a href="#session-result-beta" class="toc-h2 toc-link" data-title="Session result (beta)">Session result (beta)</a>
+                    <a href="#session-result" class="toc-h2 toc-link" data-title="Session result">Session result</a>
                   </li>
                   <li>
-                    <a href="#starting-grid-beta" class="toc-h2 toc-link" data-title="Starting grid (beta)">Starting grid (beta)</a>
+                    <a href="#starting-grid" class="toc-h2 toc-link" data-title="Starting grid">Starting grid</a>
                   </li>
                   <li>
                     <a href="#stints" class="toc-h2 toc-link" data-title="Stints">Stints</a>
@@ -645,6 +651,189 @@ The data will be provided shortly after each session instead.
                     </tr>
                 </tbody>
             </table></p>
+<h2 id='drivers-championship-beta'>Drivers championship (beta)</h2>
+<p>Provides championship standings for drivers. Only available for race sessions.</p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/championship_drivers?session_key=9839&amp;driver_number=4&amp;driver_number=81"</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/championship_drivers?session_key=9839&amp;driver_number=4&amp;driver_number=81'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
+# import pandas as pd
+# df = pd.DataFrame(data)
+</span></code></pre></div><div class="highlight"><pre class="highlight r tab-r"><code><span class="c1"># If needed, install libraries</span><span class="w">
+</span><span class="c1"># install.packages('httr')</span><span class="w">
+</span><span class="c1"># install.packages('jsonlite')</span><span class="w">
+
+</span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
+
+</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/championship_drivers?session_key=9839&amp;driver_number=4&amp;driver_number=81'</span><span class="p">)</span><span class="w">
+</span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
+</span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># If you want, you can import the results in a DataFrame</span><span class="w">
+</span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
+</span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
+</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span>
+  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/championship_drivers?session_key=9839&amp;driver_number=4&amp;driver_number=81</span><span class="dl">"</span>
+<span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">jsonContent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
+</code></pre></div>
+<blockquote>
+<p>Output:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1276</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"points_current"</span><span class="p">:</span><span class="w"> </span><span class="mi">423</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"points_start"</span><span class="p">:</span><span class="w"> </span><span class="mi">408</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"position_current"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"position_start"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9839</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">81</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1276</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"points_current"</span><span class="p">:</span><span class="w"> </span><span class="mi">410</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"points_start"</span><span class="p">:</span><span class="w"> </span><span class="mi">392</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"position_current"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"position_start"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9839</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div><h3 id='http-request-2'>HTTP Request</h3>
+<p><code>GET https://api.openf1.org/v1/championship_drivers</code></p>
+<h3 id='sample-url-2'>Sample URL</h3>
+<p><a href="https://api.openf1.org/v1/championship_drivers?session_key=9839&amp;driver_number=4&amp;driver_number=81" target="_blank">https://api.openf1.org/v1/championship_drivers?session_key=9839&amp;driver_number=4&amp;driver_number=81</a></p>
+<h3 id='attributes-2'>Attributes</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>driver_number</td>
+<td>The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).</td>
+</tr>
+<tr>
+<td>meeting_key</td>
+<td>The unique identifier for the meeting. Use <code>latest</code> to identify the latest or current meeting.</td>
+</tr>
+<tr>
+<td>points_current</td>
+<td>Championship points during/after the race (depends on call timing).</td>
+</tr>
+<tr>
+<td>points_start</td>
+<td>Championship points before the race started.</td>
+</tr>
+<tr>
+<td>position_current</td>
+<td>Championship position during/after the race (depends on call timing).</td>
+</tr>
+<tr>
+<td>position_start</td>
+<td>Championship position before the race started.</td>
+</tr>
+<tr>
+<td>session_key</td>
+<td>The unique identifier for the session. Use <code>latest</code> to identify the latest or current session.</td>
+</tr>
+</tbody></table>
+<h2 id='teams-championship-beta'>Teams championship (beta)</h2>
+<p>Provides championship standings for teams. Only available for race sessions.</p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/championship_teams?session_key=9839&amp;team_name=McLaren"</span>
+</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="s">'https://api.openf1.org/v1/championship_teams?session_key=9839&amp;team_name=McLaren'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">decode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
+# import pandas as pd
+# df = pd.DataFrame(data)
+</span></code></pre></div><div class="highlight"><pre class="highlight r tab-r"><code><span class="c1"># If needed, install libraries</span><span class="w">
+</span><span class="c1"># install.packages('httr')</span><span class="w">
+</span><span class="c1"># install.packages('jsonlite')</span><span class="w">
+
+</span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
+
+</span><span class="n">response</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="s1">'https://api.openf1.org/v1/championship_teams?session_key=9839&amp;team_name=McLaren'</span><span class="p">)</span><span class="w">
+</span><span class="n">parsed_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span><span class="w"> </span><span class="s1">'text'</span><span class="p">))</span><span class="w">
+</span><span class="n">print</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># If you want, you can import the results in a DataFrame</span><span class="w">
+</span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
+</span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
+</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span>
+  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/championship_teams?session_key=9839&amp;team_name=McLaren</span><span class="dl">"</span>
+<span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">jsonContent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
+</code></pre></div>
+<blockquote>
+<p>Output:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1276</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"points_current"</span><span class="p">:</span><span class="w"> </span><span class="mi">833</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"points_start"</span><span class="p">:</span><span class="w"> </span><span class="mi">800</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"position_current"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"position_start"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9839</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"team_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"McLaren"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div><h3 id='http-request-3'>HTTP Request</h3>
+<p><code>GET https://api.openf1.org/v1/championship_teams</code></p>
+<h3 id='sample-url-3'>Sample URL</h3>
+<p><a href="https://api.openf1.org/v1/championship_teams?session_key=9839&amp;team_name=McLaren" target="_blank">https://api.openf1.org/v1/championship_teams?session_key=9839&amp;team_name=McLaren</a></p>
+<h3 id='attributes-3'>Attributes</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>meeting_key</td>
+<td>The unique identifier for the meeting. Use <code>latest</code> to identify the latest or current meeting.</td>
+</tr>
+<tr>
+<td>points_current</td>
+<td>Championship points during/after the race (depends on call timing).</td>
+</tr>
+<tr>
+<td>points_start</td>
+<td>Championship points before the race started.</td>
+</tr>
+<tr>
+<td>position_current</td>
+<td>Championship position during/after the race (depends on call timing).</td>
+</tr>
+<tr>
+<td>position_start</td>
+<td>Championship position before the race started.</td>
+</tr>
+<tr>
+<td>session_key</td>
+<td>The unique identifier for the session. Use <code>latest</code> to identify the latest or current session.</td>
+</tr>
+<tr>
+<td>team_name</td>
+<td>The name of the team.</td>
+</tr>
+</tbody></table>
 <h2 id='drivers'>Drivers</h2>
 <p>Provides information about drivers for each session.</p>
 <div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/drivers?driver_number=1&amp;session_key=9158"</span>
@@ -695,11 +884,11 @@ The data will be provided shortly after each session instead.
     </span><span class="nl">"team_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Red Bull Racing"</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-2'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-4'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/drivers</code></p>
-<h3 id='sample-url-2'>Sample URL</h3>
+<h3 id='sample-url-4'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/drivers?driver_number=1&amp;session_key=9158" target="_blank">https://api.openf1.org/v1/drivers?driver_number=1&amp;session_key=9158</a></p>
-<h3 id='attributes-2'>Attributes</h3>
+<h3 id='attributes-4'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -807,11 +996,11 @@ The data will be provided shortly after each session instead.
     </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9165</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-3'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-5'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/intervals</code></p>
-<h3 id='sample-url-3'>Sample URL</h3>
+<h3 id='sample-url-5'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/intervals?session_key=9165&amp;interval&lt;0.005" target="_blank">https://api.openf1.org/v1/intervals?session_key=9165&amp;interval&lt;0.005</a></p>
-<h3 id='attributes-3'>Attributes</h3>
+<h3 id='attributes-5'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -899,11 +1088,11 @@ The data will be provided shortly after each session instead.
     </span><span class="nl">"st_speed"</span><span class="p">:</span><span class="w"> </span><span class="mi">298</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-4'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-6'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/laps</code></p>
-<h3 id='sample-url-4'>Sample URL</h3>
+<h3 id='sample-url-6'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/laps?session_key=9161&amp;driver_number=63&amp;lap_number=8" target="_blank">https://api.openf1.org/v1/laps?session_key=9161&amp;driver_number=63&amp;lap_number=8</a></p>
-<h3 id='attributes-4'>Attributes</h3>
+<h3 id='attributes-6'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1089,11 +1278,11 @@ The data will be provided shortly after each session instead.
     </span><span class="nl">"z"</span><span class="p">:</span><span class="w"> </span><span class="mi">186</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-5'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-7'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/location</code></p>
-<h3 id='sample-url-5'>Sample URL</h3>
+<h3 id='sample-url-7'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/location?session_key=9161&amp;driver_number=81&amp;date&gt;2023-09-16T13:03:35.200&amp;date&lt;2023-09-16T13:03:35.800" target="_blank">https://api.openf1.org/v1/location?session_key=9161&amp;driver_number=81&amp;date&gt;2023-09-16T13:03:35.200&amp;date&lt;2023-09-16T13:03:35.800</a></p>
-<h3 id='attributes-5'>Attributes</h3>
+<h3 id='attributes-7'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1185,11 +1374,11 @@ The data will be provided shortly after each session instead.
     </span><span class="nl">"year"</span><span class="p">:</span><span class="w"> </span><span class="mi">2026</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-6'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-8'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/meetings</code></p>
-<h3 id='sample-url-6'>Sample URL</h3>
+<h3 id='sample-url-8'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/meetings?year=2026&amp;country_name=Singapore" target="_blank">https://api.openf1.org/v1/meetings?year=2026&amp;country_name=Singapore</a></p>
-<h3 id='attributes-6'>Attributes</h3>
+<h3 id='attributes-8'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1261,7 +1450,7 @@ The data will be provided shortly after each session instead.
 <td>The year the event takes place.</td>
 </tr>
 </tbody></table>
-<h2 id='overtakes-beta'>Overtakes (beta)</h2>
+<h2 id='overtakes'>Overtakes</h2>
 <p>Provides information about overtakes.
             An overtake refers to one driver (the overtaking driver) exchanging positions with another driver (the overtaken driver). This includes both on-track passes and position changes resulting from pit stops or post-race penalties.
             This data is only available during races and may be incomplete.</p>
@@ -1309,11 +1498,11 @@ The data will be provided shortly after each session instead.
     </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9636</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-7'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-9'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/overtakes</code></p>
-<h3 id='sample-url-7'>Sample URL</h3>
+<h3 id='sample-url-9'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/overtakes?session_key=9636&amp;overtaking_driver_number=63&amp;overtaken_driver_number=4&amp;position=1" target="_blank">https://api.openf1.org/v1/overtakes?session_key=9636&amp;overtaking_driver_number=63&amp;overtaken_driver_number=4&amp;position=1</a></p>
-<h3 id='attributes-7'>Attributes</h3>
+<h3 id='attributes-9'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1401,11 +1590,11 @@ The data will be provided shortly after each session instead.
     </span><span class="nl">"stop_duration"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.1</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-8'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-10'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/pit</code></p>
-<h3 id='sample-url-8'>Sample URL</h3>
+<h3 id='sample-url-10'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/pit?session_key=9877&amp;stop_duration&lt;2.3" target="_blank">https://api.openf1.org/v1/pit?session_key=9877&amp;stop_duration&lt;2.3</a></p>
-<h3 id='attributes-8'>Attributes</h3>
+<h3 id='attributes-10'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1498,11 +1687,11 @@ The data will be provided shortly after each session instead.
     </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9144</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-9'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-11'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/position</code></p>
-<h3 id='sample-url-9'>Sample URL</h3>
+<h3 id='sample-url-11'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/position?meeting_key=1217&amp;driver_number=40&amp;position&lt;=3" target="_blank">https://api.openf1.org/v1/position?meeting_key=1217&amp;driver_number=40&amp;position&lt;=3</a></p>
-<h3 id='attributes-9'>Attributes</h3>
+<h3 id='attributes-11'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1580,11 +1769,11 @@ The data will be provided shortly after each session instead.
     </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9102</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-10'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-12'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/race_control</code></p>
-<h3 id='sample-url-10'>Sample URL</h3>
+<h3 id='sample-url-12'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/race_control?flag=BLACK AND WHITE&amp;driver_number=1&amp;date&gt;=2023-01-01&amp;date&lt;2023-09-01" target="_blank">https://api.openf1.org/v1/race_control?flag=BLACK AND WHITE&amp;driver_number=1&amp;date&gt;=2023-01-01&amp;date&lt;2023-09-01</a></p>
-<h3 id='attributes-10'>Attributes</h3>
+<h3 id='attributes-12'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1688,11 +1877,11 @@ The data will be provided shortly after each session instead.
     </span><span class="nl">"year"</span><span class="p">:</span><span class="w"> </span><span class="mi">2023</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-11'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-13'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/sessions</code></p>
-<h3 id='sample-url-11'>Sample URL</h3>
+<h3 id='sample-url-13'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint%20Qualifying&amp;year=2023" target="_blank">https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint%20Qualifying&amp;year=2023</a></p>
-<h3 id='attributes-11'>Attributes</h3>
+<h3 id='attributes-13'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1756,7 +1945,7 @@ The data will be provided shortly after each session instead.
 <td>The year the event takes place.</td>
 </tr>
 </tbody></table>
-<h2 id='session-result-beta'>Session result (beta)</h2>
+<h2 id='session-result'>Session result</h2>
 <p>Provides standings after a session.</p>
 <div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/session_result?session_key=7782&amp;position%3C=3"</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
@@ -1828,11 +2017,11 @@ The data will be provided shortly after each session instead.
     </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">7782</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-12'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-14'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/session_result</code></p>
-<h3 id='sample-url-12'>Sample URL</h3>
+<h3 id='sample-url-14'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/session_result?session_key=7782&position<=3" target="_blank">https://api.openf1.org/v1/session_result?session_key=7782&amp;position&lt;=3</a></p>
-<h3 id='attributes-12'>Attributes</h3>
+<h3 id='attributes-14'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -1880,7 +2069,7 @@ The data will be provided shortly after each session instead.
 <td>The unique identifier for the session. Use <code>latest</code> to identify the latest or current session.</td>
 </tr>
 </tbody></table>
-<h2 id='starting-grid-beta'>Starting grid (beta)</h2>
+<h2 id='starting-grid'>Starting grid</h2>
 <p>Provides the starting grid for the upcoming race.</p>
 <div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/starting_grid?session_key=7783&amp;position%3C=3"</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
@@ -1937,11 +2126,11 @@ The data will be provided shortly after each session instead.
     </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">7783</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-13'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-15'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/starting_grid</code></p>
-<h3 id='sample-url-13'>Sample URL</h3>
+<h3 id='sample-url-15'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/starting_grid?session_key=7783&position<=3" target="_blank">https://api.openf1.org/v1/starting_grid?session_key=7783&amp;position&lt;=3</a></p>
-<h3 id='attributes-13'>Attributes</h3>
+<h3 id='attributes-15'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -2026,11 +2215,11 @@ The data will be provided shortly after each session instead.
     </span><span class="nl">"tyre_age_at_start"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-14'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-16'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/stints</code></p>
-<h3 id='sample-url-14'>Sample URL</h3>
+<h3 id='sample-url-16'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/stints?session_key=9165&amp;tyre_age_at_start&gt;=3" target="_blank">https://api.openf1.org/v1/stints?session_key=9165&amp;tyre_age_at_start&gt;=3</a></p>
-<h3 id='attributes-14'>Attributes</h3>
+<h3 id='attributes-16'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -2121,11 +2310,11 @@ The data will be provided shortly after each session instead.
     </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9158</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-15'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-17'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/team_radio</code></p>
-<h3 id='sample-url-15'>Sample URL</h3>
+<h3 id='sample-url-17'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/team_radio?session_key=9158&amp;driver_number=11" target="_blank">https://api.openf1.org/v1/team_radio?session_key=9158&amp;driver_number=11</a></p>
-<h3 id='attributes-15'>Attributes</h3>
+<h3 id='attributes-17'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
@@ -2203,11 +2392,11 @@ The data will be provided shortly after each session instead.
     </span><span class="nl">"wind_speed"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.4</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre></div><h3 id='http-request-16'>HTTP Request</h3>
+</span></code></pre></div><h3 id='http-request-18'>HTTP Request</h3>
 <p><code>GET https://api.openf1.org/v1/weather</code></p>
-<h3 id='sample-url-16'>Sample URL</h3>
+<h3 id='sample-url-18'>Sample URL</h3>
 <p><a href="https://api.openf1.org/v1/weather?meeting_key=1208&amp;wind_direction&gt;=130&amp;track_temperature&gt;=52" target="_blank">https://api.openf1.org/v1/weather?meeting_key=1208&amp;wind_direction&gt;=130&amp;track_temperature&gt;=52</a></p>
-<h3 id='attributes-16'>Attributes</h3>
+<h3 id='attributes-18'>Attributes</h3>
 <table><thead>
 <tr>
 <th>Name</th>
