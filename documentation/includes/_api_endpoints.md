@@ -157,6 +157,179 @@ fetch(
                 </tbody>
             </table>
 
+## Drivers championship (beta)
+
+Provides championship standings for drivers. Only available for race sessions.
+
+```shell
+curl "https://api.openf1.org/v1/championship_drivers?session_key=9839&driver_number=4&driver_number=81"
+```
+
+```python
+from urllib.request import urlopen
+import json
+
+response = urlopen('https://api.openf1.org/v1/championship_drivers?session_key=9839&driver_number=4&driver_number=81')
+data = json.loads(response.read().decode('utf-8'))
+print(data)
+
+# If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
+# import pandas as pd
+# df = pd.DataFrame(data)
+```
+
+```r
+# If needed, install libraries
+# install.packages('httr')
+# install.packages('jsonlite')
+
+library(httr)
+library(jsonlite)
+
+response <- GET('https://api.openf1.org/v1/championship_drivers?session_key=9839&driver_number=4&driver_number=81')
+parsed_data <- fromJSON(content(response, 'text'))
+print(parsed_data)
+
+# If you want, you can import the results in a DataFrame
+# df <- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))
+# df <- as.data.frame(t(as.matrix(df)))
+```
+
+```javascript
+fetch(
+  "https://api.openf1.org/v1/championship_drivers?session_key=9839&driver_number=4&driver_number=81"
+)
+  .then((response) => response.json())
+  .then((jsonContent) => console.log(jsonContent));
+```
+
+> Output:
+
+```json
+[
+  {
+    "driver_number": 4,
+    "meeting_key": 1276,
+    "points_current": 423,
+    "points_start": 408,
+    "position_current": 1,
+    "position_start": 1,
+    "session_key": 9839
+  },
+  {
+    "driver_number": 81,
+    "meeting_key": 1276,
+    "points_current": 410,
+    "points_start": 392,
+    "position_current": 3,
+    "position_start": 3,
+    "session_key": 9839
+  }
+]
+```
+
+### HTTP Request
+
+`GET https://api.openf1.org/v1/championship_drivers`
+
+### Sample URL
+
+<a href="https://api.openf1.org/v1/championship_drivers?session_key=9839&amp;driver_number=4&amp;driver_number=81" target="_blank">https://api.openf1.org/v1/championship_drivers?session_key=9839&amp;driver_number=4&amp;driver_number=81</a>
+
+### Attributes
+
+| Name             | Description                                                                                                                                                                           |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| driver_number    | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| meeting_key      | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
+| points_current   | Championship points during/after the race (depends on call timing).                                                                                                                   |
+| points_start     | Championship points before the race started.                                                                                                                                          |
+| position_current | Championship position during/after the race (depends on call timing).                                                                                                                 |
+| position_start   | Championship position before the race started.                                                                                                                                        |
+| session_key      | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
+
+## Teams championship (beta)
+
+Provides championship standings for teams. Only available for race sessions.
+
+```shell
+curl "https://api.openf1.org/v1/championship_teams?session_key=9839&team_name=McLaren"
+```
+
+```python
+from urllib.request import urlopen
+import json
+
+response = urlopen('https://api.openf1.org/v1/championship_teams?session_key=9839&team_name=McLaren')
+data = json.loads(response.read().decode('utf-8'))
+print(data)
+
+# If you want, you can import the results in a DataFrame (you need to install the `pandas` package first)
+# import pandas as pd
+# df = pd.DataFrame(data)
+```
+
+```r
+# If needed, install libraries
+# install.packages('httr')
+# install.packages('jsonlite')
+
+library(httr)
+library(jsonlite)
+
+response <- GET('https://api.openf1.org/v1/championship_teams?session_key=9839&team_name=McLaren')
+parsed_data <- fromJSON(content(response, 'text'))
+print(parsed_data)
+
+# If you want, you can import the results in a DataFrame
+# df <- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))
+# df <- as.data.frame(t(as.matrix(df)))
+```
+
+```javascript
+fetch(
+  "https://api.openf1.org/v1/championship_teams?session_key=9839&team_name=McLaren"
+)
+  .then((response) => response.json())
+  .then((jsonContent) => console.log(jsonContent));
+```
+
+> Output:
+
+```json
+[
+  {
+    "meeting_key": 1276,
+    "points_current": 833,
+    "points_start": 800,
+    "position_current": 1,
+    "position_start": 1,
+    "session_key": 9839,
+    "team_name": "McLaren"
+  }
+]
+```
+
+### HTTP Request
+
+`GET https://api.openf1.org/v1/championship_teams`
+
+### Sample URL
+
+<a href="https://api.openf1.org/v1/championship_teams?session_key=9839&amp;team_name=McLaren" target="_blank">https://api.openf1.org/v1/championship_teams?session_key=9839&amp;team_name=McLaren</a>
+
+### Attributes
+
+| Name             | Description                                                                                    |
+| ---------------- | ---------------------------------------------------------------------------------------------- |
+| meeting_key      | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting. |
+| points_current   | Championship points during/after the race (depends on call timing).                            |
+| points_start     | Championship points before the race started.                                                   |
+| position_current | Championship position during/after the race (depends on call timing).                          |
+| position_start   | Championship position before the race started.                                                 |
+| session_key      | The unique identifier for the session. Use `latest` to identify the latest or current session. |
+| team_name        | The name of the team.                                                                          |
+
 ## Drivers
 
 Provides information about drivers for each session.
@@ -682,7 +855,7 @@ fetch("https://api.openf1.org/v1/meetings?year=2026&country_name=Singapore")
 | meeting_official_name | The official name of the meeting.                                                                                  |
 | year                  | The year the event takes place.                                                                                    |
 
-## Overtakes (beta)
+## Overtakes
 
             Provides information about overtakes.
             An overtake refers to one driver (the overtaking driver) exchanging positions with another driver (the overtaken driver). This includes both on-track passes and position changes resulting from pit stops or post-race penalties.
@@ -1128,7 +1301,7 @@ fetch(
 | session_type       | The type of the session (`Practice`, `Qualifying`, `Race`, ...).                                                   |
 | year               | The year the event takes place.                                                                                    |
 
-## Session result (beta)
+## Session result
 
             Provides standings after a session.
 
@@ -1238,7 +1411,7 @@ fetch("https://api.openf1.org/v1/session_result?session_key=7782&position%3C=3")
 | position       | The driver’s final position at the end of the session.                                                                                                                                |
 | session_key    | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
 
-## Starting grid (beta)
+## Starting grid
 
             Provides the starting grid for the upcoming race.
 
