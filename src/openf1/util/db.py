@@ -19,6 +19,7 @@ _SORT_KEYS = [
     "date_start",
     "meeting_key",
     "session_key",
+    "position_current",
     "_id",
 ]
 
