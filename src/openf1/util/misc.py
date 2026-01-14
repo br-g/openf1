@@ -2,6 +2,7 @@ import time
 from datetime import datetime, timedelta
 from enum import Enum
 from functools import wraps
+from itertools import islice
 from typing import Any, Callable
 
 import pytz
@@ -193,3 +194,19 @@ def hash_obj(obj):
     else:
         # Assume obj is hashable
         return obj
+
+
+def batched(iterable, n, strict=False):
+    """
+    This function is equivalent to Python's itertools.batched: https://docs.python.org/3/library/itertools.html#itertools.batched
+
+    Batch data from the iterable into tuples of length n. The last batch may be shorter than n.
+    If strict is true, will raise a ValueError if the final batch is shorter than n.
+    """
+    if n < 1:
+        raise ValueError('n must be at least one')
+    iterator = iter(iterable)
+    while batch := tuple(islice(iterator, n)):
+        if strict and len(batch) != n:
+            raise ValueError('batched(): incomplete batch')
+        yield batch

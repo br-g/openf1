@@ -5,9 +5,10 @@ from functools import lru_cache
 
 import pytz
 import requests
-import typer
+import async_typer
 from loguru import logger
 from tqdm import tqdm
+from tqdm.asyncio import tqdm as tqdm_async
 
 from openf1.services.ingestor_livetiming.core.decoding import decode
 from openf1.services.ingestor_livetiming.core.objects import (
@@ -17,13 +18,14 @@ from openf1.services.ingestor_livetiming.core.objects import (
     get_source_topics,
 )
 from openf1.services.ingestor_livetiming.core.processing.main import process_messages
-from openf1.util.db import insert_data_sync
+from openf1.services.query_api.multiprocessing import map_parallel
+from openf1.util.db import insert_data_sync, insert_data_async
 from openf1.util.misc import join_url, json_serializer, to_datetime, to_timedelta
 from openf1.util.schedule import get_meeting_keys
 from openf1.util.schedule import get_schedule as _get_schedule
 from openf1.util.schedule import get_session_keys
 
-cli = typer.Typer()
+cli = async_typer.AsyncTyper()
 
 # Flag to determine if the script is being run from the command line
 _is_called_from_cli = False
@@ -123,6 +125,8 @@ def _parse_line(line: str) -> tuple[timedelta | None, str | None]:
     The line is expected to be formatted as follows:
     (duration since session start, raw data)
     """
+    if len(line) == 0:
+        return None, None
     pattern = r"(\d+:\d+:\d+\.\d+)(.*)"
     match = re.match(pattern, line)
     if match is None:
@@ -136,13 +140,16 @@ def _parse_and_decode_topic_content(
     topic: str,
     topic_raw_content: list[str],
     t0: datetime,
+    parallel: bool
 ) -> list[Message]:
     messages = []
-    for line in topic_raw_content:
-        if len(line) == 0:
-            continue
-        session_time, content = _parse_line(line)
 
+    parsed_content = map_parallel(
+        _parse_line, topic_raw_content, chunksize=100 # TODO: make this variable
+    ) if parallel else (_parse_line(line) for line in topic_raw_content)
+
+    # Avoid synchronization with sequential memory writes
+    for session_time, content in parsed_content:
         if session_time is None:
             continue
 
@@ -156,7 +163,8 @@ def _parse_and_decode_topic_content(
                 timepoint=t0 + session_time,
             )
         )
-
+    
+    # messages are not guaranteed to be sorted
     return messages
 
 
@@ -211,7 +219,7 @@ def get_t0(year: int, meeting_key: int, session_key: int) -> datetime:
     return t0
 
 
-def _get_messages(session_url: str, topics: list[str], t0: datetime) -> list[Message]:
+def _get_messages(session_url: str, topics: list[str], t0: datetime, parallel: bool) -> list[Message]:
     messages = []
     for topic in topics:
         raw_content = _get_topic_content(
@@ -222,6 +230,7 @@ def _get_messages(session_url: str, topics: list[str], t0: datetime) -> list[Mes
             topic=topic,
             topic_raw_content=raw_content,
             t0=t0,
+            parallel=parallel
         )
     messages = sorted(messages, key=lambda m: (m.timepoint, m.topic))
     return messages
@@ -233,7 +242,8 @@ def get_messages(
     meeting_key: int,
     session_key: int,
     topics: list[str],
-    verbose: bool = True,
+    parallel: bool = False,
+    verbose: bool = True
 ) -> list[Message]:
     session_url = get_session_url(
         year=year, meeting_key=meeting_key, session_key=session_key
@@ -245,7 +255,7 @@ def get_messages(
     if verbose:
         logger.info(f"t0: {t0}")
 
-    messages = _get_messages(session_url=session_url, topics=topics, t0=t0)
+    messages = _get_messages(session_url=session_url, topics=topics, t0=t0, parallel=parallel)
     if verbose:
         logger.info(f"Fetched {len(messages)} messages")
 
@@ -261,7 +271,8 @@ def _get_processed_documents(
     meeting_key: int,
     session_key: int,
     collection_names: list[str],
-    verbose: bool = True,
+    parallel: bool,
+    verbose: bool = True
 ) -> dict[str, list[Document]]:
     session_url = get_session_url(
         year=year, meeting_key=meeting_key, session_key=session_key
@@ -278,7 +289,7 @@ def _get_processed_documents(
     if verbose:
         logger.info(f"Topics used: {topics}")
 
-    messages = _get_messages(session_url=session_url, topics=topics, t0=t0)
+    messages = _get_messages(session_url=session_url, topics=topics, t0=t0, parallel=parallel)
     if verbose:
         logger.info(f"Fetched {len(messages)} messages")
 
@@ -306,14 +317,16 @@ def get_processed_documents(
     meeting_key: int,
     session_key: int,
     collection_names: list[str],
-    verbose: bool = True,
+    parallel: bool = False,
+    verbose: bool = True
 ) -> dict[str, list[Document]]:
     docs_by_collection = _get_processed_documents(
         year=year,
         meeting_key=meeting_key,
         session_key=session_key,
         collection_names=collection_names,
-        verbose=verbose,
+        parallel=parallel,
+        verbose=verbose
     )
 
     if _is_called_from_cli:
@@ -328,31 +341,40 @@ def get_processed_documents(
     return docs_by_collection
 
 
-@cli.command()
-def ingest_collections(
+@cli.async_command()
+async def ingest_collections(
     year: int,
     meeting_key: int,
     session_key: int,
     collection_names: list[str],
-    verbose: bool = True,
+    parallel: bool = False,
+    verbose: bool = True
 ):
     docs_by_collection = _get_processed_documents(
         year=year,
         meeting_key=meeting_key,
         session_key=session_key,
         collection_names=collection_names,
-        verbose=verbose,
+        parallel=parallel,
+        verbose=verbose
     )
 
     if verbose:
         logger.info("Inserting documents to DB")
-    for collection, docs in tqdm(list(docs_by_collection.items()), disable=not verbose):
-        docs_mongo = [d.to_mongo_doc_sync() for d in docs]
-        insert_data_sync(collection_name=collection, docs=docs_mongo)
+
+    if parallel:
+        await tqdm_async.gather(
+            *[insert_data_async(collection_name=collection, docs=[d.to_mongo_doc_sync() for d in docs]) for collection, docs in docs_by_collection.items()],
+            disable=not verbose
+        )
+    else:
+        for collection, docs in tqdm(list(docs_by_collection.items()), disable=not verbose):
+            docs_mongo = [d.to_mongo_doc_sync() for d in docs]
+            insert_data_sync(collection_name=collection, docs=docs_mongo)
 
 
-@cli.command()
-def ingest_session(year: int, meeting_key: int, session_key: int, verbose: bool = True):
+@cli.async_command()
+async def ingest_session(year: int, meeting_key: int, session_key: int, parallel: bool = False, verbose: bool = True):
     collections = get_collections(meeting_key=meeting_key, session_key=session_key)
     collection_names = sorted([c.__class__.name for c in collections])
 
@@ -361,31 +383,34 @@ def ingest_session(year: int, meeting_key: int, session_key: int, verbose: bool 
             f"Ingesting {len(collection_names)} collections: {collection_names}"
         )
 
-    ingest_collections(
+    await ingest_collections(
         year=year,
         meeting_key=meeting_key,
         session_key=session_key,
         collection_names=collection_names,
-        verbose=verbose,
+        parallel=parallel,
+        verbose=verbose
     )
 
 
-@cli.command()
-def ingest_meeting(year: int, meeting_key: int, verbose: bool = True):
+@cli.async_command()
+async def ingest_meeting(year: int, meeting_key: int, parallel: bool = False, verbose: bool = True):
     session_keys = get_session_keys(year=year, meeting_key=meeting_key)
+
     if verbose:
         logger.info(f"{len(session_keys)} sessions found: {session_keys}")
 
     for session_key in session_keys:
         if verbose:
             logger.info(f"Ingesting session {session_key}")
-        ingest_session(
-            year=year, meeting_key=meeting_key, session_key=session_key, verbose=False
+        # If parallel is set, program is not I/O bound so having await in a for-loop isn't an issue
+        await ingest_session(
+            year=year, meeting_key=meeting_key, session_key=session_key, parallel=parallel, verbose=verbose
         )
 
 
-@cli.command()
-def ingest_season(year: int, verbose: bool = True):
+@cli.async_command()
+async def ingest_season(year: int, parallel: bool = False, verbose: bool = True):
     meeting_keys = get_meeting_keys(year)
     if verbose:
         logger.info(f"{len(meeting_keys)} meetings found: {meeting_keys}")
@@ -393,7 +418,9 @@ def ingest_season(year: int, verbose: bool = True):
     for meeting_key in meeting_keys:
         if verbose:
             logger.info(f"Ingesting meeting {meeting_key}")
-        ingest_meeting(year=year, meeting_key=meeting_key, verbose=False)
+        await ingest_meeting(
+            year=year, meeting_key=meeting_key, parallel=parallel, verbose=verbose
+        )
 
 
 if __name__ == "__main__":

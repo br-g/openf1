@@ -1,3 +1,5 @@
+import asyncio
+import itertools
 import os
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
@@ -10,7 +12,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import InsertOne, MongoClient, ReplaceOne
 from pymongo.errors import BulkWriteError
 
-from openf1.util.misc import hash_obj, timed_cache
+from openf1.util.misc import batched, hash_obj, timed_cache
 
 _MONGO_CONNECTION_STRING = os.getenv("MONGO_CONNECTION_STRING")
 _MONGO_DATABASE = os.getenv("OPENF1_DB_NAME", "openf1-livetiming")
@@ -304,12 +306,13 @@ def upsert_data_sync(collection_name: str, docs: list[dict], batch_size: int = 5
         collection.bulk_write(operations, ordered=False)
 
 
-async def insert_data_async(collection_name: str, docs: list[dict]):
+async def insert_data_async(collection_name: str, docs: list[dict], batch_size: int = 1000):
     collection = _get_mongo_db_async()[collection_name]
 
     try:
-        operations = [InsertOne(doc) for doc in docs]
-        await collection.bulk_write(operations, ordered=False)
+        await asyncio.gather(*[
+            collection.bulk_write([InsertOne(doc) for doc in batch], ordered=False) for batch in batched(docs, batch_size)
+        ])
     except BulkWriteError as bwe:
         for error in bwe.details.get("writeErrors", []):
             logger.error(f"Error during bulk write operation: {error}")

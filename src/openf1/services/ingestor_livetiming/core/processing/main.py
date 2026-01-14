@@ -1,3 +1,4 @@
+import functools
 import traceback
 from collections import defaultdict
 
@@ -6,6 +7,7 @@ from openf1.services.ingestor_livetiming.core.objects import (
     Message,
     get_topics_to_collections_mapping,
 )
+from openf1.services.query_api.multiprocessing import map_parallel
 
 
 def process_message(
@@ -37,19 +39,22 @@ def process_messages(
     meeting_key: int,
     session_key: int,
     messages: list[Message],
+    parallel: bool
 ) -> dict[str, list[Document]]:
     """Processes messages and returns the generated documents by collection"""
     docs_buf = defaultdict(dict)
-    for message in messages:
-        processed = process_message(
-            meeting_key=meeting_key,
-            session_key=session_key,
-            message=message,
-        )
-        for collection, docs in processed.items():
+
+    processed = map_parallel(
+        functools.partial(process_message, meeting_key, session_key), messages, chunksize=100
+    ) if parallel else (process_message(meeting_key=meeting_key, session_key=session_key, message=message) for message in messages)
+
+    # Avoid synchronization with sequential memory writes
+    for p in processed:
+        for collection, docs in p.items():
             for doc in docs:
                 # Replace previous version of the same doc if it exists
                 docs_buf[collection][doc] = doc
+        
 
     docs_by_collection = {col: sorted(list(docs_buf[col].values())) for col in docs_buf}
     return docs_by_collection
