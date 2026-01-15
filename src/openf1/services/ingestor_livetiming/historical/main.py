@@ -142,13 +142,20 @@ def _parse_and_decode_topic_content(
     t0: datetime,
     parallel: bool = False,
     max_workers: int | None = None,
-    batch_size: int | None = None
+    batch_size: int | None = None,
 ) -> list[Message]:
     messages = []
 
-    parsed_content = map_parallel(
-        _parse_line, topic_raw_content, max_workers=max_workers, batch_size=batch_size
-    ) if parallel else (_parse_line(line) for line in topic_raw_content)
+    parsed_content = (
+        map_parallel(
+            _parse_line,
+            topic_raw_content,
+            max_workers=max_workers,
+            batch_size=batch_size,
+        )
+        if parallel
+        else (_parse_line(line) for line in topic_raw_content)
+    )
 
     # Avoid synchronization with sequential memory writes
     for session_time, content in parsed_content:
@@ -165,13 +172,18 @@ def _parse_and_decode_topic_content(
                 timepoint=t0 + session_time,
             )
         )
-    
+
     # messages are not guaranteed to be sorted
     return messages
 
 
 @lru_cache()
-def _get_t0(session_url: str, parallel: bool = False, max_workers: int | None = None, batch_size: int | None = None) -> datetime:
+def _get_t0(
+    session_url: str,
+    parallel: bool = False,
+    max_workers: int | None = None,
+    batch_size: int | None = None,
+) -> datetime:
     """Calculates the most likely start time of a session (t0) based on
     Position and CarData messages.
     The calculation method comes from the FastF1 package (https://github.com/theOehrly/Fast-F1/blob/317bacf8c61038d7e8d0f48165330167702b349f/fastf1/core.py#L2208).
@@ -186,7 +198,7 @@ def _get_t0(session_url: str, parallel: bool = False, max_workers: int | None = 
         t0=t_ref,
         parallel=parallel,
         max_workers=max_workers,
-        batch_size=batch_size
+        batch_size=batch_size,
     )
 
     for message in position_messages:
@@ -194,7 +206,7 @@ def _get_t0(session_url: str, parallel: bool = False, max_workers: int | None = 
             timepoint = to_datetime(record["Timestamp"])
             session_time = message.timepoint - t_ref
             t0_candidates.append(timepoint - session_time)
-    
+
     cardata_content = _get_topic_content(session_url=session_url, topic="CarData.z")
     cardata_messages = _parse_and_decode_topic_content(
         topic="CarData.z",
@@ -202,7 +214,7 @@ def _get_t0(session_url: str, parallel: bool = False, max_workers: int | None = 
         t0=t_ref,
         parallel=parallel,
         max_workers=max_workers,
-        batch_size=batch_size
+        batch_size=batch_size,
     )
 
     for message in cardata_messages:
@@ -224,13 +236,16 @@ def get_t0(
     session_key: int,
     parallel: bool = False,
     max_workers: int | None = None,
-    batch_size: int | None = None
+    batch_size: int | None = None,
 ) -> datetime:
     session_url = get_session_url(
         year=year, meeting_key=meeting_key, session_key=session_key
     )
     t0 = _get_t0(
-        session_url=session_url, parallel=parallel, max_workers=max_workers, batch_size=batch_size
+        session_url=session_url,
+        parallel=parallel,
+        max_workers=max_workers,
+        batch_size=batch_size,
     )
 
     if _is_called_from_cli:
@@ -244,7 +259,7 @@ def _get_messages(
     t0: datetime,
     parallel: bool = False,
     max_workers: int | None = None,
-    batch_size: int | None = None
+    batch_size: int | None = None,
 ) -> list[Message]:
     messages = []
     for topic in topics:
@@ -258,7 +273,7 @@ def _get_messages(
             t0=t0,
             parallel=parallel,
             max_workers=max_workers,
-            batch_size=batch_size
+            batch_size=batch_size,
         )
     messages = sorted(messages, key=lambda m: (m.timepoint, m.topic))
     return messages
@@ -273,7 +288,7 @@ def get_messages(
     parallel: bool = False,
     max_workers: int | None = None,
     batch_size: int | None = None,
-    verbose: bool = True
+    verbose: bool = True,
 ) -> list[Message]:
     session_url = get_session_url(
         year=year, meeting_key=meeting_key, session_key=session_key
@@ -282,7 +297,10 @@ def get_messages(
         logger.info(f"Session URL: {session_url}")
 
     t0 = _get_t0(
-        session_url=session_url, parallel=parallel, max_workers=max_workers, batch_size=batch_size
+        session_url=session_url,
+        parallel=parallel,
+        max_workers=max_workers,
+        batch_size=batch_size,
     )
     if verbose:
         logger.info(f"t0: {t0}")
@@ -293,7 +311,7 @@ def get_messages(
         t0=t0,
         parallel=parallel,
         max_workers=max_workers,
-        batch_size=batch_size
+        batch_size=batch_size,
     )
     if verbose:
         logger.info(f"Fetched {len(messages)} messages")
@@ -313,7 +331,7 @@ def _get_processed_documents(
     parallel: bool = False,
     max_workers: int | None = None,
     batch_size: int | None = None,
-    verbose: bool = True
+    verbose: bool = True,
 ) -> dict[str, list[Document]]:
     session_url = get_session_url(
         year=year, meeting_key=meeting_key, session_key=session_key
@@ -322,7 +340,10 @@ def _get_processed_documents(
         logger.info(f"Session URL: {session_url}")
 
     t0 = _get_t0(
-        session_url=session_url, parallel=parallel, max_workers=max_workers, batch_size=batch_size
+        session_url=session_url,
+        parallel=parallel,
+        max_workers=max_workers,
+        batch_size=batch_size,
     )
     if verbose:
         logger.info(f"t0: {t0}")
@@ -334,10 +355,11 @@ def _get_processed_documents(
 
     messages = _get_messages(
         session_url=session_url,
-        topics=topics, t0=t0,
+        topics=topics,
+        t0=t0,
         parallel=parallel,
         max_workers=max_workers,
-        batch_size=batch_size
+        batch_size=batch_size,
     )
     if verbose:
         logger.info(f"Fetched {len(messages)} messages")
@@ -351,7 +373,7 @@ def _get_processed_documents(
         session_key=session_key,
         parallel=parallel,
         max_workers=max_workers,
-        batch_size=batch_size
+        batch_size=batch_size,
     )
     docs_by_collection = {
         col: docs_by_collection[col] if col in docs_by_collection else []
@@ -374,7 +396,7 @@ def get_processed_documents(
     parallel: bool = False,
     max_workers: int | None = None,
     batch_size: int | None = None,
-    verbose: bool = True
+    verbose: bool = True,
 ) -> dict[str, list[Document]]:
     docs_by_collection = _get_processed_documents(
         year=year,
@@ -384,7 +406,7 @@ def get_processed_documents(
         parallel=parallel,
         max_workers=max_workers,
         batch_size=batch_size,
-        verbose=verbose
+        verbose=verbose,
     )
 
     if _is_called_from_cli:
@@ -408,7 +430,7 @@ async def ingest_collections(
     parallel: bool = False,
     max_workers: int | None = None,
     batch_size: int | None = None,
-    verbose: bool = True
+    verbose: bool = True,
 ):
     docs_by_collection = _get_processed_documents(
         year=year,
@@ -418,7 +440,7 @@ async def ingest_collections(
         parallel=parallel,
         max_workers=max_workers,
         batch_size=batch_size,
-        verbose=verbose
+        verbose=verbose,
     )
 
     if verbose:
@@ -429,13 +451,16 @@ async def ingest_collections(
             *[
                 insert_data_async(
                     collection_name=collection,
-                    docs=[d.to_mongo_doc_sync() for d in docs]
-                ) for collection, docs in docs_by_collection.items()
+                    docs=[d.to_mongo_doc_sync() for d in docs],
+                )
+                for collection, docs in docs_by_collection.items()
             ],
-            disable=not verbose
+            disable=not verbose,
         )
     else:
-        for collection, docs in tqdm(list(docs_by_collection.items()), disable=not verbose):
+        for collection, docs in tqdm(
+            list(docs_by_collection.items()), disable=not verbose
+        ):
             docs_mongo = [d.to_mongo_doc_sync() for d in docs]
             insert_data_sync(collection_name=collection, docs=docs_mongo)
 
@@ -448,7 +473,7 @@ async def ingest_session(
     parallel: bool = False,
     max_workers: int | None = None,
     batch_size: int | None = None,
-    verbose: bool = True
+    verbose: bool = True,
 ):
     collections = get_collections(meeting_key=meeting_key, session_key=session_key)
     collection_names = sorted([c.__class__.name for c in collections])
@@ -466,7 +491,7 @@ async def ingest_session(
         parallel=parallel,
         max_workers=max_workers,
         batch_size=batch_size,
-        verbose=verbose
+        verbose=verbose,
     )
 
 
@@ -477,7 +502,7 @@ async def ingest_meeting(
     parallel: bool = False,
     max_workers: int | None = None,
     batch_size: int | None = None,
-    verbose: bool = True
+    verbose: bool = True,
 ):
     session_keys = get_session_keys(year=year, meeting_key=meeting_key)
 
@@ -495,7 +520,7 @@ async def ingest_meeting(
             parallel=parallel,
             max_workers=max_workers,
             batch_size=batch_size,
-            verbose=verbose
+            verbose=verbose,
         )
 
 
@@ -505,7 +530,7 @@ async def ingest_season(
     parallel: bool = False,
     max_workers: int | None = None,
     batch_size: int | None = None,
-    verbose: bool = True
+    verbose: bool = True,
 ):
     meeting_keys = get_meeting_keys(year)
     if verbose:
@@ -520,7 +545,7 @@ async def ingest_season(
             parallel=parallel,
             verbose=verbose,
             max_workers=max_workers,
-            batch_size=batch_size
+            batch_size=batch_size,
         )
 
 
