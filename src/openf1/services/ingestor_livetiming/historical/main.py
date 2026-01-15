@@ -140,12 +140,14 @@ def _parse_and_decode_topic_content(
     topic: str,
     topic_raw_content: list[str],
     t0: datetime,
-    parallel: bool = False
+    parallel: bool = False,
+    max_workers: int | None = None,
+    batch_size: int | None = None
 ) -> list[Message]:
     messages = []
 
     parsed_content = map_parallel(
-        _parse_line, topic_raw_content, chunksize=100 # TODO: make this variable
+        _parse_line, topic_raw_content, max_workers=max_workers, batch_size=batch_size
     ) if parallel else (_parse_line(line) for line in topic_raw_content)
 
     # Avoid synchronization with sequential memory writes
@@ -169,7 +171,7 @@ def _parse_and_decode_topic_content(
 
 
 @lru_cache()
-def _get_t0(session_url: str, parallel: bool = False) -> datetime:
+def _get_t0(session_url: str, parallel: bool = False, max_workers: int | None = None, batch_size: int | None = None) -> datetime:
     """Calculates the most likely start time of a session (t0) based on
     Position and CarData messages.
     The calculation method comes from the FastF1 package (https://github.com/theOehrly/Fast-F1/blob/317bacf8c61038d7e8d0f48165330167702b349f/fastf1/core.py#L2208).
@@ -182,7 +184,9 @@ def _get_t0(session_url: str, parallel: bool = False) -> datetime:
         topic="Position.z",
         topic_raw_content=position_content,
         t0=t_ref,
-        parallel=parallel
+        parallel=parallel,
+        max_workers=max_workers,
+        batch_size=batch_size
     )
 
     for message in position_messages:
@@ -196,7 +200,9 @@ def _get_t0(session_url: str, parallel: bool = False) -> datetime:
         topic="CarData.z",
         topic_raw_content=cardata_content,
         t0=t_ref,
-        parallel=parallel
+        parallel=parallel,
+        max_workers=max_workers,
+        batch_size=batch_size
     )
 
     for message in cardata_messages:
@@ -212,18 +218,34 @@ def _get_t0(session_url: str, parallel: bool = False) -> datetime:
 
 
 @cli.command()
-def get_t0(year: int, meeting_key: int, session_key: int) -> datetime:
+def get_t0(
+    year: int,
+    meeting_key: int,
+    session_key: int,
+    parallel: bool = False,
+    max_workers: int | None = None,
+    batch_size: int | None = None
+) -> datetime:
     session_url = get_session_url(
         year=year, meeting_key=meeting_key, session_key=session_key
     )
-    t0 = _get_t0(session_url)
+    t0 = _get_t0(
+        session_url=session_url, parallel=parallel, max_workers=max_workers, batch_size=batch_size
+    )
 
     if _is_called_from_cli:
         print(t0)
     return t0
 
 
-def _get_messages(session_url: str, topics: list[str], t0: datetime, parallel: bool = False) -> list[Message]:
+def _get_messages(
+    session_url: str,
+    topics: list[str],
+    t0: datetime,
+    parallel: bool = False,
+    max_workers: int | None = None,
+    batch_size: int | None = None
+) -> list[Message]:
     messages = []
     for topic in topics:
         raw_content = _get_topic_content(
@@ -234,7 +256,9 @@ def _get_messages(session_url: str, topics: list[str], t0: datetime, parallel: b
             topic=topic,
             topic_raw_content=raw_content,
             t0=t0,
-            parallel=parallel
+            parallel=parallel,
+            max_workers=max_workers,
+            batch_size=batch_size
         )
     messages = sorted(messages, key=lambda m: (m.timepoint, m.topic))
     return messages
@@ -247,6 +271,8 @@ def get_messages(
     session_key: int,
     topics: list[str],
     parallel: bool = False,
+    max_workers: int | None = None,
+    batch_size: int | None = None,
     verbose: bool = True
 ) -> list[Message]:
     session_url = get_session_url(
@@ -255,11 +281,20 @@ def get_messages(
     if verbose:
         logger.info(f"Session URL: {session_url}")
 
-    t0 = _get_t0(session_url)
+    t0 = _get_t0(
+        session_url=session_url, parallel=parallel, max_workers=max_workers, batch_size=batch_size
+    )
     if verbose:
         logger.info(f"t0: {t0}")
 
-    messages = _get_messages(session_url=session_url, topics=topics, t0=t0, parallel=parallel)
+    messages = _get_messages(
+        session_url=session_url,
+        topics=topics,
+        t0=t0,
+        parallel=parallel,
+        max_workers=max_workers,
+        batch_size=batch_size
+    )
     if verbose:
         logger.info(f"Fetched {len(messages)} messages")
 
@@ -276,6 +311,8 @@ def _get_processed_documents(
     session_key: int,
     collection_names: list[str],
     parallel: bool = False,
+    max_workers: int | None = None,
+    batch_size: int | None = None,
     verbose: bool = True
 ) -> dict[str, list[Document]]:
     session_url = get_session_url(
@@ -284,7 +321,9 @@ def _get_processed_documents(
     if verbose:
         logger.info(f"Session URL: {session_url}")
 
-    t0 = _get_t0(session_url)
+    t0 = _get_t0(
+        session_url=session_url, parallel=parallel, max_workers=max_workers, batch_size=batch_size
+    )
     if verbose:
         logger.info(f"t0: {t0}")
 
@@ -293,7 +332,13 @@ def _get_processed_documents(
     if verbose:
         logger.info(f"Topics used: {topics}")
 
-    messages = _get_messages(session_url=session_url, topics=topics, t0=t0, parallel=parallel)
+    messages = _get_messages(
+        session_url=session_url,
+        topics=topics, t0=t0,
+        parallel=parallel,
+        max_workers=max_workers,
+        batch_size=batch_size
+    )
     if verbose:
         logger.info(f"Fetched {len(messages)} messages")
 
@@ -301,7 +346,12 @@ def _get_processed_documents(
         logger.info("Starting processing")
 
     docs_by_collection = process_messages(
-        messages=messages, meeting_key=meeting_key, session_key=session_key, parallel=parallel
+        messages=messages,
+        meeting_key=meeting_key,
+        session_key=session_key,
+        parallel=parallel,
+        max_workers=max_workers,
+        batch_size=batch_size
     )
     docs_by_collection = {
         col: docs_by_collection[col] if col in docs_by_collection else []
@@ -322,6 +372,8 @@ def get_processed_documents(
     session_key: int,
     collection_names: list[str],
     parallel: bool = False,
+    max_workers: int | None = None,
+    batch_size: int | None = None,
     verbose: bool = True
 ) -> dict[str, list[Document]]:
     docs_by_collection = _get_processed_documents(
@@ -330,6 +382,8 @@ def get_processed_documents(
         session_key=session_key,
         collection_names=collection_names,
         parallel=parallel,
+        max_workers=max_workers,
+        batch_size=batch_size,
         verbose=verbose
     )
 
@@ -352,6 +406,8 @@ async def ingest_collections(
     session_key: int,
     collection_names: list[str],
     parallel: bool = False,
+    max_workers: int | None = None,
+    batch_size: int | None = None,
     verbose: bool = True
 ):
     docs_by_collection = _get_processed_documents(
@@ -360,6 +416,8 @@ async def ingest_collections(
         session_key=session_key,
         collection_names=collection_names,
         parallel=parallel,
+        max_workers=max_workers,
+        batch_size=batch_size,
         verbose=verbose
     )
 
@@ -368,7 +426,12 @@ async def ingest_collections(
 
     if parallel:
         await tqdm_async.gather(
-            *[insert_data_async(collection_name=collection, docs=[d.to_mongo_doc_sync() for d in docs]) for collection, docs in docs_by_collection.items()],
+            *[
+                insert_data_async(
+                    collection_name=collection,
+                    docs=[d.to_mongo_doc_sync() for d in docs]
+                ) for collection, docs in docs_by_collection.items()
+            ],
             disable=not verbose
         )
     else:
@@ -378,7 +441,15 @@ async def ingest_collections(
 
 
 @cli.async_command()
-async def ingest_session(year: int, meeting_key: int, session_key: int, parallel: bool = False, verbose: bool = True):
+async def ingest_session(
+    year: int,
+    meeting_key: int,
+    session_key: int,
+    parallel: bool = False,
+    max_workers: int | None = None,
+    batch_size: int | None = None,
+    verbose: bool = True
+):
     collections = get_collections(meeting_key=meeting_key, session_key=session_key)
     collection_names = sorted([c.__class__.name for c in collections])
 
@@ -393,12 +464,21 @@ async def ingest_session(year: int, meeting_key: int, session_key: int, parallel
         session_key=session_key,
         collection_names=collection_names,
         parallel=parallel,
+        max_workers=max_workers,
+        batch_size=batch_size,
         verbose=verbose
     )
 
 
 @cli.async_command()
-async def ingest_meeting(year: int, meeting_key: int, parallel: bool = False, verbose: bool = True):
+async def ingest_meeting(
+    year: int,
+    meeting_key: int,
+    parallel: bool = False,
+    max_workers: int | None = None,
+    batch_size: int | None = None,
+    verbose: bool = True
+):
     session_keys = get_session_keys(year=year, meeting_key=meeting_key)
 
     if verbose:
@@ -409,12 +489,24 @@ async def ingest_meeting(year: int, meeting_key: int, parallel: bool = False, ve
             logger.info(f"Ingesting session {session_key}")
         # If parallel is set, program is not I/O bound so having await in a for-loop isn't an issue
         await ingest_session(
-            year=year, meeting_key=meeting_key, session_key=session_key, parallel=parallel, verbose=verbose
+            year=year,
+            meeting_key=meeting_key,
+            session_key=session_key,
+            parallel=parallel,
+            max_workers=max_workers,
+            batch_size=batch_size,
+            verbose=verbose
         )
 
 
 @cli.async_command()
-async def ingest_season(year: int, parallel: bool = False, verbose: bool = True):
+async def ingest_season(
+    year: int,
+    parallel: bool = False,
+    max_workers: int | None = None,
+    batch_size: int | None = None,
+    verbose: bool = True
+):
     meeting_keys = get_meeting_keys(year)
     if verbose:
         logger.info(f"{len(meeting_keys)} meetings found: {meeting_keys}")
@@ -423,7 +515,12 @@ async def ingest_season(year: int, parallel: bool = False, verbose: bool = True)
         if verbose:
             logger.info(f"Ingesting meeting {meeting_key}")
         await ingest_meeting(
-            year=year, meeting_key=meeting_key, parallel=parallel, verbose=verbose
+            year=year,
+            meeting_key=meeting_key,
+            parallel=parallel,
+            verbose=verbose,
+            max_workers=max_workers,
+            batch_size=batch_size
         )
 
 
