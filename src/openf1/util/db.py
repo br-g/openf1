@@ -306,7 +306,7 @@ def upsert_data_sync(collection_name: str, docs: list[dict], batch_size: int = 5
         collection.bulk_write(operations, ordered=False)
 
 
-async def insert_data_async(collection_name: str, docs: list[dict], batch_size: int = 1000):
+async def insert_data_async(collection_name: str, docs: list[dict], batch_size: int = 50_000):
     collection = _get_mongo_db_async()[collection_name]
 
     try:
