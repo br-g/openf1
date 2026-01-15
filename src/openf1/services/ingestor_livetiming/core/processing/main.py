@@ -7,7 +7,7 @@ from openf1.services.ingestor_livetiming.core.objects import (
     Message,
     get_topics_to_collections_mapping,
 )
-from openf1.services.query_api.multiprocessing import map_parallel
+from openf1.util.multiprocessing import map_parallel
 
 
 def process_message(
@@ -39,7 +39,7 @@ def process_messages(
     meeting_key: int,
     session_key: int,
     messages: list[Message],
-    parallel: bool
+    parallel: bool = False
 ) -> dict[str, list[Document]]:
     """Processes messages and returns the generated documents by collection"""
     docs_buf = defaultdict(dict)

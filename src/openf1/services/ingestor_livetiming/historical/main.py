@@ -18,7 +18,7 @@ from openf1.services.ingestor_livetiming.core.objects import (
     get_source_topics,
 )
 from openf1.services.ingestor_livetiming.core.processing.main import process_messages
-from openf1.services.query_api.multiprocessing import map_parallel
+from openf1.util.multiprocessing import map_parallel
 from openf1.util.db import insert_data_sync, insert_data_async
 from openf1.util.misc import join_url, json_serializer, to_datetime, to_timedelta
 from openf1.util.schedule import get_meeting_keys
@@ -140,7 +140,7 @@ def _parse_and_decode_topic_content(
     topic: str,
     topic_raw_content: list[str],
     t0: datetime,
-    parallel: bool
+    parallel: bool = False
 ) -> list[Message]:
     messages = []
 
@@ -169,7 +169,7 @@ def _parse_and_decode_topic_content(
 
 
 @lru_cache()
-def _get_t0(session_url: str) -> datetime:
+def _get_t0(session_url: str, parallel: bool = False) -> datetime:
     """Calculates the most likely start time of a session (t0) based on
     Position and CarData messages.
     The calculation method comes from the FastF1 package (https://github.com/theOehrly/Fast-F1/blob/317bacf8c61038d7e8d0f48165330167702b349f/fastf1/core.py#L2208).
@@ -182,19 +182,23 @@ def _get_t0(session_url: str) -> datetime:
         topic="Position.z",
         topic_raw_content=position_content,
         t0=t_ref,
+        parallel=parallel
     )
+
     for message in position_messages:
         for record in message.content["Position"]:
             timepoint = to_datetime(record["Timestamp"])
             session_time = message.timepoint - t_ref
             t0_candidates.append(timepoint - session_time)
-
+    
     cardata_content = _get_topic_content(session_url=session_url, topic="CarData.z")
     cardata_messages = _parse_and_decode_topic_content(
         topic="CarData.z",
         topic_raw_content=cardata_content,
         t0=t_ref,
+        parallel=parallel
     )
+
     for message in cardata_messages:
         for record in message.content["Entries"]:
             timepoint = to_datetime(record["Utc"])
@@ -219,7 +223,7 @@ def get_t0(year: int, meeting_key: int, session_key: int) -> datetime:
     return t0
 
 
-def _get_messages(session_url: str, topics: list[str], t0: datetime, parallel: bool) -> list[Message]:
+def _get_messages(session_url: str, topics: list[str], t0: datetime, parallel: bool = False) -> list[Message]:
     messages = []
     for topic in topics:
         raw_content = _get_topic_content(
@@ -271,7 +275,7 @@ def _get_processed_documents(
     meeting_key: int,
     session_key: int,
     collection_names: list[str],
-    parallel: bool,
+    parallel: bool = False,
     verbose: bool = True
 ) -> dict[str, list[Document]]:
     session_url = get_session_url(
@@ -297,7 +301,7 @@ def _get_processed_documents(
         logger.info("Starting processing")
 
     docs_by_collection = process_messages(
-        messages=messages, meeting_key=meeting_key, session_key=session_key
+        messages=messages, meeting_key=meeting_key, session_key=session_key, parallel=parallel
     )
     docs_by_collection = {
         col: docs_by_collection[col] if col in docs_by_collection else []
