@@ -5,7 +5,6 @@ from functools import lru_cache
 
 import pytz
 import requests
-import async_typer
 from loguru import logger
 from tqdm import tqdm
 from tqdm.asyncio import tqdm as tqdm_async
@@ -17,6 +16,7 @@ from openf1.services.ingestor_livetiming.core.objects import (
     get_collections,
     get_source_topics,
 )
+from openf1.services.ingestor_livetiming.historical.typer import typer
 from openf1.services.ingestor_livetiming.core.processing.main import process_messages
 from openf1.util.multiprocessing import map_parallel
 from openf1.util.db import insert_data_sync, insert_data_async
@@ -25,7 +25,7 @@ from openf1.util.schedule import get_meeting_keys
 from openf1.util.schedule import get_schedule as _get_schedule
 from openf1.util.schedule import get_session_keys
 
-cli = async_typer.AsyncTyper()
+cli = typer.Typer()
 
 # Flag to determine if the script is being run from the command line
 _is_called_from_cli = False
@@ -421,7 +421,7 @@ def get_processed_documents(
     return docs_by_collection
 
 
-@cli.async_command()
+@cli.command()
 async def ingest_collections(
     year: int,
     meeting_key: int,
@@ -465,7 +465,7 @@ async def ingest_collections(
             insert_data_sync(collection_name=collection, docs=docs_mongo)
 
 
-@cli.async_command()
+@cli.command()
 async def ingest_session(
     year: int,
     meeting_key: int,
@@ -495,7 +495,7 @@ async def ingest_session(
     )
 
 
-@cli.async_command()
+@cli.command()
 async def ingest_meeting(
     year: int,
     meeting_key: int,
@@ -524,7 +524,7 @@ async def ingest_meeting(
         )
 
 
-@cli.async_command()
+@cli.command()
 async def ingest_season(
     year: int,
     parallel: bool = False,

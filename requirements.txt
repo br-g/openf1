@@ -1,4 +1,3 @@
-async-typer==0.1.10
 aiohttp==3.12.13
 aiomqtt==2.4.0
 beautifulsoup4==4.13.4
