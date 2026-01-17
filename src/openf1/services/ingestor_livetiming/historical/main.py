@@ -371,6 +371,7 @@ def _get_processed_documents(
         messages=messages,
         meeting_key=meeting_key,
         session_key=session_key,
+        collection_names=collection_names,
         parallel=parallel,
         max_workers=max_workers,
         batch_size=batch_size,
