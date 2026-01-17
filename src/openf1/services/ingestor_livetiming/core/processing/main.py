@@ -22,7 +22,7 @@ def process_message(
     if selected_collections is None:
         return {}
     
-    if collection_names is not None or len(collection_names) > 0:
+    if collection_names is not None and len(collection_names) > 0:
         selected_collections = [collection for collection in selected_collections if collection.name in collection_names]
 
     # Process message with each select collection

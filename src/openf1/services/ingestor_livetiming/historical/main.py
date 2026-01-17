@@ -233,19 +233,16 @@ def _get_t0(
 def get_t0(
     year: int,
     meeting_key: int,
-    session_key: int,
-    parallel: bool = False,
-    max_workers: int | None = None,
-    batch_size: int | None = None,
+    session_key: int
 ) -> datetime:
     session_url = get_session_url(
         year=year, meeting_key=meeting_key, session_key=session_key
     )
     t0 = _get_t0(
         session_url=session_url,
-        parallel=parallel,
-        max_workers=max_workers,
-        batch_size=batch_size,
+        parallel=False,
+        max_workers=None,
+        batch_size=None,
     )
 
     if _is_called_from_cli:
@@ -394,9 +391,6 @@ def get_processed_documents(
     meeting_key: int,
     session_key: int,
     collection_names: list[str],
-    parallel: bool = False,
-    max_workers: int | None = None,
-    batch_size: int | None = None,
     verbose: bool = True,
 ) -> dict[str, list[Document]]:
     docs_by_collection = _get_processed_documents(
@@ -404,9 +398,9 @@ def get_processed_documents(
         meeting_key=meeting_key,
         session_key=session_key,
         collection_names=collection_names,
-        parallel=parallel,
-        max_workers=max_workers,
-        batch_size=batch_size,
+        parallel=False,
+        max_workers=None,
+        batch_size=None,
         verbose=verbose,
     )
 
