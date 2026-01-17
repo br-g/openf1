@@ -282,9 +282,6 @@ def get_messages(
     meeting_key: int,
     session_key: int,
     topics: list[str],
-    parallel: bool = False,
-    max_workers: int | None = None,
-    batch_size: int | None = None,
     verbose: bool = True,
 ) -> list[Message]:
     session_url = get_session_url(
@@ -295,9 +292,9 @@ def get_messages(
 
     t0 = _get_t0(
         session_url=session_url,
-        parallel=parallel,
-        max_workers=max_workers,
-        batch_size=batch_size,
+        parallel=False,
+        max_workers=None,
+        batch_size=None,
     )
     if verbose:
         logger.info(f"t0: {t0}")
@@ -306,9 +303,9 @@ def get_messages(
         session_url=session_url,
         topics=topics,
         t0=t0,
-        parallel=parallel,
-        max_workers=max_workers,
-        batch_size=batch_size,
+        parallel=False,
+        max_workers=None,
+        batch_size=None,
     )
     if verbose:
         logger.info(f"Fetched {len(messages)} messages")

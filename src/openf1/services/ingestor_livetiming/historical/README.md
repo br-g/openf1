@@ -87,7 +87,7 @@ python -m openf1.services.ingestor_livetiming.historical.main ingest-season 2024
 > [!NOTE]
 > Enabling parallelization will require additional system resources (CPU, RAM). Use at your own discretion.
 
-To speed up data ingestion, the `--parallel` flag can be used to enable parallel message processing. To ingest processed documents of all the available collections for season `2024` in parallel:
+To speed up data ingestion, the `--parallel` flag can be used to enable parallel message processing for `ingest-` commands. To ingest processed documents of all the available collections for season `2024` in parallel:
 
 ```bash
 python -m openf1.services.ingestor_livetiming.historical.main ingest-season 2024 --parallel
