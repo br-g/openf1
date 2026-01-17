@@ -187,4 +187,5 @@ def get_topics() -> set[str]:
     for cls in _get_collections_cls_by_name().values():
         topics.update(cls.source_topics)
     topics.add("SessionInfo")
+    topics.add("Heartbeat")
     return topics
