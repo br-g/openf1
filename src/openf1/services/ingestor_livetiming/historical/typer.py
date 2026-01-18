@@ -4,6 +4,7 @@ from typing import Callable
 
 import typer
 
+
 class Typer(typer.Typer):
     """
     Wrapper class for typer.Typer to allow for decorating async functions.

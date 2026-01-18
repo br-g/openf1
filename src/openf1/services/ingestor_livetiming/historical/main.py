@@ -230,20 +230,11 @@ def _get_t0(
 
 
 @cli.command()
-def get_t0(
-    year: int,
-    meeting_key: int,
-    session_key: int
-) -> datetime:
+def get_t0(year: int, meeting_key: int, session_key: int) -> datetime:
     session_url = get_session_url(
         year=year, meeting_key=meeting_key, session_key=session_key
     )
-    t0 = _get_t0(
-        session_url=session_url,
-        parallel=False,
-        max_workers=None,
-        batch_size=None,
-    )
+    t0 = _get_t0(session_url=session_url)
 
     if _is_called_from_cli:
         print(t0)
@@ -290,23 +281,11 @@ def get_messages(
     if verbose:
         logger.info(f"Session URL: {session_url}")
 
-    t0 = _get_t0(
-        session_url=session_url,
-        parallel=False,
-        max_workers=None,
-        batch_size=None,
-    )
+    t0 = _get_t0(session_url=session_url)
     if verbose:
         logger.info(f"t0: {t0}")
 
-    messages = _get_messages(
-        session_url=session_url,
-        topics=topics,
-        t0=t0,
-        parallel=False,
-        max_workers=None,
-        batch_size=None,
-    )
+    messages = _get_messages(session_url=session_url, topics=topics, t0=t0)
     if verbose:
         logger.info(f"Fetched {len(messages)} messages")
 
@@ -395,9 +374,6 @@ def get_processed_documents(
         meeting_key=meeting_key,
         session_key=session_key,
         collection_names=collection_names,
-        parallel=False,
-        max_workers=None,
-        batch_size=None,
         verbose=verbose,
     )
 

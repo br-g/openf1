@@ -152,7 +152,12 @@ def _get_collections_cls_by_name() -> dict[str, type[Collection]]:
 def get_collections(meeting_key: int, session_key: int) -> list[Collection]:
     """Returns the instances of all available collections for a given session"""
     collections = [
-        cls(meeting_key=meeting_key, session_key=session_key, name=cls.name, source_topics=cls.source_topics)
+        cls(
+            meeting_key=meeting_key,
+            session_key=session_key,
+            name=cls.name,
+            source_topics=cls.source_topics,
+        )
         for cls in _get_collections_cls_by_name().values()
     ]
     collections = sorted(collections, key=lambda c: c.__class__.name)
