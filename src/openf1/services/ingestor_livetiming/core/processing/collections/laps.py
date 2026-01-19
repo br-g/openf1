@@ -89,7 +89,6 @@ class LapsCollection(Collection):
         """
         if driver_number not in self.laps:
             self._add_lap(driver_number=driver_number, lap_number=1)
-
         laps = self.laps[driver_number]
         current_lap = laps[-1]
 
@@ -195,7 +194,7 @@ class LapsCollection(Collection):
             self.is_session_a_race = message.content["Type"].lower() == "race"
             return
 
-        if message.topic == "SessionData":
+        if message.topic == "SessionData" and self.is_session_a_race:
             status_series = message.content.get("StatusSeries")
             if not status_series:
                 return
