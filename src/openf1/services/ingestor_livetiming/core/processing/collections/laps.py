@@ -4,12 +4,14 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Iterator
 
+import pytz
+
 from openf1.services.ingestor_livetiming.core.objects import (
     Collection,
     Document,
     Message,
 )
-from openf1.util.misc import to_timedelta
+from openf1.util.misc import to_datetime, to_timedelta
 
 
 @dataclass(eq=False)
@@ -44,6 +46,7 @@ class LapsCollection(Collection):
         "RaceControlMessages",
         "TimingAppData",
         "TimingData",
+        "SessionData",
     }
 
     is_session_started: bool = False
@@ -86,6 +89,7 @@ class LapsCollection(Collection):
         """
         if driver_number not in self.laps:
             self._add_lap(driver_number=driver_number, lap_number=1)
+
         laps = self.laps[driver_number]
         current_lap = laps[-1]
 
@@ -190,6 +194,25 @@ class LapsCollection(Collection):
         if message.topic == "SessionInfo":
             self.is_session_a_race = message.content["Type"].lower() == "race"
             return
+
+        if message.topic == "SessionData":
+            status_series = message.content.get("StatusSeries")
+            if not status_series:
+                return
+            if isinstance(status_series, dict):
+                status_series = list(status_series.values())
+
+            for item in status_series:
+                date = to_datetime(item.get("Utc"))
+                if date is not None:
+                    date = pytz.utc.localize(date)
+                status = item.get("SessionStatus")
+
+                if date is not None and status == "Started":
+                    for driver_number, laps in self.laps.items():
+                        if laps and laps[0].lap_number == 1:
+                            laps[0].date_start = date
+                            self.updated_laps.add(laps[0])
 
         if message.topic == "RaceControlMessages":
             inner_messages = message.content["Messages"]
@@ -321,6 +344,34 @@ class LapsCollection(Collection):
                             property="date_start",
                             value=message.timepoint,
                         )
+
+                        # Infer duration of first lap and first sector
+                        if current_lap.lap_number == 2:
+                            first_lap = self.laps[driver_number][0]
+                            if first_lap.lap_number == 1:
+                                if (
+                                    not first_lap.lap_duration
+                                    and first_lap.date_start is not None
+                                ):
+                                    first_lap.lap_duration = round(
+                                        (
+                                            current_lap.date_start
+                                            - first_lap.date_start
+                                        ).total_seconds(),
+                                        3,
+                                    )
+                                if (
+                                    first_lap.lap_duration
+                                    and not first_lap.duration_sector_1
+                                    and first_lap.duration_sector_2
+                                    and first_lap.duration_sector_3
+                                ):
+                                    first_lap.duration_sector_1 = round(
+                                        first_lap.lap_duration
+                                        - first_lap.duration_sector_2
+                                        - first_lap.duration_sector_3,
+                                        3,
+                                    )
 
                 if data.get("PitOut") is not None:
                     self._update_lap(
