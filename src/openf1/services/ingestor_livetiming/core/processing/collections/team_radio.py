@@ -21,6 +21,10 @@ class TeamRadio(Document):
     driver_number: int
     date: datetime | None
     recording_url: str
+    # New fields for AI transcription
+    transcript: str | None = None
+    transcript_language: str | None = None
+    transcription_status: str = "pending"  # pending, completed, failed
 
     @property
     def unique_key(self) -> tuple:
@@ -70,4 +74,8 @@ class TeamRadioCollection(Collection):
                     driver_number=driver_number,
                     date=date,
                     recording_url=BASE_URL + self.session_path + path,
+                    # New fields with default values
+                    transcript=None,
+                    transcript_language=None,
+                    transcription_status="pending",
                 )
