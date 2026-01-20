@@ -60,39 +60,47 @@ class SessionStateCollection(Collection):
             self._initialize_state()
 
         status_series = message.content.get("StatusSeries")
-        if not status_series:
-            return
-        if isinstance(status_series, dict):
-            status_series = list(status_series.values())
+        if status_series:
+            if isinstance(status_series, dict):
+                status_series = list(status_series.values())
 
-        for item in status_series:
-            qualifying_phase = item.get("QualifyingPart")
-            if qualifying_phase is not None:
-                self._initialize_state()
-                self._update_state(property="qualifying_phase", value=qualifying_phase)
+            for item in status_series:
+                status = item.get("SessionStatus")
+                if status is not None:
+                    date = to_datetime(item.get("Utc"))
+                    if date is not None:
+                        date = pytz.utc.localize(date)
+                        date = date.replace(microsecond=0)
 
-            status = item.get("SessionStatus")
-            if status is not None:
-                date = to_datetime(item.get("Utc"))
-                if date is not None:
-                    date = pytz.utc.localize(date)
+                    if status in {"Finalised", "Ends"}:
+                        status = "Finished"
 
-                if status in {"Finalised", "Ends"}:
-                    status = "Finished"
+                    if status == "Started" and self.current_state.date_start is None:
+                        self._update_state(property="date_start", value=date)
+                    elif (
+                        status in {"Finished", "Aborted"}
+                        and self.current_state.date_end is None
+                    ):
+                        self._update_state(property="date_end", value=date)
 
-                if status == "Started" and self.current_state.date_start is None:
-                    self._update_state(property="date_start", value=date)
-                elif (
-                    status in {"Finished", "Aborted"}
-                    and self.current_state.date_end is None
-                ):
-                    self._update_state(property="date_end", value=date)
+                    self._update_state(property="status", value=status)
 
-                self._update_state(property="status", value=status)
+        series = message.content.get("Series")
+        if series:
+            if isinstance(series, dict):
+                series = list(series.values())
 
-            race_lap = item.get("Lap")
-            if race_lap is not None:
-                self._update_state(property="race_lap", value=race_lap)
+            for item in series:
+                qualifying_phase = item.get("QualifyingPart")
+                if qualifying_phase is not None:
+                    self._initialize_state()
+                    self._update_state(
+                        property="qualifying_phase", value=qualifying_phase
+                    )
+
+                race_lap = item.get("Lap")
+                if race_lap is not None:
+                    self._update_state(property="race_lap", value=race_lap)
 
         if self.has_been_updated:
             yield deepcopy(self.current_state)
