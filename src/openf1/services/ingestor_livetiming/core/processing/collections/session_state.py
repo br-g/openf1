@@ -94,10 +94,16 @@ class SessionStateCollection(Collection):
 
                     if status == "Inactive":
                         continue
-                    elif status == "Started" and date != self.current_state.date_start:
+                    elif status == "Started" and (
+                        self.current_state.date_start is None
+                        or date > self.current_state.date_start
+                    ):
                         self._reset_state()
                         self._update_state(property="date_start", value=date)
-                    elif status in {"Finished", "Aborted"}:
+                    elif status in {"Finished", "Aborted"} and (
+                        self.current_state.date_end is None
+                        or date > self.current_state.date_end
+                    ):
                         self._update_state(property="date_end", value=date)
 
                     if status == "Started":
