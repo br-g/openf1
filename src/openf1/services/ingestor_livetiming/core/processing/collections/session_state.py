@@ -72,17 +72,17 @@ class SessionStateCollection(Collection):
                         date = pytz.utc.localize(date)
                         date = date.replace(microsecond=0)
 
-                    if status in {"Finalised", "Ends"}:
-                        status = "Finished"
-
-                    if status == "Started" and self.current_state.date_start is None:
-                        self._update_state(property="date_start", value=date)
-                    elif (
-                        status in {"Finished", "Aborted"}
-                        and self.current_state.date_end is None
-                    ):
+                    if status == "Started":
+                        self._update_state(property="date_end", value=None)
+                        if self.current_state.date_start is None:
+                            self._update_state(property="date_start", value=date)
+                    elif status in {"Finished", "Aborted"}:
                         self._update_state(property="date_end", value=date)
 
+                    if status == "Started":
+                        status = "Active"
+                    if status in {"Finalised", "Ends"}:
+                        status = "Finished"
                     self._update_state(property="status", value=status)
 
         series = message.content.get("Series")
