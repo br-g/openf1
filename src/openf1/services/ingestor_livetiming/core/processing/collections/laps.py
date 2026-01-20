@@ -209,7 +209,7 @@ class LapsCollection(Collection):
 
                 if date is not None and status == "Started":
                     for driver_number, laps in self.laps.items():
-                        if laps and laps[0].lap_number == 1:
+                        if laps and len(laps) == 1 and laps[0].lap_number == 1:
                             laps[0].date_start = date
                             self.updated_laps.add(laps[0])
 
@@ -344,8 +344,8 @@ class LapsCollection(Collection):
                             value=message.timepoint,
                         )
 
-                        # Infer duration of first lap and first sector
-                        if current_lap.lap_number == 2:
+                        # Infer duration of first lap and first sector during a race
+                        if self.is_session_a_race and current_lap.lap_number == 2:
                             first_lap = self.laps[driver_number][0]
                             if first_lap.lap_number == 1:
                                 if (
