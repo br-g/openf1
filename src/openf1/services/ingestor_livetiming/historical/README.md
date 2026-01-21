@@ -85,16 +85,10 @@ python -m openf1.services.ingestor_livetiming.historical.main ingest-season 2024
 ### Enable parallelization
 
 > [!NOTE]
-> Enabling parallelization will require additional system resources (CPU, RAM). Use at your own discretion.
+> Enabling parallelization will require significantly more system resources (CPU, RAM), especially when ingesting seasons. Use at your own discretion.
 
-To speed up data ingestion, the `--parallel` flag can be used to enable parallel message processing for `ingest-` commands. To ingest processed documents of all the available collections for season `2024` in parallel:
+To speed up data ingestion, the `--parallel` flag can be used to enable parallel message processing for `get-messages`, `get-processed-documents`, and `ingest-` commands. To ingest processed documents of all the available collections for meeting `1242` (year `2024`):
 
 ```bash
-python -m openf1.services.ingestor_livetiming.historical.main ingest-season 2024 --parallel
+python -m openf1.services.ingestor_livetiming.historical.main ingest-meeting 2024 1242 --parallel
 ```
-
-Optional flags `--max-workers` and `--batch-size` can also be used:
-- `--max-workers`: The maximum number of worker processes used to process messages (defaults to the number of CPU cores on the machine)
-- `--batch-size`: The number of messages processed by each worker process at a time (defaults to 10)
-
-Increasing `--max-workers` and/or `--batch-size` may speed up data ingestion further, but require more memory.
