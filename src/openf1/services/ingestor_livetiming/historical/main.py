@@ -7,6 +7,7 @@ from functools import lru_cache
 import aiohttp
 import pytz
 import requests
+from async_lru import alru_cache
 from loguru import logger
 from tqdm import tqdm
 
@@ -130,6 +131,7 @@ def _get_topic_content(session_url: str, topic: str) -> list[str]:
     return topic_content
 
 
+@alru_cache()
 async def _get_topic_content_async(session_url: str, topic: str):
     topic_filename = f"{topic}.jsonStream"
     url_topic = join_url(session_url, topic_filename)
@@ -199,7 +201,7 @@ async def _parse_and_decode_topic_content(
     return messages
 
 
-@lru_cache()
+@alru_cache()
 async def _get_t0(
     session_url: str,
 ) -> datetime:
@@ -248,11 +250,11 @@ async def _get_t0(
 
 
 @cli.command()
-def get_t0(year: int, meeting_key: int, session_key: int) -> datetime:
+async def get_t0(year: int, meeting_key: int, session_key: int) -> datetime:
     session_url = get_session_url(
         year=year, meeting_key=meeting_key, session_key=session_key
     )
-    t0 = _get_t0(session_url=session_url)
+    t0 = await _get_t0(session_url=session_url)
 
     if _is_called_from_cli:
         print(t0)
@@ -318,7 +320,7 @@ async def get_messages(
     if verbose:
         logger.info(f"Session URL: {session_url} for session {session_key}")
 
-    t0 = await _get_t0(session_url=session_url, parallel=parallel)
+    t0 = await _get_t0(session_url=session_url)
     if verbose:
         logger.info(f"t0: {t0} for session {session_key}")
 
@@ -349,10 +351,7 @@ async def _get_processed_documents(
     if verbose:
         logger.info(f"Session URL: {session_url} for session {session_key}")
 
-    t0 = await _get_t0(
-        session_url=session_url,
-        parallel=parallel,
-    )
+    t0 = await _get_t0(session_url=session_url)
     if verbose:
         logger.info(f"t0: {t0} for session {session_key}")
 
@@ -491,6 +490,7 @@ async def ingest_meeting(
     year: int,
     meeting_key: int,
     parallel: bool = False,
+    by_session: bool = False,
     verbose: bool = True,
 ):
     if verbose:
@@ -501,7 +501,7 @@ async def ingest_meeting(
     if verbose:
         logger.info(f"{len(session_keys)} sessions found: {session_keys}")
 
-    if parallel:
+    if parallel and not by_session:
         await asyncio.gather(
             *[
                 ingest_session(
@@ -520,6 +520,7 @@ async def ingest_meeting(
                 year=year,
                 meeting_key=meeting_key,
                 session_key=session_key,
+                parallel=parallel,
                 verbose=verbose,
             )
 
@@ -528,13 +529,14 @@ async def ingest_meeting(
 async def ingest_season(
     year: int,
     parallel: bool = False,
+    by_meeting: bool = False,
     verbose: bool = True,
 ):
     meeting_keys = get_meeting_keys(year)
     if verbose:
         logger.info(f"{len(meeting_keys)} meetings found: {meeting_keys}")
 
-    if parallel:
+    if parallel and not by_meeting:
         await asyncio.gather(
             *[
                 ingest_meeting(
@@ -551,6 +553,7 @@ async def ingest_season(
             await ingest_meeting(
                 year=year,
                 meeting_key=meeting_key,
+                parallel=parallel,
                 verbose=verbose,
             )
 
