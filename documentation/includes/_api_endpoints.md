@@ -1117,7 +1117,7 @@ fetch(
 
 ## Race control
 
-            Provides information about race control (racing incidents, flags, safety car, ...).
+            Provides information about race control (session status, racing incidents, flags, safety car, ...).
 
 ```shell
 curl "https://api.openf1.org/v1/race_control?flag=BLACK AND WHITE&driver_number=1&date>=2023-01-01&date<2023-09-01"
@@ -1173,6 +1173,7 @@ fetch(
     "lap_number": 59,
     "meeting_key": 1211,
     "message": "BLACK AND WHITE FLAG FOR CAR 1 (VER) - TRACK LIMITS",
+    "qualifying_phase": null,
     "scope": "Driver",
     "sector": null,
     "session_key": 9102
@@ -1190,18 +1191,19 @@ fetch(
 
 ### Attributes
 
-| Name          | Description                                                                                                                                                                           |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| category      | The category of the event (`CarEvent`, `Drs`, `Flag`, `SafetyCar`, ...).                                                                                                              |
-| date          | The UTC date and time, in ISO 8601 format.                                                                                                                                            |
-| driver_number | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
-| flag          | Type of flag displayed (`GREEN`, `YELLOW`, `DOUBLE YELLOW`, `CHEQUERED`, ...).                                                                                                        |
-| lap_number    | The sequential number of the lap within the session (starts at 1).                                                                                                                    |
-| meeting_key   | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
-| message       | Description of the event or action.                                                                                                                                                   |
-| scope         | The scope of the event (`Track`, `Driver`, `Sector`, ...).                                                                                                                            |
-| sector        | Segment ("mini-sector") of the track where the event occurred? (starts at 1).                                                                                                         |
-| session_key   | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
+| Name             | Description                                                                                                                                                                           |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| category         | The category of the event (`SessionStatus`, `CarEvent`, `Drs`, `Flag`, `SafetyCar`, ...).                                                                                             |
+| date             | The UTC date and time, in ISO 8601 format.                                                                                                                                            |
+| driver_number    | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| flag             | Type of flag displayed (`GREEN`, `YELLOW`, `DOUBLE YELLOW`, `CHEQUERED`, ...).                                                                                                        |
+| lap_number       | The sequential number of the lap within the session (starts at 1), in a race.                                                                                                         |
+| meeting_key      | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
+| message          | Description of the event or action.                                                                                                                                                   |
+| qualifying_phase | The specific phase (`1`, `2`, or `3`) if the session is a qualifying session.                                                                                                         |
+| scope            | The scope of the event (`Track`, `Driver`, `Sector`, ...).                                                                                                                            |
+| sector           | Segment ("mini-sector") of the track where the event occurred? (starts at 1).                                                                                                         |
+| session_key      | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
 
 ## Sessions
 
