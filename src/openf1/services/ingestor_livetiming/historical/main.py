@@ -132,9 +132,10 @@ async def _get_topic_content_async(session_url: str, topic: str):
     topic_filename = f"{topic}.jsonStream"
     url_topic = join_url(session_url, topic_filename)
 
-    async with get_http_client_async().get(url_topic) as response:
-        topic_content = await response.text()
-        return topic_content.split("\r\n")
+    response = await get_http_client_async().get(url_topic)
+    topic_content = await response.text()
+    
+    return topic_content.split("\r\n")
 
 
 @cli.command()
