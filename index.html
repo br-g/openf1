@@ -1720,7 +1720,7 @@ The data will be provided shortly after each session instead.
 </tr>
 </tbody></table>
 <h2 id='race-control'>Race control</h2>
-<p>Provides information about race control (racing incidents, flags, safety car, ...).</p>
+<p>Provides information about race control (session status, racing incidents, flags, safety car, ...).</p>
 <div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/race_control?flag=BLACK AND WHITE&amp;driver_number=1&amp;date&gt;=2023-01-01&amp;date&lt;2023-09-01"</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
 <span class="kn">import</span> <span class="nn">json</span>
@@ -1764,6 +1764,7 @@ The data will be provided shortly after each session instead.
     </span><span class="nl">"lap_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">59</span><span class="p">,</span><span class="w">
     </span><span class="nl">"meeting_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">1211</span><span class="p">,</span><span class="w">
     </span><span class="nl">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BLACK AND WHITE FLAG FOR CAR 1 (VER) - TRACK LIMITS"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"qualifying_phase"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
     </span><span class="nl">"scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Driver"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"sector"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
     </span><span class="nl">"session_key"</span><span class="p">:</span><span class="w"> </span><span class="mi">9102</span><span class="w">
@@ -1782,7 +1783,7 @@ The data will be provided shortly after each session instead.
 </thead><tbody>
 <tr>
 <td>category</td>
-<td>The category of the event (<code>CarEvent</code>, <code>Drs</code>, <code>Flag</code>, <code>SafetyCar</code>, ...).</td>
+<td>The category of the event (<code>SessionStatus</code>, <code>CarEvent</code>, <code>Drs</code>, <code>Flag</code>, <code>SafetyCar</code>, ...).</td>
 </tr>
 <tr>
 <td>date</td>
@@ -1798,7 +1799,7 @@ The data will be provided shortly after each session instead.
 </tr>
 <tr>
 <td>lap_number</td>
-<td>The sequential number of the lap within the session (starts at 1).</td>
+<td>The sequential number of the lap within the session (starts at 1), in a race.</td>
 </tr>
 <tr>
 <td>meeting_key</td>
@@ -1807,6 +1808,10 @@ The data will be provided shortly after each session instead.
 <tr>
 <td>message</td>
 <td>Description of the event or action.</td>
+</tr>
+<tr>
+<td>qualifying_phase</td>
+<td>The specific phase (<code>1</code>, <code>2</code>, or <code>3</code>) if the session is a qualifying session.</td>
 </tr>
 <tr>
 <td>scope</td>
