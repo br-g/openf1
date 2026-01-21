@@ -37,9 +37,7 @@ def process_message(
 
 
 def process_messages(
-    meeting_key: int,
-    session_key: int,
-    messages: list[Message]
+    meeting_key: int, session_key: int, messages: list[Message]
 ) -> dict[str, list[Document]]:
     """Processes messages and returns the generated documents by collection"""
     docs_buf = defaultdict(dict)

@@ -1,8 +1,7 @@
 from asyncio import iscoroutinefunction, run
 from collections import defaultdict
 from functools import wraps
-import traceback
-from typing import Callable, TypeVar
+from typing import Callable
 
 import typer
 
@@ -17,7 +16,6 @@ class Typer(typer.Typer):
     """
 
     event_handlers: defaultdict[str, list[Callable]] = defaultdict(list)
-
 
     def command(self, *args, **kwargs):
         def decorator(func: Callable):
@@ -39,10 +37,8 @@ class Typer(typer.Typer):
 
         return decorator
 
-
     def add_event_handler(self, event_type: str, func: Callable) -> None:
         self.event_handlers[event_type].append(func)
-
 
     def run_event_handlers(self, event_type: str):
         for event in self.event_handlers[event_type]:

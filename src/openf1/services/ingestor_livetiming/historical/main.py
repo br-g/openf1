@@ -34,10 +34,12 @@ _is_called_from_cli = False
 
 
 def get_http_client_async():
-    """Creates an async HTTP client only when called (lazy loading), ensuring fork safety."""
+    """Creates an async HTTP client with an indefinite TTL only when called (lazy loading)"""
     global http_client_async
     if http_client_async is None:
-        http_client_async = aiohttp.ClientSession()
+        http_client_async = aiohttp.ClientSession(
+            timeout=aiohttp.ClientTimeout(total=None)
+        )
     return http_client_async
 
 
@@ -134,7 +136,7 @@ async def _get_topic_content_async(session_url: str, topic: str):
 
     response = await get_http_client_async().get(url_topic)
     topic_content = await response.text()
-    
+
     return topic_content.split("\r\n")
 
 
@@ -267,7 +269,10 @@ async def _get_messages(
     messages = []
     if parallel:
         raw_content_topics = await asyncio.gather(
-            *[_get_topic_content_async(session_url=session_url, topic=topic) for topic in topics]
+            *[
+                _get_topic_content_async(session_url=session_url, topic=topic)
+                for topic in topics
+            ]
         )
         messages_topics = await asyncio.gather(
             *[
@@ -279,7 +284,9 @@ async def _get_messages(
                 for topic, raw_content in zip(topics, raw_content_topics)
             ]
         )
-        messages = [message for messages_topic in messages_topics for message in messages_topic]
+        messages = [
+            message for messages_topic in messages_topics for message in messages_topic
+        ]
     else:
         for topic in topics:
             raw_content = _get_topic_content(
@@ -310,17 +317,17 @@ async def get_messages(
         year=year, meeting_key=meeting_key, session_key=session_key
     )
     if verbose:
-        logger.info(f"Session URL: {session_url}")
+        logger.info(f"Session URL: {session_url} for session {session_key}")
 
     t0 = await _get_t0(session_url=session_url, parallel=parallel)
     if verbose:
-        logger.info(f"t0: {t0}")
+        logger.info(f"t0: {t0} for session {session_key}")
 
     messages = await _get_messages(
         session_url=session_url, topics=topics, t0=t0, parallel=parallel
     )
     if verbose:
-        logger.info(f"Fetched {len(messages)} messages")
+        logger.info(f"Fetched {len(messages)} messages for session {session_key}")
 
     if _is_called_from_cli:
         messages_json = json.dumps(messages, indent=2, default=json_serializer)
@@ -341,19 +348,19 @@ async def _get_processed_documents(
         year=year, meeting_key=meeting_key, session_key=session_key
     )
     if verbose:
-        logger.info(f"Session URL: {session_url}")
+        logger.info(f"Session URL: {session_url} for session {session_key}")
 
     t0 = await _get_t0(
         session_url=session_url,
         parallel=parallel,
     )
     if verbose:
-        logger.info(f"t0: {t0}")
+        logger.info(f"t0: {t0} for session {session_key}")
 
     topics = set().union(*[get_source_topics(n) for n in collection_names])
     topics = sorted(list(topics))
     if verbose:
-        logger.info(f"Topics used: {topics}")
+        logger.info(f"Topics used: {topics} for session {session_key}")
 
     messages = await _get_messages(
         session_url=session_url,
@@ -362,15 +369,13 @@ async def _get_processed_documents(
         parallel=parallel,
     )
     if verbose:
-        logger.info(f"Fetched {len(messages)} messages")
+        logger.info(f"Fetched {len(messages)} messages for session {session_key}")
 
     if verbose:
-        logger.info("Starting processing")
+        logger.info(f"Starting processing for session {session_key}")
 
     docs_by_collection = process_messages(
-        messages=messages,
-        meeting_key=meeting_key,
-        session_key=session_key
+        messages=messages, meeting_key=meeting_key, session_key=session_key
     )
     docs_by_collection = {
         col: docs_by_collection[col] if col in docs_by_collection else []
@@ -379,7 +384,7 @@ async def _get_processed_documents(
 
     if verbose:
         n_docs = sum(len(d) for d in docs_by_collection.values())
-        logger.info(f"Processed {n_docs} documents")
+        logger.info(f"Processed {n_docs} documents for session {session_key}")
 
     return docs_by_collection
 
@@ -433,7 +438,7 @@ async def ingest_collections(
     )
 
     if verbose:
-        logger.info("Inserting documents to DB")
+        logger.info(f"Inserting documents to DB for session {session_key}")
 
     if parallel:
         await asyncio.gather(
