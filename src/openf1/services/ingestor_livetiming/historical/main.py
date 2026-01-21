@@ -202,7 +202,6 @@ async def _parse_and_decode_topic_content(
 @lru_cache()
 async def _get_t0(
     session_url: str,
-    parallel: bool = False,
 ) -> datetime:
     """Calculates the most likely start time of a session (t0) based on
     Position and CarData messages.
