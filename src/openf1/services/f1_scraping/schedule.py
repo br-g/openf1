@@ -43,6 +43,34 @@ def _convert_gmt_offset(offset_str: str) -> str:
     return f"{cleaned_offset}:00"
 
 
+def _normalize_session_name(session_name: str) -> str:
+    """
+    Replaces legacy session names with their modern equivalents.
+    If the session name is not a legacy name, returns the session name unmodified.
+    See https://docs.fastf1.dev/events.html#session-identifiers for background information.
+    """
+    match session_name:
+        case "Sprint Shootout":
+            return "Sprint Qualifying"
+        case _:
+            return session_name
+
+
+def _normalize_session_type(session_type: str) -> str:
+    """
+    Replaces legacy session types with more general types to be consistent with other sessions.
+    If the session type is not a legacy type, returns the session type unmodified.
+    See https://docs.fastf1.dev/events.html#session-identifiers for background information.
+    """
+    match session_type:
+        case "Sprint Shootout":
+            return "Qualifying"
+        case "Sprint Qualifying":
+            return "Race"
+        case _:
+            return session_type
+
+
 def get_meetings(year: int | None = None) -> list[dict]:
     """Fetches list of meetings for a specific year or the latest season."""
     url = f"{BASE_URL}/editorial-eventlisting/events"
@@ -99,8 +127,8 @@ def get_sessions(year: int | None = None) -> list[dict]:
             sessions.append(
                 {
                     "session_key": sess["meetingSessionKey"],
-                    "session_type": sess["sessionType"],
-                    "session_name": sess["description"],
+                    "session_type": _normalize_session_type(sess["sessionType"]),
+                    "session_name": _normalize_session_name(sess["description"]),
                     "date_start": _to_utc(sess["startTime"], meeting["gmt_offset"]),
                     "date_end": _to_utc(sess["endTime"], meeting["gmt_offset"]),
                     "meeting_key": meeting["meeting_key"],
