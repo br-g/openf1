@@ -482,11 +482,6 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
 </aside>
 <h1 id='api-endpoints'>API endpoints</h1><h2 id='car-data'>Car data</h2>
 <p>Some data about each car, at a sample rate of about 3.7 Hz.</p>
-
-<aside class="notice">
-Live data for this endpoint is currently unavailable during sessions.  
-The data will be provided shortly after each session instead.
-</aside>
 <div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/car_data?driver_number=55&amp;session_key=9159&amp;speed&gt;=315"</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
 <span class="kn">import</span> <span class="nn">json</span>
@@ -947,11 +942,6 @@ The data will be provided shortly after each session instead.
 <h2 id='intervals'>Intervals</h2>
 <p>Fetches real-time interval data between drivers and their gap to the race leader.
             Available during races only, with updates approximately every 4 seconds.</p>
-
-<aside class="notice">
-Live data for this endpoint is currently unavailable during sessions.  
-The data will be provided shortly after each session instead.
-</aside>
 <div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/intervals?session_key=9165&amp;interval&gt;0&amp;interval&lt;0.005"</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
 <span class="kn">import</span> <span class="nn">json</span>
@@ -1219,11 +1209,6 @@ The data will be provided shortly after each session instead.
             Useful for gauging their progress along the track, but lacks details about lateral placement — i.e. whether
             the car is on the left or right side of the track. The origin point (0, 0, 0) appears to be arbitrary
             and not tied to any specific location on the track.</p>
-
-<aside class="notice">
-Live data for this endpoint is currently unavailable during sessions.  
-The data will be provided shortly after each session instead.
-</aside>
 <div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.openf1.org/v1/location?session_key=9161&amp;driver_number=81&amp;date&gt;2023-09-16T13:03:35.200&amp;date&lt;2023-09-16T13:03:35.800"</span>
 </code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
 <span class="kn">import</span> <span class="nn">json</span>
