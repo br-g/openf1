@@ -68,6 +68,10 @@ def get_meetings(year: int | None = None) -> list[dict]:
                 "circuit_key": int(event["circuitKey"]),
                 "circuit_short_name": event["circuitShortName"],
                 "circuit_type": event["circuitType"],
+                "circuit_info_url": (
+                    "https://api.multiviewer.app/api/v1/circuits/"
+                    + f"{event['circuitKey']}/{data['year']}"
+                ),
                 "circuit_image": event["circuitMediumImage"],
                 "gmt_offset": offset,
                 "date_start": _to_utc(event["meetingStartDate"], offset),
