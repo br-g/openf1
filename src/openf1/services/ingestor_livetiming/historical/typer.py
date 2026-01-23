@@ -1,4 +1,4 @@
-from asyncio import iscoroutinefunction, run
+from asyncio import get_running_loop, iscoroutinefunction, new_event_loop, run
 from collections import defaultdict
 from functools import wraps
 from typing import Callable
@@ -24,10 +24,18 @@ class Typer(typer.Typer):
                 self.run_event_handlers(ON_START)
                 try:
                     if iscoroutinefunction(func):
-                        return run(func(*_args, **_kwargs))
+                        try:
+                            get_running_loop()
+                        except RuntimeError:
+                            return run(func(*_args, **_kwargs))
+                        else:
+                            loop = new_event_loop()
+                            try:
+                                return loop.run_until_complete(func(*args, **_kwargs))
+                            finally:
+                                loop.close()
+
                     return func(*_args, **_kwargs)
-                except Exception:
-                    pass
                 finally:
                     self.run_event_handlers(ON_EXIT)
 
