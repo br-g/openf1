@@ -40,7 +40,7 @@ print(parsed_data)
 
 ```javascript
 fetch(
-  "https://api.openf1.org/v1/car_data?driver_number=55&session_key=9159&speed>=315"
+  "https://api.openf1.org/v1/car_data?driver_number=55&session_key=9159&speed>=315",
 )
   .then((response) => response.json())
   .then((jsonContent) => console.log(jsonContent));
@@ -192,7 +192,7 @@ print(parsed_data)
 
 ```javascript
 fetch(
-  "https://api.openf1.org/v1/championship_drivers?session_key=9839&driver_number=4&driver_number=81"
+  "https://api.openf1.org/v1/championship_drivers?session_key=9839&driver_number=4&driver_number=81",
 )
   .then((response) => response.json())
   .then((jsonContent) => console.log(jsonContent));
@@ -283,7 +283,7 @@ print(parsed_data)
 
 ```javascript
 fetch(
-  "https://api.openf1.org/v1/championship_teams?session_key=9839&team_name=McLaren"
+  "https://api.openf1.org/v1/championship_teams?session_key=9839&team_name=McLaren",
 )
   .then((response) => response.json())
   .then((jsonContent) => console.log(jsonContent));
@@ -375,7 +375,6 @@ fetch("https://api.openf1.org/v1/drivers?driver_number=1&session_key=9158")
 [
   {
     "broadcast_name": "M VERSTAPPEN",
-    "country_code": "NED",
     "driver_number": 1,
     "first_name": "Max",
     "full_name": "Max VERSTAPPEN",
@@ -400,20 +399,20 @@ fetch("https://api.openf1.org/v1/drivers?driver_number=1&session_key=9158")
 
 ### Attributes
 
-| Name           | Description                                                                                                                                                                           |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| broadcast_name | The driver's name, as displayed on TV.                                                                                                                                                |
-| country_code   | A code that uniquely identifies the country.                                                                                                                                          |
-| driver_number  | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
-| first_name     | The driver's first name.                                                                                                                                                              |
-| full_name      | The driver's full name.                                                                                                                                                               |
-| headshot_url   | URL of the driver's face photo.                                                                                                                                                       |
-| last_name      | The driver's last name.                                                                                                                                                               |
-| meeting_key    | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
-| name_acronym   | Three-letter acronym of the driver's name.                                                                                                                                            |
-| session_key    | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
-| team_colour    | The hexadecimal color value (RRGGBB) of the driver's team.                                                                                                                            |
-| team_name      | Name of the driver's team.                                                                                                                                                            |
+| Name                      | Description                                                                                                                                                                           |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| broadcast_name            | The driver's name, as displayed on TV.                                                                                                                                                |
+| country_code (deprecated) | A code that uniquely identifies the country. This field will be removed at the end of the 2026 season.                                                                                |
+| driver_number             | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| first_name                | The driver's first name.                                                                                                                                                              |
+| full_name                 | The driver's full name.                                                                                                                                                               |
+| headshot_url              | URL of the driver's face photo.                                                                                                                                                       |
+| last_name                 | The driver's last name.                                                                                                                                                               |
+| meeting_key               | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
+| name_acronym              | Three-letter acronym of the driver's name.                                                                                                                                            |
+| session_key               | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
+| team_colour               | The hexadecimal color value (RRGGBB) of the driver's team.                                                                                                                            |
+| team_name                 | Name of the driver's team.                                                                                                                                                            |
 
 ## Intervals
 
@@ -456,7 +455,7 @@ print(parsed_data)
 
 ```javascript
 fetch(
-  "https://api.openf1.org/v1/intervals?session_key=9165&interval>0&interval<0.005"
+  "https://api.openf1.org/v1/intervals?session_key=9165&interval>0&interval<0.005",
 )
   .then((response) => response.json())
   .then((jsonContent) => console.log(jsonContent));
@@ -536,7 +535,7 @@ print(parsed_data)
 
 ```javascript
 fetch(
-  "https://api.openf1.org/v1/laps?session_key=9161&driver_number=63&lap_number=8"
+  "https://api.openf1.org/v1/laps?session_key=9161&driver_number=63&lap_number=8",
 )
   .then((response) => response.json())
   .then((jsonContent) => console.log(jsonContent));
@@ -689,7 +688,7 @@ print(parsed_data)
 
 ```javascript
 fetch(
-  "https://api.openf1.org/v1/location?session_key=9161&driver_number=81&date>2023-09-16T13:03:35.200&date<2023-09-16T13:03:35.800"
+  "https://api.openf1.org/v1/location?session_key=9161&driver_number=81&date>2023-09-16T13:03:35.200&date<2023-09-16T13:03:35.800",
 )
   .then((response) => response.json())
   .then((jsonContent) => console.log(jsonContent));
@@ -884,7 +883,7 @@ print(parsed_data)
 
 ```javascript
 fetch(
-  "https://api.openf1.org/v1/overtakes?session_key=9636&overtaking_driver_number=63&overtaken_driver_number=4&position=1"
+  "https://api.openf1.org/v1/overtakes?session_key=9636&overtaking_driver_number=63&overtaken_driver_number=4&position=1",
 )
   .then((response) => response.json())
   .then((jsonContent) => console.log(jsonContent));
@@ -1057,7 +1056,7 @@ print(parsed_data)
 
 ```javascript
 fetch(
-  "https://api.openf1.org/v1/position?meeting_key=1217&driver_number=40&position<=3"
+  "https://api.openf1.org/v1/position?meeting_key=1217&driver_number=40&position<=3",
 )
   .then((response) => response.json())
   .then((jsonContent) => console.log(jsonContent));
@@ -1142,7 +1141,7 @@ print(parsed_data)
 
 ```javascript
 fetch(
-  "https://api.openf1.org/v1/race_control?flag=BLACK AND WHITE&driver_number=1&date>=2023-01-01&date<2023-09-01"
+  "https://api.openf1.org/v1/race_control?flag=BLACK AND WHITE&driver_number=1&date>=2023-01-01&date<2023-09-01",
 )
   .then((response) => response.json())
   .then((jsonContent) => console.log(jsonContent));
@@ -1234,7 +1233,7 @@ print(parsed_data)
 
 ```javascript
 fetch(
-  "https://api.openf1.org/v1/sessions?country_name=Belgium&session_name=Sprint%20Qualifying&year=2023"
+  "https://api.openf1.org/v1/sessions?country_name=Belgium&session_name=Sprint%20Qualifying&year=2023",
 )
   .then((response) => response.json())
   .then((jsonContent) => console.log(jsonContent));
@@ -1707,7 +1706,7 @@ print(parsed_data)
 
 ```javascript
 fetch(
-  "https://api.openf1.org/v1/weather?meeting_key=1208&wind_direction>=130&track_temperature>=52"
+  "https://api.openf1.org/v1/weather?meeting_key=1208&wind_direction>=130&track_temperature>=52",
 )
   .then((response) => response.json())
   .then((jsonContent) => console.log(jsonContent));
