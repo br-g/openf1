@@ -508,7 +508,7 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
 </span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
 </span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
 </span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span>
-  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/car_data?driver_number=55&amp;session_key=9159&amp;speed&gt;=315</span><span class="dl">"</span>
+  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/car_data?driver_number=55&amp;session_key=9159&amp;speed&gt;=315</span><span class="dl">"</span><span class="p">,</span>
 <span class="p">)</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">jsonContent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
@@ -674,7 +674,7 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
 </span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
 </span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
 </span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span>
-  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/championship_drivers?session_key=9839&amp;driver_number=4&amp;driver_number=81</span><span class="dl">"</span>
+  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/championship_drivers?session_key=9839&amp;driver_number=4&amp;driver_number=81</span><span class="dl">"</span><span class="p">,</span>
 <span class="p">)</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">jsonContent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
@@ -770,7 +770,7 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
 </span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
 </span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
 </span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span>
-  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/championship_teams?session_key=9839&amp;team_name=McLaren</span><span class="dl">"</span>
+  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/championship_teams?session_key=9839&amp;team_name=McLaren</span><span class="dl">"</span><span class="p">,</span>
 <span class="p">)</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">jsonContent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
@@ -866,7 +866,6 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
   </span><span class="p">{</span><span class="w">
     </span><span class="nl">"broadcast_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"M VERSTAPPEN"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"country_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NED"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"driver_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
     </span><span class="nl">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Max"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"full_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Max VERSTAPPEN"</span><span class="p">,</span><span class="w">
@@ -895,8 +894,8 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
 <td>The driver&#39;s name, as displayed on TV.</td>
 </tr>
 <tr>
-<td>country_code</td>
-<td>A code that uniquely identifies the country.</td>
+<td>country_code (deprecated)</td>
+<td>A code that uniquely identifies the country. This field will be removed at the end of the 2026 season.</td>
 </tr>
 <tr>
 <td>driver_number</td>
@@ -968,7 +967,7 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
 </span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
 </span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
 </span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span>
-  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/intervals?session_key=9165&amp;interval&gt;0&amp;interval&lt;0.005</span><span class="dl">"</span>
+  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/intervals?session_key=9165&amp;interval&gt;0&amp;interval&lt;0.005</span><span class="dl">"</span><span class="p">,</span>
 <span class="p">)</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">jsonContent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
@@ -1050,7 +1049,7 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
 </span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
 </span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
 </span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span>
-  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/laps?session_key=9161&amp;driver_number=63&amp;lap_number=8</span><span class="dl">"</span>
+  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/laps?session_key=9161&amp;driver_number=63&amp;lap_number=8</span><span class="dl">"</span><span class="p">,</span>
 <span class="p">)</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">jsonContent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
@@ -1235,7 +1234,7 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
 </span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
 </span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
 </span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span>
-  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/location?session_key=9161&amp;driver_number=81&amp;date&gt;2023-09-16T13:03:35.200&amp;date&lt;2023-09-16T13:03:35.800</span><span class="dl">"</span>
+  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/location?session_key=9161&amp;driver_number=81&amp;date&gt;2023-09-16T13:03:35.200&amp;date&lt;2023-09-16T13:03:35.800</span><span class="dl">"</span><span class="p">,</span>
 <span class="p">)</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">jsonContent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
@@ -1470,7 +1469,7 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
 </span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
 </span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
 </span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span>
-  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/overtakes?session_key=9636&amp;overtaking_driver_number=63&amp;overtaken_driver_number=4&amp;position=1</span><span class="dl">"</span>
+  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/overtakes?session_key=9636&amp;overtaking_driver_number=63&amp;overtaken_driver_number=4&amp;position=1</span><span class="dl">"</span><span class="p">,</span>
 <span class="p">)</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">jsonContent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
@@ -1653,7 +1652,7 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
 </span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
 </span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
 </span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span>
-  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/position?meeting_key=1217&amp;driver_number=40&amp;position&lt;=3</span><span class="dl">"</span>
+  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/position?meeting_key=1217&amp;driver_number=40&amp;position&lt;=3</span><span class="dl">"</span><span class="p">,</span>
 <span class="p">)</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">jsonContent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
@@ -1737,7 +1736,7 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
 </span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
 </span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
 </span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span>
-  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/race_control?flag=BLACK AND WHITE&amp;driver_number=1&amp;date&gt;=2023-01-01&amp;date&lt;2023-09-01</span><span class="dl">"</span>
+  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/race_control?flag=BLACK AND WHITE&amp;driver_number=1&amp;date&gt;=2023-01-01&amp;date&lt;2023-09-01</span><span class="dl">"</span><span class="p">,</span>
 <span class="p">)</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">jsonContent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
@@ -1846,7 +1845,7 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
 </span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
 </span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
 </span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span>
-  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint%20Qualifying&amp;year=2023</span><span class="dl">"</span>
+  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/sessions?country_name=Belgium&amp;session_name=Sprint%20Qualifying&amp;year=2023</span><span class="dl">"</span><span class="p">,</span>
 <span class="p">)</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">jsonContent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
@@ -2365,7 +2364,7 @@ OpenF1 is an unofficial project and is not associated in any way with the Formul
 </span><span class="c1"># df &lt;- do.call(rbind, lapply(parsed_data, data.frame, stringsAsFactors = FALSE))</span><span class="w">
 </span><span class="c1"># df &lt;- as.data.frame(t(as.matrix(df)))</span><span class="w">
 </span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">fetch</span><span class="p">(</span>
-  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/weather?meeting_key=1208&amp;wind_direction&gt;=130&amp;track_temperature&gt;=52</span><span class="dl">"</span>
+  <span class="dl">"</span><span class="s2">https://api.openf1.org/v1/weather?meeting_key=1208&amp;wind_direction&gt;=130&amp;track_temperature&gt;=52</span><span class="dl">"</span><span class="p">,</span>
 <span class="p">)</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">jsonContent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonContent</span><span class="p">));</span>
