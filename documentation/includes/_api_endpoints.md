@@ -77,10 +77,6 @@ fetch(
 ]
 ```
 
-### HTTP Request
-
-`GET https://api.openf1.org/v1/car_data`
-
 ### Sample URL
 
 <a href="https://api.openf1.org/v1/car_data?driver_number=55&amp;session_key=9159&amp;speed&gt;=315" target="_blank">https://api.openf1.org/v1/car_data?driver_number=55&amp;session_key=9159&amp;speed&gt;=315</a>
@@ -223,10 +219,6 @@ fetch(
 ]
 ```
 
-### HTTP Request
-
-`GET https://api.openf1.org/v1/championship_drivers`
-
 ### Sample URL
 
 <a href="https://api.openf1.org/v1/championship_drivers?session_key=9839&amp;driver_number=4&amp;driver_number=81" target="_blank">https://api.openf1.org/v1/championship_drivers?session_key=9839&amp;driver_number=4&amp;driver_number=81</a>
@@ -304,10 +296,6 @@ fetch(
   }
 ]
 ```
-
-### HTTP Request
-
-`GET https://api.openf1.org/v1/championship_teams`
 
 ### Sample URL
 
@@ -388,10 +376,6 @@ fetch("https://api.openf1.org/v1/drivers?driver_number=1&session_key=9158")
   }
 ]
 ```
-
-### HTTP Request
-
-`GET https://api.openf1.org/v1/drivers`
 
 ### Sample URL
 
@@ -475,10 +459,6 @@ fetch(
   }
 ]
 ```
-
-### HTTP Request
-
-`GET https://api.openf1.org/v1/intervals`
 
 ### Sample URL
 
@@ -565,10 +545,6 @@ fetch(
   }
 ]
 ```
-
-### HTTP Request
-
-`GET https://api.openf1.org/v1/laps`
 
 ### Sample URL
 
@@ -719,10 +695,6 @@ fetch(
 ]
 ```
 
-### HTTP Request
-
-`GET https://api.openf1.org/v1/location`
-
 ### Sample URL
 
 <a href="https://api.openf1.org/v1/location?session_key=9161&amp;driver_number=81&amp;date&gt;2023-09-16T13:03:35.200&amp;date&lt;2023-09-16T13:03:35.800" target="_blank">https://api.openf1.org/v1/location?session_key=9161&amp;driver_number=81&amp;date&gt;2023-09-16T13:03:35.200&amp;date&lt;2023-09-16T13:03:35.800</a>
@@ -810,10 +782,6 @@ fetch("https://api.openf1.org/v1/meetings?year=2026&country_name=Singapore")
   }
 ]
 ```
-
-### HTTP Request
-
-`GET https://api.openf1.org/v1/meetings`
 
 ### Sample URL
 
@@ -904,10 +872,6 @@ fetch(
 ]
 ```
 
-### HTTP Request
-
-`GET https://api.openf1.org/v1/overtakes`
-
 ### Sample URL
 
 <a href="https://api.openf1.org/v1/overtakes?session_key=9636&amp;overtaking_driver_number=63&amp;overtaken_driver_number=4&amp;position=1" target="_blank">https://api.openf1.org/v1/overtakes?session_key=9636&amp;overtaking_driver_number=63&amp;overtaken_driver_number=4&amp;position=1</a>
@@ -994,10 +958,6 @@ fetch("https://api.openf1.org/v1/pit?session_key=9877&stop_duration<2.3")
 ]
 ```
 
-### HTTP Request
-
-`GET https://api.openf1.org/v1/pit`
-
 ### Sample URL
 
 <a href="https://api.openf1.org/v1/pit?session_key=9877&amp;stop_duration&lt;2.3" target="_blank">https://api.openf1.org/v1/pit?session_key=9877&amp;stop_duration&lt;2.3</a>
@@ -1083,10 +1043,6 @@ fetch(
 ]
 ```
 
-### HTTP Request
-
-`GET https://api.openf1.org/v1/position`
-
 ### Sample URL
 
 <a href="https://api.openf1.org/v1/position?meeting_key=1217&amp;driver_number=40&amp;position&lt;=3" target="_blank">https://api.openf1.org/v1/position?meeting_key=1217&amp;driver_number=40&amp;position&lt;=3</a>
@@ -1166,10 +1122,6 @@ fetch(
   }
 ]
 ```
-
-### HTTP Request
-
-`GET https://api.openf1.org/v1/race_control`
 
 ### Sample URL
 
@@ -1261,10 +1213,6 @@ fetch(
   }
 ]
 ```
-
-### HTTP Request
-
-`GET https://api.openf1.org/v1/sessions`
 
 ### Sample URL
 
@@ -1376,10 +1324,6 @@ fetch("https://api.openf1.org/v1/session_result?session_key=7782&position%3C=3")
 ]
 ```
 
-### HTTP Request
-
-`GET https://api.openf1.org/v1/session_result`
-
 ### Sample URL
 
 <a href="https://api.openf1.org/v1/session_result?session_key=7782&position<=3" target="_blank">https://api.openf1.org/v1/session_result?session_key=7782&position<=3</a>
@@ -1471,10 +1415,6 @@ fetch("https://api.openf1.org/v1/starting_grid?session_key=7783&position%3C=3")
 ]
 ```
 
-### HTTP Request
-
-`GET https://api.openf1.org/v1/starting_grid`
-
 ### Sample URL
 
 <a href="https://api.openf1.org/v1/starting_grid?session_key=7783&position<=3" target="_blank">https://api.openf1.org/v1/starting_grid?session_key=7783&position<=3</a>
@@ -1561,10 +1501,6 @@ fetch("https://api.openf1.org/v1/stints?session_key=9165&tyre_age_at_start>=3")
 ]
 ```
 
-### HTTP Request
-
-`GET https://api.openf1.org/v1/stints`
-
 ### Sample URL
 
 <a href="https://api.openf1.org/v1/stints?session_key=9165&amp;tyre_age_at_start&gt;=3" target="_blank">https://api.openf1.org/v1/stints?session_key=9165&amp;tyre_age_at_start&gt;=3</a>
@@ -1648,10 +1584,6 @@ fetch("https://api.openf1.org/v1/team_radio?session_key=9158&driver_number=11")
 ]
 ```
 
-### HTTP Request
-
-`GET https://api.openf1.org/v1/team_radio`
-
 ### Sample URL
 
 <a href="https://api.openf1.org/v1/team_radio?session_key=9158&amp;driver_number=11" target="_blank">https://api.openf1.org/v1/team_radio?session_key=9158&amp;driver_number=11</a>
@@ -1730,10 +1662,6 @@ fetch(
   }
 ]
 ```
-
-### HTTP Request
-
-`GET https://api.openf1.org/v1/weather`
 
 ### Sample URL
 

@@ -14,11 +14,6 @@ toc_footers:
         br-g/openf1
     </a>
   - |
-    <a href="https://twitter.com/brgodefroy" class="footer_button" id="twitter_button" target="_blank">
-        <img src="https://storage.googleapis.com/openf1-public/images/twitter.png">
-        @brgodefroy
-    </a>
-  - |
     <a href="https://www.buymeacoffee.com/openf1" class="footer_button" id="bmec_button" target="_blank">
         <img src="https://storage.googleapis.com/openf1-public/images/bmec.png">
         Buy me a coffee
@@ -34,12 +29,8 @@ includes:
   - data_filtering
   - csv_format
   - tutorials
-  - faq
   - community_and_support
-  - roadmap
   - contributing
-  - usage_guidelines
-  - acknowledgments
 
 search: true
 
