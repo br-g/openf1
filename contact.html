@@ -1,0 +1,830 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact | OpenF1 API</title>
+    <link
+      type="image/png"
+      sizes="32x32"
+      rel="icon"
+      href="https://storage.googleapis.com/openf1-public/images/favicon.png"
+    />
+    <style>
+      :root {
+        --bg-color: #0f1115;
+        --surface-color: #161b22;
+        --primary-color: #e10600;
+        --text-color: #ffffff;
+        --text-secondary: #8b949e;
+        --accent-color: #ffffff;
+        --border-color: #30363d;
+        --success-color: #27c93f;
+        --font-main:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+        --font-mono:
+          "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
+          monospace;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: var(--font-main);
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+
+      body.menu-open {
+        overflow: hidden;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+        transition: 0.2s;
+      }
+
+      /* Navigation */
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1.5rem;
+        height: 64px;
+        border-bottom: 1px solid var(--border-color);
+        position: sticky;
+        top: 0;
+        background-color: rgba(15, 17, 21, 0.8);
+        backdrop-filter: saturate(180%) blur(10px);
+        -webkit-backdrop-filter: saturate(180%) blur(10px);
+        z-index: 100;
+      }
+
+      .nav-left {
+        display: flex;
+        gap: 0.25rem;
+        align-items: center;
+      }
+
+      .logo {
+        font-weight: 800;
+        font-size: 1.35rem;
+        letter-spacing: 0.2px;
+        padding-right: 1.5rem;
+        margin-right: 0.5rem;
+      }
+
+      .logo span {
+        color: var(--primary-color);
+      }
+
+      .nav-link {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        font-weight: 400;
+        padding: 0.5rem 0.875rem;
+        border-radius: 6px;
+        transition:
+          color 0.15s,
+          background-color 0.15s;
+      }
+
+      .nav-link:hover {
+        color: var(--text-color);
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      .nav-right {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .nav-btn-primary {
+        background: #751613;
+        border: 1px solid #b82622;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: white;
+        cursor: pointer;
+        transition:
+          background-color 0.15s,
+          transform 0.1s;
+      }
+
+      .nav-btn-primary:hover {
+        background: #8b1a17;
+      }
+
+      /* Mobile menu button */
+      .mobile-menu-btn {
+        display: none;
+        background: transparent;
+        border: none;
+        color: var(--text-secondary);
+        padding: 0.5rem;
+        cursor: pointer;
+      }
+
+      .mobile-menu-btn:hover {
+        color: var(--text-color);
+      }
+
+      /* Mobile menu overlay */
+      .mobile-menu {
+        display: none;
+        position: fixed;
+        top: 64px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--bg-color);
+        z-index: 99;
+        padding: 2rem;
+        overflow-y: auto;
+      }
+
+      .mobile-menu.active {
+        display: block;
+      }
+
+      .mobile-menu-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .mobile-menu-links a {
+        color: var(--text-color);
+        font-size: 1rem;
+        padding: 1rem;
+        border-radius: 6px;
+        transition: background-color 0.15s;
+      }
+
+      .mobile-menu-links a:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      .mobile-menu-divider {
+        height: 1px;
+        background: var(--border-color);
+        margin: 1rem 0;
+      }
+
+      /* Main Content */
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 5rem 2rem;
+      }
+
+      .page-header {
+        text-align: center;
+        margin-bottom: 4rem;
+      }
+
+      .page-header h1 {
+        font-size: 3rem;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+        font-weight: 500;
+        background: linear-gradient(to right, #fff, #a5a5a5);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .page-header p {
+        color: var(--text-secondary);
+        font-size: 1.15rem;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      /* Contact Options Grid */
+      .contact-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+      }
+
+      .contact-card {
+        background: var(--surface-color);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 2rem;
+        transition:
+          transform 0.2s,
+          border-color 0.2s;
+      }
+
+      .contact-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--text-secondary);
+      }
+
+      .card-icon {
+        font-size: 1.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .contact-card h3 {
+        font-size: 1.15rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .contact-card p {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-bottom: 1.25rem;
+        line-height: 1.6;
+      }
+
+      .card-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-color);
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: color 0.15s;
+      }
+
+      .card-link:hover {
+        color: var(--primary-color);
+      }
+
+      .card-link svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* Form Section */
+      .form-section {
+        background: var(--surface-color);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 2.5rem;
+      }
+
+      .form-header {
+        margin-bottom: 2rem;
+      }
+
+      .form-header h2 {
+        font-size: 1.35rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .form-header p {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.75rem;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-group.full-width {
+        grid-column: span 2;
+      }
+
+      label {
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: var(--text-color);
+      }
+
+      label .required {
+        color: var(--primary-color);
+      }
+
+      label .optional {
+        color: var(--text-secondary);
+        font-weight: 400;
+      }
+
+      input[type="email"],
+      input[type="text"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background: var(--bg-color);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-family: inherit;
+        color: var(--text-color);
+        transition:
+          border-color 0.15s,
+          background-color 0.15s;
+      }
+
+      input::placeholder,
+      textarea::placeholder {
+        color: var(--text-secondary);
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--text-secondary);
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      select {
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238b949e' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+      }
+
+      select option {
+        background: var(--surface-color);
+        color: var(--text-color);
+      }
+
+      textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+
+      .submit-btn {
+        background: #751613;
+        border: 1px solid #b82622;
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: white;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition:
+          background-color 0.15s,
+          transform 0.1s;
+        margin-top: 0.5rem;
+        width: fit-content;
+      }
+
+      .submit-btn:hover {
+        background: #8b1a17;
+      }
+
+      .submit-btn:active {
+        transform: scale(0.98);
+      }
+
+      .submit-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* Footer */
+      footer {
+        padding: 4rem 2rem;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 2fr repeat(3, 1fr);
+        gap: 3rem;
+      }
+
+      .footer-brand {
+        max-width: 280px;
+      }
+
+      .footer-brand .logo {
+        margin-bottom: 1rem;
+      }
+
+      .footer-brand p {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+      }
+
+      .footer-social {
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      .footer-social a {
+        width: 36px;
+        height: 36px;
+        background: var(--surface-color);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+        font-size: 1rem;
+        transition: all 0.2s;
+      }
+
+      .footer-social a:hover {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+      }
+
+      .footer-column h4 {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-color);
+        margin-bottom: 1.25rem;
+      }
+
+      .footer-column a {
+        display: block;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        padding: 0.4rem 0;
+      }
+
+      .footer-column a:hover {
+        color: var(--text-color);
+      }
+
+      .footer-bottom {
+        max-width: 1200px;
+        margin: 3rem auto 0;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border-color);
+        text-align: center;
+      }
+
+      .footer-bottom p {
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+      }
+
+      .footer-bottom a {
+        color: var(--text-secondary);
+      }
+
+      .footer-bottom a:hover {
+        color: var(--text-color);
+        text-decoration: underline;
+      }
+
+      .disclaimer {
+        max-width: 1200px;
+        margin: 2rem auto 0;
+        text-align: center;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        opacity: 0.7;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .container {
+          padding: 3rem 1.5rem;
+        }
+
+        .page-header h1 {
+          font-size: 2rem;
+        }
+
+        .contact-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .form-group.full-width {
+          grid-column: span 1;
+        }
+
+        .form-section {
+          padding: 1.5rem;
+        }
+
+        .nav-link {
+          display: none;
+        }
+
+        .nav-right .nav-btn-primary {
+          display: none;
+        }
+
+        .mobile-menu-btn {
+          display: flex;
+        }
+
+        .footer-content {
+          grid-template-columns: 1fr;
+        }
+
+        .footer-brand {
+          grid-column: span 1;
+          max-width: 100%;
+        }
+
+        .footer-bottom {
+          flex-direction: column;
+          text-align: center;
+        }
+      }
+
+      @media (max-width: 1024px) and (min-width: 769px) {
+        .footer-content {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .footer-brand {
+          grid-column: span 2;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav>
+      <div class="nav-left">
+        <a href="https://openf1.org" class="logo">Open<span>F1</span></a>
+        <a href="https://openf1.org/#features" class="nav-link">Features</a>
+        <a href="https://openf1.org/#pricing" class="nav-link">Sponsorship</a>
+        <a href="https://openf1.org/docs#api-endpoints" class="nav-link"
+          >Docs</a
+        >
+        <a href="contact.html" class="nav-link">Contact</a>
+      </div>
+      <div class="nav-right">
+        <button class="mobile-menu-btn" aria-label="Open menu">
+          <svg
+            width="24"
+            height="24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M3 12h18M3 6h18M3 18h18" />
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-menu-links">
+        <a href="https://openf1.org/#features">Features</a>
+        <a href="https://openf1.org/#pricing">Sponsorship</a>
+        <a href="https://openf1.org/docs#api-endpoints">Docs</a>
+        <div class="mobile-menu-divider"></div>
+        <a href="https://github.com/br-g/openf1" target="_blank">GitHub</a>
+        <a href="https://openf1.org/contact">Contact</a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+      <div class="page-header">
+        <h1>Get in touch</h1>
+        <p>
+          Questions about the API? Building something cool? We'd love to hear
+          from you.
+        </p>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-card">
+          <div class="card-icon">💬</div>
+          <h3>Community support</h3>
+          <p>
+            For technical questions, bug reports, and feature requests, our
+            GitHub Discussions is the best place to connect with the community.
+          </p>
+          <a
+            href="https://github.com/br-g/openf1/discussions"
+            class="card-link"
+          >
+            Join the discussion
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+
+        <div class="contact-card">
+          <div class="card-icon">🐛</div>
+          <h3>Report an issue</h3>
+          <p>
+            Found a bug or data inconsistency? Open an issue on GitHub and help
+            us improve the API for everyone.
+          </p>
+          <a href="https://github.com/br-g/openf1/issues" class="card-link">
+            Open an issue
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-header">
+          <h2>Direct contact</h2>
+          <p>
+            For partnership inquiries, integration support, or anything that
+            doesn't fit the public forums.
+          </p>
+        </div>
+
+        <form action="https://formspree.io/f/xkovwbwk" method="POST">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="email">Email <span class="required">*</span></label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                placeholder="you@organization.com"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="organization"
+                >Organization <span class="optional">(optional)</span></label
+              >
+              <input
+                type="text"
+                id="organization"
+                name="organization"
+                placeholder="Organization or project name"
+              />
+            </div>
+
+            <div class="form-group full-width">
+              <label for="inquiry-type">What brings you here?</label>
+              <select id="inquiry-type" name="inquiry_type">
+                <option value="general">General question</option>
+                <option value="integration">Integration support</option>
+                <option value="partnership">Partnership / Collaboration</option>
+                <option value="media">Media inquiry</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="message"
+                >Message <span class="required">*</span></label
+              >
+              <textarea
+                id="message"
+                name="message"
+                required
+                placeholder="Tell us about your project or question..."
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="submit-btn">
+                Send message
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="logo">Open<span>F1</span></div>
+          <p>
+            The open-source API for real-time and historical Formula 1 data.
+            Built by the community, for the community.
+          </p>
+        </div>
+        <div class="footer-column">
+          <h4>Platform</h4>
+          <a href="https://openf1.org/docs#api-endpoints">API reference</a>
+          <a href="https://openf1.org/#features">Features</a>
+          <a href="https://openf1.org/#pricing">Access & Sponsorship</a>
+        </div>
+        <div class="footer-column">
+          <h4>Community</h4>
+          <a href="https://github.com/br-g/openf1" target="_blank">GitHub</a>
+          <a href="https://github.com/br-g/openf1/discussions" target="_blank"
+            >Discussions</a
+          >
+          <a
+            href="https://github.com/br-g/openf1/blob/main/CONTRIBUTING.md"
+            target="_blank"
+            >Contributing</a
+          >
+        </div>
+        <div class="footer-column">
+          <h4>Support</h4>
+          <a href="https://openf1.org/#faq">FAQ</a>
+          <a href="https://openf1.org/contact">Contact</a>
+          <a href="https://www.buymeacoffee.com/openf1" target="_blank"
+            >Donate</a
+          >
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>
+          © <span id="current-year"></span> OpenF1. Licensed under
+          <a
+            href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+            target="_blank"
+            >CC BY-NC-SA 4.0</a
+          >.
+        </p>
+      </div>
+      <div class="disclaimer">
+        <p>
+          OpenF1 is an unofficial project and is not associated in any way with
+          the Formula 1 companies. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE
+          WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trade marks of
+          Formula One Licensing B.V.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      // Mobile menu toggle
+      const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
+      const mobileMenu = document.getElementById("mobileMenu");
+
+      mobileMenuBtn.addEventListener("click", () => {
+        const isActive = mobileMenu.classList.toggle("active");
+        // Prevent body scroll when menu is open
+        if (isActive) {
+          document.body.classList.add("menu-open");
+        } else {
+          document.body.classList.remove("menu-open");
+        }
+      });
+
+      // Close mobile menu when clicking on a link
+      document.querySelectorAll(".mobile-menu-links a").forEach((link) => {
+        link.addEventListener("click", () => {
+          mobileMenu.classList.remove("active");
+          document.body.classList.remove("menu-open");
+        });
+      });
+
+      // Set current year
+      document.getElementById("current-year").textContent =
+        new Date().getFullYear();
+    </script>
+  </body>
+</html>
