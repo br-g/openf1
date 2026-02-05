@@ -1,7 +1,7 @@
 name: "Deploy website"
 on:
   push:
-    branches: [main, contact-form-update]
+    branches: [main]
 
 jobs:
   deploy_documentation:
