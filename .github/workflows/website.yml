@@ -1,4 +1,4 @@
-name: "Deploy documentation"
+name: "Deploy website"
 on:
   push:
     branches: [main]
@@ -30,6 +30,7 @@ jobs:
       - name: Copy landing page
         run: |
           cp ${{ github.workspace }}/landing-page/index.html build/
+          cp ${{ github.workspace }}/landing-page/contact.html build/
 
       - name: Copy additional webpages
         run: |
