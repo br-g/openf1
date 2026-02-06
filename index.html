@@ -5,18 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Free, open source Formula 1 API. Access live telemetry, lap times, and race control data."
+      content="The open source Formula 1 API. Get real-time access to live telemetry, lap times, weather, and race control data for your next project."
     />
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
+    <meta name="theme-color" content="#e10600" />
+    <link rel="canonical" href="https://openf1.org/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://openf1.org/" />
+    <meta property="og:site_name" content="OpenF1" />
     <meta property="og:title" content="OpenF1 API" />
     <meta
       property="og:description"
       content="The open source API for Formula 1 data"
     />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://openf1.org/" />
     <meta
-      property="og:image"
+      property="twitter:title"
+      content="OpenF1 API | The open source API for Formula 1 data"
+    />
+    <meta
+      property="twitter:description"
+      content="Open source Formula 1 API. Access live telemetry, lap times, and race control data. Built for fans to visualize, learn, and create."
+    />
+    <meta
+      property="twitter:image"
       content="https://storage.googleapis.com/openf1-public/images/og-image.png"
     />
-    <meta property="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:image:alt"
+      content="OpenF1 API - The open source Formula 1 data API"
+    />
+
     <title>OpenF1 API | The open source API for Formula 1 data</title>
     <link
       type="image/png"
@@ -24,6 +54,14 @@
       rel="icon"
       href="https://storage.googleapis.com/openf1-public/images/favicon.png"
     />
+
+    <!-- Performance Optimizations -->
+    <link rel="dns-prefetch" href="https://api.github.com" />
+    <link rel="dns-prefetch" href="https://api.openf1.org" />
+    <link rel="dns-prefetch" href="https://storage.googleapis.com" />
+    <link rel="dns-prefetch" href="https://img.youtube.com" />
+    <link rel="preconnect" href="https://storage.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://api.openf1.org" crossorigin />
     <style>
       :root {
         --bg-color: #0f1115;
@@ -929,13 +967,13 @@
         margin: 0 auto;
       }
 
-      /* Pricing */
-      .pricing {
+      /* sponsorship */
+      .sponsorship {
         padding: 5.5rem 2rem;
         background: var(--bg-color);
       }
 
-      .pricing-grid {
+      .sponsorship-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 2rem;
@@ -943,20 +981,22 @@
         margin: 0 auto;
       }
 
-      .pricing-card {
+      .sponsorship-card {
         background: var(--surface-color);
         border: 1px solid var(--border-color);
         border-radius: 12px;
         padding: 2.5rem;
         position: relative;
+        display: flex;
+        flex-direction: column;
       }
 
-      .pricing-card:last-child {
+      .sponsorship-card:last-child {
         border: 1px solid #a6a6a6;
         box-shadow: 0 0 20px rgba(225, 6, 0, 0.1);
       }
 
-      .pricing-tier {
+      .sponsorship-tier {
         font-size: 0.8rem;
         color: var(--text-secondary);
         text-transform: uppercase;
@@ -966,35 +1006,35 @@
         font-weight: 500;
       }
 
-      .pricing-name {
+      .sponsorship-name {
         font-size: 1.5rem;
         font-weight: 700;
         margin-bottom: 0.1rem;
       }
 
-      .pricing-price {
+      .sponsorship-price {
         font-size: 2.5rem;
         font-weight: 700;
         margin-bottom: 1.5rem;
       }
 
-      .pricing-price span {
+      .sponsorship-price span {
         font-size: 1rem;
         font-weight: 400;
         color: var(--text-secondary);
       }
 
-      .pricing-price .price-decimal {
+      .sponsorship-price .price-decimal {
         font-size: 1.5rem;
         font-weight: 700;
         color: var(--text-color);
       }
 
-      .pricing-features {
+      .sponsorship-features {
         margin-bottom: 2rem;
       }
 
-      .pricing-features li {
+      .sponsorship-features li {
         display: flex;
         align-items: center;
         gap: 0.75rem;
@@ -1003,34 +1043,35 @@
         font-size: 0.95rem;
       }
 
-      .pricing-features li::before {
+      .sponsorship-features li::before {
         content: "✓";
         color: var(--success-color);
         font-weight: bold;
       }
 
-      .pricing-card .btn {
+      .sponsorship-card .btn {
         width: 100%;
         justify-content: center;
+        margin-top: auto;
       }
 
-      .pricing-footer {
+      .sponsorship-footer {
         max-width: 700px;
         margin: 3rem auto 0;
         text-align: center;
       }
 
-      .pricing-footer p {
+      .sponsorship-footer p {
         color: var(--text-secondary);
         font-size: 1.1rem;
         line-height: 1.6;
       }
 
-      .pricing-footer a {
+      .sponsorship-footer a {
         color: var(--accent-color);
       }
 
-      .pricing-footer a:hover {
+      .sponsorship-footer a:hover {
         text-decoration: underline;
       }
 
@@ -1218,7 +1259,7 @@
       }
 
       .open-source-content {
-        max-width: 600px;
+        max-width: 620px;
         margin: 0 auto;
       }
 
@@ -1477,7 +1518,7 @@
         .grid.grid-4,
         .use-cases-grid,
         .endpoints-grid,
-        .pricing-grid {
+        .sponsorship-grid {
           grid-template-columns: 1fr;
         }
 
@@ -1512,6 +1553,148 @@
         }
       }
     </style>
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "OpenF1",
+        "description": "The open source API for Formula 1 data",
+        "url": "https://openf1.org/"
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebAPI",
+        "name": "OpenF1 API",
+        "description": "Real-time and historical Formula 1 telemetry, lap times, and race data API",
+        "documentation": "https://openf1.org/docs",
+        "provider": {
+          "@type": "Organization",
+          "name": "OpenF1"
+        }
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareSourceCode",
+        "name": "OpenF1",
+        "programmingLanguage": "Python",
+        "codeRepository": "https://github.com/br-g/openf1",
+        "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "OpenF1 API",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Any",
+        "description": "Open source Formula 1 API. Access live telemetry, lap times, and race control data. Built for fans to visualize, learn, and create.",
+        "offers": [
+          {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "EUR",
+            "name": "Historical data",
+            "description": "Access to all 18 endpoints and historical sessions since 2023"
+          },
+          {
+            "@type": "Offer",
+            "price": "9.90",
+            "priceCurrency": "EUR",
+            "name": "Historical and Live data",
+            "description": "Everything from the free tier plus live data during sessions"
+          }
+        ]
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "OpenF1",
+        "url": "https://openf1.org/",
+        "logo": "https://storage.googleapis.com/openf1-public/images/favicon.png",
+        "sameAs": ["https://github.com/br-g/openf1"]
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is OpenF1 official?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. OpenF1 is an independent, community-driven project not associated with Formula 1, FIA, or Formula One Management."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What can I use OpenF1 for?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "OpenF1 is intended for educational purposes, personal learning
+                projects, research, and non-commercial fan engagement. For other
+                use cases, please contact us to discuss appropriate licensing and ensure compliance with all
+                applicable rights."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What's the data delay?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Real-time data typically updates about 3 seconds after live events — faster than most TV broadcasts."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How far back does historical data go?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Data is available from the 2023 season onwards."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Are there rate limits?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, but they're generous. The free tier allows 3 req/s and 30 req/min, plenty for most projects. Project supporters receive double that capacity."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What formats are supported?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "JSON (default) and CSV. Add 'csv=true' to any request for spreadsheet-compatible output."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What counts as 'live' vs 'historical' data?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Live data is anything from a session still in progress or ended less than 30 minutes ago. After that, it's historical and free to access."
+            }
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <!-- Navigation - Supabase Style -->
@@ -1520,8 +1703,8 @@
         <a href="/" class="logo">Open<span>F1</span></a>
         <a href="#features" class="nav-link">Features</a>
         <a href="docs#api-endpoints" class="nav-link">Docs</a>
-        <a href="contact.html" class="nav-link">Contact</a>
-        <a href="#pricing" class="nav-link">Get access</a>
+        <a href="contact" class="nav-link">Contact</a>
+        <a href="#sponsorship" class="nav-link">Get access</a>
       </div>
       <div class="nav-right">
         <a
@@ -1564,7 +1747,7 @@
     <div class="mobile-menu" id="mobileMenu">
       <div class="mobile-menu-links">
         <a href="#features">Features</a>
-        <a href="#pricing">Sponsorship</a>
+        <a href="#sponsorship">Get access</a>
         <a href="docs#api-endpoints">Docs</a>
         <div class="mobile-menu-divider"></div>
         <a href="https://github.com/br-g/openf1" target="_blank">GitHub</a>
@@ -1574,752 +1757,800 @@
       </div>
     </div>
 
-    <!-- Hero Section -->
-    <section class="hero hero-centered">
-      <div class="hero-content">
-        <h1>The open source API for Formula 1 data</h1>
-        <p>
-          Access live telemetry, timing, and session data from every F1 race
-          weekend.
-        </p>
-        <div class="cta-group">
-          <a href="docs#api-endpoints" class="btn btn-primary"
-            >Start your project</a
-          >
-          <a href="https://github.com/br-g/openf1" class="btn btn-secondary">
-            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-              />
-            </svg>
-            View on GitHub
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Features Grid -->
-    <section id="features" class="features">
-      <div class="section-container">
-        <div class="section-header">
-          <h2>Everything happening on track</h2>
+    <!-- Main Content -->
+    <main role="main">
+      <!-- Hero Section -->
+      <section class="hero hero-centered">
+        <div class="hero-content">
+          <h1>The open source API for Formula 1 data</h1>
           <p>
-            18 endpoints covering everything from throttle traces to team radio.
+            Access live telemetry, timing, and session data from every F1 race
+            weekend. Built for fans to visualize, learn, and create.
           </p>
-        </div>
-        <div class="grid grid-4">
-          <div class="card card-compact">
-            <h3><span class="icon">🏎️</span> Car telemetry</h3>
-            <p>
-              Location, speed, throttle, brake, RPM, and gear data at 3.7 Hz
-              sampling rate.
-            </p>
-          </div>
-          <div class="card card-compact">
-            <h3><span class="icon">⏱️</span> Lap times</h3>
-            <p>
-              Sector times, mini-sectors, speed traps, and lap durations for
-              every driver.
-            </p>
-          </div>
-          <div class="card card-compact">
-            <h3><span class="icon">🏁</span> Race positions</h3>
-            <p>
-              Real-time position changes, intervals, and gaps to leader updated
-              every 4 seconds.
-            </p>
-          </div>
-          <div class="card card-compact">
-            <h3><span class="icon">🛞</span> Pit stops</h3>
-            <p>Pit lane timing, stop duration, and tire compound data.</p>
-          </div>
-          <div class="card card-compact">
-            <h3><span class="icon">📻</span> Team radio</h3>
-            <p>Audio recordings of driver-to-pit communications.</p>
-          </div>
-          <div class="card card-compact">
-            <h3><span class="icon">🌦️</span> Weather</h3>
-            <p>
-              Track temperature, air temperature, humidity, wind, and rainfall.
-            </p>
-          </div>
-          <div class="card card-compact">
-            <h3><span class="icon">🚩</span> Race control</h3>
-            <p>Flags, safety car, session status, and incident messages.</p>
-          </div>
-          <div class="card card-compact">
-            <h3><span class="icon">🏆</span> Championship standings</h3>
-            <p>Live driver and constructor points throughout each race.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Community Projects -->
-    <section class="community-projects">
-      <div class="section-container">
-        <div class="section-header">
-          <h2>Built by the community</h2>
-          <p>See what fans are creating with OpenF1.</p>
-        </div>
-        <div class="projects-grid">
-          <a
-            href="https://www.youtube.com/watch?v=cgdjTIb8I3k"
-            target="_blank"
-            class="project-card"
-          >
-            <div class="project-thumbnail">
-              <img
-                src="https://img.youtube.com/vi/cgdjTIb8I3k/maxresdefault.jpg"
-                alt="LED Race Track Project"
-              />
-              <div class="project-play-icon">
-                <svg
-                  width="48"
-                  height="48"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </div>
-            </div>
-            <div class="project-content">
-              <h3>LIVE Formula One Race Track with LED Lights</h3>
-              <p>
-                An LED strip shaped into the Yas Marina circuit to represent the
-                Abu Dhabi Grand Prix in real-time.
-              </p>
-            </div>
-          </a>
-          <a
-            href="https://www.pitsngiggles.com/"
-            target="_blank"
-            class="project-card"
-          >
-            <div class="project-thumbnail project-thumbnail-site">
-              <div class="project-site-preview">
-                <span class="project-site-icon">🏎️</span>
-                <span class="project-site-name">pitsngiggles.com</span>
-              </div>
-            </div>
-            <div class="project-content">
-              <h3>Pits n' Giggles</h3>
-              <p>
-                A real-time sim racing analytics and race engineering dashboard
-                for F1 23+ games, comparing your laps against real-life pole
-                times.
-              </p>
-            </div>
-          </a>
-          <a
-            href="https://youtube.com/shorts/k_8ZvZwoJ0w"
-            target="_blank"
-            class="project-card"
-          >
-            <div class="project-thumbnail">
-              <img
-                src="https://img.youtube.com/vi/k_8ZvZwoJ0w/maxresdefault.jpg"
-                alt="VR F1 Visualization"
-              />
-              <div class="project-play-icon">
-                <svg
-                  width="48"
-                  height="48"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </div>
-            </div>
-            <div class="project-content">
-              <h3>F1 Data Visualization for Meta Quest</h3>
-              <p>
-                A Unity-powered VR experience rendering live race circuits in 3D
-                with real-time driver positions using GPS data.
-              </p>
-            </div>
-          </a>
-        </div>
-        <div class="projects-cta">
-          <p>
-            Making something cool?
-            <a
-              href="https://github.com/br-g/openf1/discussions/categories/show-and-tell"
-              target="_blank"
-              >Share your project with the community.</a
+          <div class="cta-group">
+            <a href="docs#api-endpoints" class="btn btn-primary"
+              >Start your project</a
             >
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- How It Works -->
-    <section class="how-it-works">
-      <div class="section-container">
-        <div class="section-header">
-          <h2>Instant APIs. Zero friction.</h2>
-          <p>
-            Query historical data immediately. No API keys, no credit cards, and
-            no signup required.
-          </p>
-        </div>
-        <div class="steps">
-          <div class="step">
-            <div class="step-number">1</div>
-            <h3>Choose your endpoint</h3>
-            <p>
-              Pick from 18 endpoints covering every aspect of an F1 weekend.
-            </p>
-          </div>
-          <div class="step">
-            <div class="step-number">2</div>
-            <h3>Add filters</h3>
-            <p>Filter by driver, session, time range, or any attribute.</p>
-          </div>
-          <div class="step">
-            <div class="step-number">3</div>
-            <h3>Get your data</h3>
-            <p>Receive JSON or CSV responses instantly.</p>
-          </div>
-        </div>
-        <div class="demo-code">
-          <div class="code-window">
-            <div class="window-header">
-              <div class="window-header-left">
-                <div class="window-dots">
-                  <div class="dot red"></div>
-                  <div class="dot yellow"></div>
-                  <div class="dot green"></div>
-                </div>
-                <div class="code-tabs">
-                  <button class="code-tab" data-lang="excel">Excel</button>
-                  <button class="code-tab active" data-lang="shell">
-                    Shell
-                  </button>
-                  <button class="code-tab" data-lang="python">Python</button>
-                  <button class="code-tab" data-lang="javascript">
-                    JavaScript
-                  </button>
-                  <button class="code-tab" data-lang="r">R</button>
-                </div>
-              </div>
-              <div class="window-header-right">
-                <button class="run-btn" id="runCodeBtn">
-                  <svg fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                  Run
-                </button>
-                <button class="copy-btn" id="copyCodeBtn">
-                  <svg
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <rect
-                      x="9"
-                      y="9"
-                      width="13"
-                      height="13"
-                      rx="2"
-                      ry="2"
-                    ></rect>
-                    <path
-                      d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
-                    ></path>
-                  </svg>
-                  Copy
-                </button>
-              </div>
-            </div>
-            <div class="code-content" id="code-excel" style="display: none">
-              <span class="comment"
-                >// Get Lewis Hamilton's laps data at the Abu Dhabi 2025
-                GP</span
-              ><br /><br />
-              <span class="comment">// Open this URL in your browser:</span
-              ><br />
-              <span class="string"
-                >https://api.openf1.org/v1/laps?session_key=9839&driver_number=44&csv=true</span
-              ><br /><br />
-              <span class="comment"
-                >// The browser will download a CSV file that you can open
-                directly in Excel.</span
-              >
-            </div>
-            <div class="code-content" id="code-shell" style="display: block">
-              <span class="comment"
-                ># Get Lewis Hamilton's first laps data at the Abu Dhabi 2025
-                GP</span
-              ><br /><br />
-              <span class="keyword">curl</span>
-              <span class="string"
-                >"https://api.openf1.org/v1/laps?session_key=9839&driver_number=44&lap_number<=3"</span
-              >
-            </div>
-            <div class="code-content" id="code-python" style="display: none">
-              <span class="comment"
-                ># Get Lewis Hamilton's first laps data at the Abu Dhabi 2025
-                GP</span
-              ><br /><br />
-              <span class="keyword">from</span> urllib.request
-              <span class="keyword">import</span> urlopen<br />
-              <span class="keyword">import</span> json<br /><br />
-              response = <span class="function">urlopen</span>(<span
-                class="string"
-                >'https://api.openf1.org/v1/laps?session_key=9839&driver_number=44&lap_number<=3'</span
-              >)<br />
-              data = json.<span class="function">loads</span>(response.<span
-                class="function"
-                >read</span
-              >().<span class="function">decode</span>(<span class="string"
-                >'utf-8'</span
-              >))<br />
-              <span class="function">print</span>(data)<br /><br />
-              <span class="comment"
-                ># If you want, you can import the results in a DataFrame (you
-                need to install the `pandas` package first)</span
-              ><br />
-              <span class="comment"># import pandas as pd</span><br />
-              <span class="comment"># df = pd.DataFrame(data)</span>
-            </div>
-            <div class="code-content" id="code-r" style="display: none">
-              <span class="comment"
-                ># Get Lewis Hamilton's first laps data at the Abu Dhabi 2025
-                GP</span
-              ><br /><br />
-              <span class="comment"># If needed, install libraries</span><br />
-              <span class="comment"># install.packages('httr')</span><br />
-              <span class="comment"># install.packages('jsonlite')</span
-              ><br /><br />
-              <span class="function">library</span>(httr)<br />
-              <span class="function">library</span>(jsonlite)<br /><br />
-              response &lt;- <span class="function">GET</span>(<span
-                class="string"
-                >'https://api.openf1.org/v1/laps?session_key=9839&driver_number=44&lap_number<=3'</span
-              >)<br />
-              parsed_data &lt;- <span class="function">fromJSON</span>(<span
-                class="function"
-                >content</span
-              >(response, <span class="string">'text'</span>))<br />
-              <span class="function">print</span>(parsed_data)<br /><br />
-              <span class="comment"
-                ># If you want, you can import the results in a DataFrame</span
-              ><br />
-              <span class="comment"
-                ># df &lt;- do.call(rbind, lapply(parsed_data, data.frame,
-                stringsAsFactors = FALSE))</span
-              ><br />
-              <span class="comment"
-                ># df &lt;- as.data.frame(t(as.matrix(df)))</span
-              >
-            </div>
-            <div
-              class="code-content"
-              id="code-javascript"
-              style="display: none"
-            >
-              <span class="comment"
-                >// Get Lewis Hamilton's first laps data at the Abu Dhabi 2025
-                GP</span
-              ><br /><br />
-              <span class="function">fetch</span>(<br />
-              &nbsp;&nbsp;<span class="string"
-                >"https://api.openf1.org/v1/laps?session_key=9839&driver_number=44&lap_number<=3"</span
-              >,<br />
-              )<br />
-              &nbsp;&nbsp;.<span class="function">then</span>((response) =&gt;
-              response.<span class="function">json</span>())<br />
-              &nbsp;&nbsp;.<span class="function">then</span>((jsonContent)
-              =&gt; console.<span class="function">log</span>(jsonContent));
-            </div>
-            <div class="code-output" id="codeOutput">
-              <div class="output-label">Output:</div>
-              <pre id="outputContent"></pre>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Access & Sponsorship -->
-    <section id="pricing" class="pricing">
-      <div class="section-container">
-        <div class="section-header">
-          <h2>Sponsorship</h2>
-          <p>Start for free, upgrade for live capabilities.</p>
-        </div>
-        <div class="pricing-grid">
-          <div class="pricing-card">
-            <div class="pricing-name">Historical data</div>
-            <div class="pricing-tier">Personal use only</div>
-            <div class="pricing-price">€0 <span>/ forever</span></div>
-            <ul class="pricing-features">
-              <li>All 18 endpoints</li>
-              <li>All historical sessions since 2023</li>
-              <li>JSON and CSV formats</li>
-              <li>No authentication required</li>
-              <li>Up to 3 requests per second and 30 requests per minute</li>
-            </ul>
-            <a href="docs/#api-endpoints" class="btn btn-secondary"
-              >Start building</a
-            >
-          </div>
-          <div class="pricing-card">
-            <div class="pricing-name">Historical and Live data</div>
-            <div class="pricing-tier">Personal use only</div>
-            <div class="pricing-price">
-              €9<span class="price-decimal">.90</span> <span>/ month</span>
-            </div>
-            <ul class="pricing-features">
-              <li>Everything from the free plan</li>
-              <li>Live data during sessions with REST, MQTT, and WebSocket</li>
-              <li>Up to 6 requests per second and 60 requests per minute</li>
-              <li>Supports the long-term sustainability of OpenF1</li>
-            </ul>
-            <a
-              href="https://buy.stripe.com/eVqcN41BPekP0iIalBcEw02"
-              class="btn btn-primary"
-              >Get access</a
-            >
-          </div>
-        </div>
-        <div class="pricing-footer">
-          <p>
-            For non-personal use, higher rate limits, technical guidance,
-            priority support, or SLA/guarantees, please
-            <a href="contact.html">get in touch</a>.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Democratizing F1 Data -->
-    <section class="open-source">
-      <div class="section-container">
-        <div class="section-header">
-          <h2>Democratizing F1 data</h2>
-        </div>
-        <div class="open-source-content">
-          <p>
-            OpenF1 exists to make Formula 1 data open and accessible to
-            everyone. The entire project is open source, community-driven, and
-            built with transparency.
-          </p>
-          <div class="github-stats">
-            <div class="github-stat" id="starsCount">⭐ 1.1K stars</div>
-            <div class="github-stat" id="forksCount">
+            <a href="https://github.com/br-g/openf1" class="btn btn-secondary">
               <svg
-                width="16"
-                height="16"
+                width="18"
+                height="18"
                 fill="currentColor"
-                viewBox="0 0 16 16"
+                viewBox="0 0 24 24"
               >
                 <path
-                  d="M5 3.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0zm0 2.122a2.25 2.25 0 1 0-1.5 0v.878A2.25 2.25 0 0 0 5.75 8.5h1.5v2.128a2.251 2.251 0 1 0 1.5 0V8.5h1.5a2.25 2.25 0 0 0 2.25-2.25v-.878a2.25 2.25 0 1 0-1.5 0v.878a.75.75 0 0 1-.75.75h-4.5A.75.75 0 0 1 5 6.25v-.878zm3.75 7.378a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0zm3-8.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5z"
+                  d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
                 />
               </svg>
-              89 forks
-            </div>
-            <div class="github-stat">👥 Active contributors</div>
+              View on GitHub
+            </a>
           </div>
-          <a href="https://github.com/br-g/openf1" class="btn btn-secondary">
-            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-              />
-            </svg>
-            View on GitHub
-          </a>
         </div>
-        <div class="testimonials-carousel-wrapper">
-          <button
-            class="carousel-btn carousel-btn-prev"
-            aria-label="Previous testimonial"
-          >
-            <svg
-              width="20"
-              height="20"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              viewBox="0 0 24 24"
+      </section>
+
+      <!-- Features Grid -->
+      <section id="features" class="features">
+        <div class="section-container">
+          <div class="section-header">
+            <h2>Everything happening on track</h2>
+            <p>
+              18 endpoints covering everything from throttle traces to team
+              radio.
+            </p>
+          </div>
+          <div class="grid grid-4">
+            <div class="card card-compact">
+              <h3><span class="icon">🏎️</span> Car telemetry</h3>
+              <p>
+                Location, speed, throttle, brake, RPM, and gear data at 3.7 Hz
+                sampling rate.
+              </p>
+            </div>
+            <div class="card card-compact">
+              <h3><span class="icon">⏱️</span> Lap times</h3>
+              <p>
+                Sector times, mini-sectors, speed traps, and lap durations for
+                every driver.
+              </p>
+            </div>
+            <div class="card card-compact">
+              <h3><span class="icon">🏁</span> Race positions</h3>
+              <p>
+                Real-time position changes, intervals, and gaps to leader
+                updated every 4 seconds.
+              </p>
+            </div>
+            <div class="card card-compact">
+              <h3><span class="icon">🛞</span> Pit stops</h3>
+              <p>Pit lane timing, stop duration, and tire compound data.</p>
+            </div>
+            <div class="card card-compact">
+              <h3><span class="icon">📻</span> Team radio</h3>
+              <p>Audio recordings of driver-to-pit communications.</p>
+            </div>
+            <div class="card card-compact">
+              <h3><span class="icon">🌦️</span> Weather</h3>
+              <p>
+                Track temperature, air temperature, humidity, wind, and
+                rainfall.
+              </p>
+            </div>
+            <div class="card card-compact">
+              <h3><span class="icon">🚩</span> Race control</h3>
+              <p>Flags, safety car, session status, and incident messages.</p>
+            </div>
+            <div class="card card-compact">
+              <h3><span class="icon">🏆</span> Championship standings</h3>
+              <p>Live driver and constructor points throughout each race.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Community Projects -->
+      <section class="community-projects">
+        <div class="section-container">
+          <div class="section-header">
+            <h2>Built by the community</h2>
+            <p>See what fans are creating with OpenF1.</p>
+          </div>
+          <div class="projects-grid">
+            <a
+              href="https://www.youtube.com/watch?v=cgdjTIb8I3k"
+              target="_blank"
+              class="project-card"
             >
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-          </button>
-          <div class="testimonials-carousel">
-            <div class="testimonials-track">
-              <div class="testimonial">
-                <p class="testimonial-quote">
-                  "If you are a developer and love F1, here is something you
-                  will love! I tested it and it's insane. Go build a project out
-                  of it."
-                </p>
-                <div class="testimonial-author">
-                  <div class="testimonial-avatar">SP</div>
-                  <div>
-                    <div class="testimonial-name">Subhamay Paul</div>
-                    <div class="testimonial-role">
-                      on
-                      <a
-                        href="https://x.com/PaulSubhomay/status/1802364516253975005?s=20"
-                        target="_blank"
-                        style="color: var(--text-secondary)"
-                        >X</a
-                      >
-                    </div>
-                  </div>
+              <div class="project-thumbnail">
+                <img
+                  src="https://img.youtube.com/vi/cgdjTIb8I3k/maxresdefault.jpg"
+                  alt="DIY LED race track displaying real-time F1 car positions using OpenF1 API data - Abu Dhabi Grand Prix Yas Marina circuit visualization project"
+                  loading="lazy"
+                />
+                <div class="project-play-icon">
+                  <svg
+                    width="48"
+                    height="48"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
                 </div>
               </div>
-              <div class="testimonial">
-                <p class="testimonial-quote">
-                  "A big thank you for creating and maintaining this fantastic
-                  dataset, very well documented and accessible."
+              <div class="project-content">
+                <h3>LIVE Formula One Race Track with LED Lights</h3>
+                <p>
+                  An LED strip shaped into the Yas Marina circuit to represent
+                  the Abu Dhabi Grand Prix in real-time.
                 </p>
-                <div class="testimonial-author">
-                  <div class="testimonial-avatar">JC</div>
-                  <div>
-                    <div class="testimonial-name">James Collins</div>
-                    <div class="testimonial-role">
-                      on
-                      <a
-                        href="https://buymeacoffee.com/openf1"
-                        target="_blank"
-                        style="color: var(--text-secondary)"
-                        >Buy Me a Coffee</a
-                      >
-                    </div>
-                  </div>
-                </div>
               </div>
-              <div class="testimonial">
-                <p class="testimonial-quote">
-                  "The OpenF1 API is the primary data source, offering detailed
-                  timing, position, and status information... The current
-                  architecture is lightweight but robust, perfect for a personal
-                  project that needs to run reliably without breaking the bank."
-                </p>
-                <div class="testimonial-author">
-                  <div class="testimonial-avatar">MN</div>
-                  <div>
-                    <div class="testimonial-name">Mostafa Nabil</div>
-                    <div class="testimonial-role">
-                      <a
-                        href="https://mostafaanany.medium.com/building-a-formula-1-data-pipeline-the-data-collection-layer-4d64efad4f79"
-                        target="_blank"
-                        style="color: var(--text-secondary)"
-                        >"Building a Formula 1 Data Pipeline"</a
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="testimonial">
-                <p class="testimonial-quote">
-                  "Thanks to openf1's great work, I was able to combine my two
-                  passions — F1 and data visualisation into one!"
-                </p>
-                <div class="testimonial-author">
-                  <div class="testimonial-avatar">KL</div>
-                  <div>
-                    <div class="testimonial-name">@kleu046</div>
-                    <div class="testimonial-role">
-                      Built a Shiny app with Python
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="testimonial">
-                <p class="testimonial-quote">
-                  "I'm enjoying all of this data as a little kid in Christmas
-                  💪💪"
-                </p>
-                <div class="testimonial-author">
-                  <div class="testimonial-avatar">NT</div>
-                  <div>
-                    <div class="testimonial-name">NinTricks</div>
-                    <div class="testimonial-role">
-                      on
-                      <a
-                        href="https://x.com/TricksNin/status/1765896625312919962?s=20"
-                        target="_blank"
-                        style="color: var(--text-secondary)"
-                        >X</a
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="testimonial">
-                <p class="testimonial-quote">
-                  "Thank you so much for making this website possible with the
-                  OpenF1 API; this project would not have been possible without
-                  this. He has also fixed many issues we ran into, so we are
-                  very thankful for his community support."
-                </p>
-                <div class="testimonial-author">
-                  <div class="testimonial-avatar">AK</div>
-                  <div>
-                    <div class="testimonial-name">@adityakotha03</div>
-                    <div class="testimonial-role">
-                      Creator of
-                      <a
-                        href="https://www.f1nsight.com"
-                        target="_blank"
-                        style="color: var(--text-secondary)"
-                        >F1nsight</a
-                      >
-                      (3D telemetry visualization)
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="testimonial">
-                <p class="testimonial-quote">
-                  "Thanks for the amazing API, Making a prediction model based
-                  out of the data. It makes the work so convenient. Kudos to you
-                  👍"
-                </p>
-                <div class="testimonial-author">
-                  <div class="testimonial-avatar">TD</div>
-                  <div>
-                    <div class="testimonial-name">Tanmay Dhelia</div>
-                    <div class="testimonial-role">
-                      on
-                      <a
-                        href="https://x.com/tanmaydhelia23/status/1848017846145556751?s=20"
-                        target="_blank"
-                        style="color: var(--text-secondary)"
-                        >X</a
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="testimonial">
-                <p class="testimonial-quote">
-                  "Shoutout for making the fantastic API. I'm currently using it
-                  for this project: https://p10.racing and it allows for some
-                  reach nice features. Great job!"
-                </p>
-                <div class="testimonial-author">
-                  <div class="testimonial-avatar">MK</div>
-                  <div>
-                    <div class="testimonial-name">Markopteryx</div>
-                    <div class="testimonial-role">
-                      on
-                      <a
-                        href="https://x.com/markopteryx/status/1776862052172066872?s=20"
-                        target="_blank"
-                        style="color: var(--text-secondary)"
-                        >X</a
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <button
-            class="carousel-btn carousel-btn-next"
-            aria-label="Next testimonial"
-          >
-            <svg
-              width="20"
-              height="20"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              viewBox="0 0 24 24"
+            </a>
+            <a
+              href="https://www.pitsngiggles.com/"
+              target="_blank"
+              class="project-card"
             >
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          </button>
+              <div class="project-thumbnail project-thumbnail-site">
+                <div class="project-site-preview">
+                  <span class="project-site-icon">🏎️</span>
+                  <span class="project-site-name">pitsngiggles.com</span>
+                </div>
+              </div>
+              <div class="project-content">
+                <h3>Pits n' Giggles</h3>
+                <p>
+                  A real-time sim racing analytics and race engineering
+                  dashboard for F1 23+ games, comparing your laps against
+                  real-life pole times.
+                </p>
+              </div>
+            </a>
+            <a
+              href="https://youtube.com/shorts/k_8ZvZwoJ0w"
+              target="_blank"
+              class="project-card"
+            >
+              <div class="project-thumbnail">
+                <img
+                  src="https://img.youtube.com/vi/k_8ZvZwoJ0w/maxresdefault.jpg"
+                  alt="Formula 1 VR experience built with OpenF1 API - 3D race circuit visualization with live GPS driver positions on Meta Quest headset"
+                  loading="lazy"
+                />
+                <div class="project-play-icon">
+                  <svg
+                    width="48"
+                    height="48"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </div>
+              </div>
+              <div class="project-content">
+                <h3>F1 Data Visualization for Meta Quest</h3>
+                <p>
+                  A Unity-powered VR experience rendering live race circuits in
+                  3D with real-time driver positions using GPS data.
+                </p>
+              </div>
+            </a>
+          </div>
+          <div class="projects-cta">
+            <p>
+              Making something cool?
+              <a
+                href="https://github.com/br-g/openf1/discussions/categories/show-and-tell"
+                target="_blank"
+                >Share your project with the community.</a
+              >
+            </p>
+          </div>
         </div>
-        <div class="carousel-dots"></div>
-      </div>
-    </section>
+      </section>
 
-    <!-- FAQ -->
-    <section class="faq" id="faq">
-      <div class="section-container">
-        <div class="section-header">
-          <h2>Frequently asked questions</h2>
+      <!-- How It Works -->
+      <section class="how-it-works">
+        <div class="section-container">
+          <div class="section-header">
+            <h2>Instant APIs. Zero friction.</h2>
+            <p>
+              Query historical data immediately. No API keys, no credit cards,
+              and no signup required.
+            </p>
+          </div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-number">1</div>
+              <h3>Choose your endpoint</h3>
+              <p>
+                Pick from 18 endpoints covering every aspect of an F1 weekend.
+              </p>
+            </div>
+            <div class="step">
+              <div class="step-number">2</div>
+              <h3>Add filters</h3>
+              <p>Filter by driver, session, time range, or any attribute.</p>
+            </div>
+            <div class="step">
+              <div class="step-number">3</div>
+              <h3>Get your data</h3>
+              <p>Receive JSON or CSV responses instantly.</p>
+            </div>
+          </div>
+          <div class="demo-code">
+            <div class="code-window">
+              <div class="window-header">
+                <div class="window-header-left">
+                  <div class="window-dots">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                  </div>
+                  <div class="code-tabs">
+                    <button class="code-tab" data-lang="excel">Excel</button>
+                    <button class="code-tab active" data-lang="shell">
+                      Shell
+                    </button>
+                    <button class="code-tab" data-lang="python">Python</button>
+                    <button class="code-tab" data-lang="javascript">
+                      JavaScript
+                    </button>
+                    <button class="code-tab" data-lang="r">R</button>
+                  </div>
+                </div>
+                <div class="window-header-right">
+                  <button class="run-btn" id="runCodeBtn">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                    Run
+                  </button>
+                  <button class="copy-btn" id="copyCodeBtn">
+                    <svg
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <rect
+                        x="9"
+                        y="9"
+                        width="13"
+                        height="13"
+                        rx="2"
+                        ry="2"
+                      ></rect>
+                      <path
+                        d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                      ></path>
+                    </svg>
+                    Copy
+                  </button>
+                </div>
+              </div>
+              <div class="code-content" id="code-excel" style="display: none">
+                <span class="comment"
+                  >// Get Lewis Hamilton's laps data at the Abu Dhabi 2025
+                  GP</span
+                ><br /><br />
+                <span class="comment">// Open this URL in your browser:</span
+                ><br />
+                <span class="string"
+                  >https://api.openf1.org/v1/laps?session_key=9839&driver_number=44&csv=true</span
+                ><br /><br />
+                <span class="comment"
+                  >// The browser will download a CSV file that you can open
+                  directly in Excel.</span
+                >
+              </div>
+              <div class="code-content" id="code-shell" style="display: block">
+                <span class="comment"
+                  ># Get Lewis Hamilton's first laps data at the Abu Dhabi 2025
+                  GP</span
+                ><br /><br />
+                <span class="keyword">curl</span>
+                <span class="string"
+                  >"https://api.openf1.org/v1/laps?session_key=9839&driver_number=44&lap_number<=3"</span
+                >
+              </div>
+              <div class="code-content" id="code-python" style="display: none">
+                <span class="comment"
+                  ># Get Lewis Hamilton's first laps data at the Abu Dhabi 2025
+                  GP</span
+                ><br /><br />
+                <span class="keyword">from</span> urllib.request
+                <span class="keyword">import</span> urlopen<br />
+                <span class="keyword">import</span> json<br /><br />
+                response = <span class="function">urlopen</span>(<span
+                  class="string"
+                  >'https://api.openf1.org/v1/laps?session_key=9839&driver_number=44&lap_number<=3'</span
+                >)<br />
+                data = json.<span class="function">loads</span>(response.<span
+                  class="function"
+                  >read</span
+                >().<span class="function">decode</span>(<span class="string"
+                  >'utf-8'</span
+                >))<br />
+                <span class="function">print</span>(data)<br /><br />
+                <span class="comment"
+                  ># If you want, you can import the results in a DataFrame (you
+                  need to install the `pandas` package first)</span
+                ><br />
+                <span class="comment"># import pandas as pd</span><br />
+                <span class="comment"># df = pd.DataFrame(data)</span>
+              </div>
+              <div class="code-content" id="code-r" style="display: none">
+                <span class="comment"
+                  ># Get Lewis Hamilton's first laps data at the Abu Dhabi 2025
+                  GP</span
+                ><br /><br />
+                <span class="comment"># If needed, install libraries</span
+                ><br />
+                <span class="comment"># install.packages('httr')</span><br />
+                <span class="comment"># install.packages('jsonlite')</span
+                ><br /><br />
+                <span class="function">library</span>(httr)<br />
+                <span class="function">library</span>(jsonlite)<br /><br />
+                response &lt;- <span class="function">GET</span>(<span
+                  class="string"
+                  >'https://api.openf1.org/v1/laps?session_key=9839&driver_number=44&lap_number<=3'</span
+                >)<br />
+                parsed_data &lt;- <span class="function">fromJSON</span>(<span
+                  class="function"
+                  >content</span
+                >(response, <span class="string">'text'</span>))<br />
+                <span class="function">print</span>(parsed_data)<br /><br />
+                <span class="comment"
+                  ># If you want, you can import the results in a
+                  DataFrame</span
+                ><br />
+                <span class="comment"
+                  ># df &lt;- do.call(rbind, lapply(parsed_data, data.frame,
+                  stringsAsFactors = FALSE))</span
+                ><br />
+                <span class="comment"
+                  ># df &lt;- as.data.frame(t(as.matrix(df)))</span
+                >
+              </div>
+              <div
+                class="code-content"
+                id="code-javascript"
+                style="display: none"
+              >
+                <span class="comment"
+                  >// Get Lewis Hamilton's first laps data at the Abu Dhabi 2025
+                  GP</span
+                ><br /><br />
+                <span class="function">fetch</span>(<br />
+                &nbsp;&nbsp;<span class="string"
+                  >"https://api.openf1.org/v1/laps?session_key=9839&driver_number=44&lap_number<=3"</span
+                >,<br />
+                )<br />
+                &nbsp;&nbsp;.<span class="function">then</span>((response) =&gt;
+                response.<span class="function">json</span>())<br />
+                &nbsp;&nbsp;.<span class="function">then</span>((jsonContent)
+                =&gt; console.<span class="function">log</span>(jsonContent));
+              </div>
+              <div class="code-output" id="codeOutput">
+                <div class="output-label">Output:</div>
+                <pre id="outputContent"></pre>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="faq-grid">
-          <div class="faq-item">
-            <div class="faq-question">Is OpenF1 official?</div>
-            <div class="faq-answer">
-              No. OpenF1 is an independent, community-driven project not
-              associated with Formula 1, FIA, or Formula One Management.
-            </div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question">What's the data delay?</div>
-            <div class="faq-answer">
-              Real-time data typically updates about 3 seconds after live events
-              — faster than most TV broadcasts.
-            </div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question">
-              How far back does historical data go?
-            </div>
-            <div class="faq-answer">
-              Data is available from the 2023 season onwards.
-            </div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question">Are there rate limits?</div>
-            <div class="faq-answer">
-              Yes, but they're generous. The free tier allows 3 req/s and 30
-              req/min, plenty for most projects. Paid plans double that.
-            </div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question">What formats are supported?</div>
-            <div class="faq-answer">
-              JSON (default) and CSV. Add "csv=true" to any request for
-              spreadsheet-compatible output.
-            </div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question">
-              What counts as "live" vs "historical" data?
-            </div>
-            <div class="faq-answer">
-              Live data is anything from a session still in progress or ended
-              less than 30 minutes ago. After that, it's historical and free to
-              access.
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Final CTA -->
-    <section class="final-cta">
-      <div class="section-container">
-        <h2>Ready to build something fast?</h2>
-        <p>Start with historical data for free. No signup required.</p>
-        <div class="cta-group">
-          <a href="docs#api-endpoints" class="btn btn-primary">Read the docs</a>
-          <a
-            href="https://buy.stripe.com/eVqcN41BPekP0iIalBcEw02"
-            class="btn btn-secondary"
-            >Get real-time access</a
-          >
+      <!-- Access & Sponsorship -->
+      <section id="sponsorship" class="sponsorship">
+        <div class="section-container">
+          <div class="section-header">
+            <h2>Access & Support</h2>
+            <p>
+              OpenF1 is free for everyone. Sponsors help cover our server costs.
+            </p>
+          </div>
+          <div class="sponsorship-grid">
+            <div class="sponsorship-card">
+              <div class="sponsorship-name">Community</div>
+              <div class="sponsorship-tier">Historical data | Personal use</div>
+              <div class="sponsorship-price">Free <span>/ forever</span></div>
+              <ul class="sponsorship-features">
+                <li>All 18 endpoints</li>
+                <li>All historical sessions since 2023</li>
+                <li>JSON and CSV formats</li>
+                <li>No authentication required</li>
+                <li>Up to 3 requests per second and 30 requests per minute</li>
+              </ul>
+              <a href="docs/#api-endpoints" class="btn btn-secondary"
+                >Start building</a
+              >
+            </div>
+            <div class="sponsorship-card">
+              <div class="sponsorship-name">Sponsor</div>
+              <div class="sponsorship-tier">
+                Historical + Live data | Personal use
+              </div>
+              <div class="sponsorship-price">
+                €9<span class="price-decimal">.90</span> <span>/ month</span>
+              </div>
+              <ul class="sponsorship-features">
+                <li>Helps keep the project alive</li>
+                <li>Everything from the free tier</li>
+                <li>
+                  Live data during sessions with REST, MQTT, and WebSocket
+                </li>
+                <li>Up to 6 requests per second and 60 requests per minute</li>
+              </ul>
+              <a
+                href="https://buy.stripe.com/eVqcN41BPekP0iIalBcEw02"
+                class="btn btn-primary"
+                >Become a sponsor</a
+              >
+            </div>
+          </div>
+          <div class="sponsorship-footer">
+            <p>
+              For other use cases, higher rate limits, technical guidance,
+              priority support, or SLA/guarantees, please
+              <a href="contact">get in touch</a>.
+            </p>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <!-- Democratizing F1 Data -->
+      <section class="open-source">
+        <div class="section-container">
+          <div class="section-header">
+            <h2>Democratizing F1 data</h2>
+          </div>
+          <div class="open-source-content">
+            <p>
+              <span data-nosnippet>
+                OpenF1 exists to make Formula 1 data open and accessible to
+                everyone. The entire project is open source, community-driven,
+                and built with transparency. <br /><br />
+                The project does not claim ownership of Formula 1 data,
+                trademarks, or broadcasts, and does not attempt to compete with
+                or substitute official Formula 1 products or licensed data
+                services.
+              </span>
+            </p>
+            <div class="github-stats">
+              <div class="github-stat" id="starsCount">⭐ 1.1K stars</div>
+              <div class="github-stat" id="forksCount">
+                <svg
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M5 3.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0zm0 2.122a2.25 2.25 0 1 0-1.5 0v.878A2.25 2.25 0 0 0 5.75 8.5h1.5v2.128a2.251 2.251 0 1 0 1.5 0V8.5h1.5a2.25 2.25 0 0 0 2.25-2.25v-.878a2.25 2.25 0 1 0-1.5 0v.878a.75.75 0 0 1-.75.75h-4.5A.75.75 0 0 1 5 6.25v-.878zm3.75 7.378a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0zm3-8.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5z"
+                  />
+                </svg>
+                89 forks
+              </div>
+              <div class="github-stat">👥 Active contributors</div>
+            </div>
+            <a href="https://github.com/br-g/openf1" class="btn btn-secondary">
+              <svg
+                width="18"
+                height="18"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                />
+              </svg>
+              View on GitHub
+            </a>
+          </div>
+          <div class="testimonials-carousel-wrapper">
+            <button
+              class="carousel-btn carousel-btn-prev"
+              aria-label="Previous testimonial"
+            >
+              <svg
+                width="20"
+                height="20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+            <div class="testimonials-carousel">
+              <div class="testimonials-track">
+                <div class="testimonial">
+                  <p class="testimonial-quote">
+                    "If you are a developer and love F1, here is something you
+                    will love! I tested it and it's insane. Go build a project
+                    out of it."
+                  </p>
+                  <div class="testimonial-author">
+                    <div class="testimonial-avatar">SP</div>
+                    <div>
+                      <div class="testimonial-name">Subhamay Paul</div>
+                      <div class="testimonial-role">
+                        on
+                        <a
+                          href="https://x.com/PaulSubhomay/status/1802364516253975005?s=20"
+                          target="_blank"
+                          style="color: var(--text-secondary)"
+                          >X</a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="testimonial">
+                  <p class="testimonial-quote">
+                    "A big thank you for creating and maintaining this fantastic
+                    dataset, very well documented and accessible."
+                  </p>
+                  <div class="testimonial-author">
+                    <div class="testimonial-avatar">JC</div>
+                    <div>
+                      <div class="testimonial-name">James Collins</div>
+                      <div class="testimonial-role">
+                        on
+                        <a
+                          href="https://buymeacoffee.com/openf1"
+                          target="_blank"
+                          style="color: var(--text-secondary)"
+                          >Buy Me a Coffee</a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="testimonial">
+                  <p class="testimonial-quote">
+                    "The OpenF1 API is the primary data source, offering
+                    detailed timing, position, and status information... The
+                    current architecture is lightweight but robust, perfect for
+                    a personal project that needs to run reliably without
+                    breaking the bank."
+                  </p>
+                  <div class="testimonial-author">
+                    <div class="testimonial-avatar">MN</div>
+                    <div>
+                      <div class="testimonial-name">Mostafa Nabil</div>
+                      <div class="testimonial-role">
+                        <a
+                          href="https://mostafaanany.medium.com/building-a-formula-1-data-pipeline-the-data-collection-layer-4d64efad4f79"
+                          target="_blank"
+                          style="color: var(--text-secondary)"
+                          >"Building a Formula 1 Data Pipeline"</a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="testimonial">
+                  <p class="testimonial-quote">
+                    "Thanks to openf1's great work, I was able to combine my two
+                    passions — F1 and data visualisation into one!"
+                  </p>
+                  <div class="testimonial-author">
+                    <div class="testimonial-avatar">KL</div>
+                    <div>
+                      <div class="testimonial-name">@kleu046</div>
+                      <div class="testimonial-role">
+                        Built a Shiny app with Python
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="testimonial">
+                  <p class="testimonial-quote">
+                    "I'm enjoying all of this data as a little kid in Christmas
+                    💪💪"
+                  </p>
+                  <div class="testimonial-author">
+                    <div class="testimonial-avatar">NT</div>
+                    <div>
+                      <div class="testimonial-name">NinTricks</div>
+                      <div class="testimonial-role">
+                        on
+                        <a
+                          href="https://x.com/TricksNin/status/1765896625312919962?s=20"
+                          target="_blank"
+                          style="color: var(--text-secondary)"
+                          >X</a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="testimonial">
+                  <p class="testimonial-quote">
+                    "Thank you so much for making this website possible with the
+                    OpenF1 API; this project would not have been possible
+                    without this. He has also fixed many issues we ran into, so
+                    we are very thankful for his community support."
+                  </p>
+                  <div class="testimonial-author">
+                    <div class="testimonial-avatar">AK</div>
+                    <div>
+                      <div class="testimonial-name">@adityakotha03</div>
+                      <div class="testimonial-role">
+                        Creator of
+                        <a
+                          href="https://www.f1nsight.com"
+                          target="_blank"
+                          style="color: var(--text-secondary)"
+                          >F1nsight</a
+                        >
+                        (3D telemetry visualization)
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="testimonial">
+                  <p class="testimonial-quote">
+                    "Thanks for the amazing API, Making a prediction model based
+                    out of the data. It makes the work so convenient. Kudos to
+                    you 👍"
+                  </p>
+                  <div class="testimonial-author">
+                    <div class="testimonial-avatar">TD</div>
+                    <div>
+                      <div class="testimonial-name">Tanmay Dhelia</div>
+                      <div class="testimonial-role">
+                        on
+                        <a
+                          href="https://x.com/tanmaydhelia23/status/1848017846145556751?s=20"
+                          target="_blank"
+                          style="color: var(--text-secondary)"
+                          >X</a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="testimonial">
+                  <p class="testimonial-quote">
+                    "Shoutout for making the fantastic API. I'm currently using
+                    it for this project: https://p10.racing and it allows for
+                    some reach nice features. Great job!"
+                  </p>
+                  <div class="testimonial-author">
+                    <div class="testimonial-avatar">MK</div>
+                    <div>
+                      <div class="testimonial-name">Markopteryx</div>
+                      <div class="testimonial-role">
+                        on
+                        <a
+                          href="https://x.com/markopteryx/status/1776862052172066872?s=20"
+                          target="_blank"
+                          style="color: var(--text-secondary)"
+                          >X</a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button
+              class="carousel-btn carousel-btn-next"
+              aria-label="Next testimonial"
+            >
+              <svg
+                width="20"
+                height="20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
+          </div>
+          <div class="carousel-dots"></div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section class="faq" id="faq">
+        <div class="section-container">
+          <div class="section-header">
+            <h2>Frequently asked questions</h2>
+          </div>
+          <div class="faq-grid">
+            <div class="faq-item">
+              <div class="faq-question">Is OpenF1 official?</div>
+              <div class="faq-answer">
+                No. OpenF1 is an independent, community-driven project not
+                associated with Formula 1, FIA, or Formula One Management.
+              </div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question">What can I use OpenF1 for?</div>
+              <div class="faq-answer">
+                OpenF1 is intended for educational purposes, personal learning
+                projects, research, and non-commercial fan engagement. For other
+                use cases, please
+                <a href="contact" style="text-decoration: underline"
+                  >contact us</a
+                >
+                to discuss appropriate licensing and ensure compliance with all
+                applicable rights.
+              </div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question">What's the data delay?</div>
+              <div class="faq-answer">
+                Real-time data typically updates about 3 seconds after live
+                events — faster than most TV broadcasts.
+              </div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question">
+                How far back does historical data go?
+              </div>
+              <div class="faq-answer">
+                Data is available from the 2023 season onwards.
+              </div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question">Are there rate limits?</div>
+              <div class="faq-answer">
+                Yes, but they're generous. The free tier allows 3 req/s and 30
+                req/min, plenty for most projects. Project supporters receive
+                double that capacity.
+              </div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question">What formats are supported?</div>
+              <div class="faq-answer">
+                JSON (default) and CSV. Add "csv=true" to any request for
+                spreadsheet-compatible output.
+              </div>
+            </div>
+            <div class="faq-item" style="border-bottom: none">
+              <div class="faq-question">
+                What counts as "live" vs "historical" data?
+              </div>
+              <div class="faq-answer">
+                Live data is anything from a session still in progress or ended
+                less than 30 minutes ago. After that, it's historical and free
+                to access.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Final CTA -->
+      <section class="final-cta">
+        <div class="section-container">
+          <h2>Ready to build something fast?</h2>
+          <p>Explore F1 data for free. No signup required.</p>
+          <div class="cta-group">
+            <a href="docs#api-endpoints" class="btn btn-primary"
+              >Read the docs</a
+            >
+            <a
+              href="https://buy.stripe.com/eVqcN41BPekP0iIalBcEw02"
+              class="btn btn-secondary"
+              >Become a sponsor</a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
 
     <!-- Footer -->
     <footer>
@@ -2335,7 +2566,7 @@
           <h4>Platform</h4>
           <a href="docs#api-endpoints">API reference</a>
           <a href="#features">Features</a>
-          <a href="#pricing">Access & Sponsorship</a>
+          <a href="#sponsorship">Access & Support</a>
         </div>
         <div class="footer-column">
           <h4>Community</h4>
@@ -2352,7 +2583,7 @@
         <div class="footer-column">
           <h4>Support</h4>
           <a href="#faq">FAQ</a>
-          <a href="contact.html">Contact</a>
+          <a href="contact">Contact</a>
           <a href="https://www.buymeacoffee.com/openf1" target="_blank"
             >Donate</a
           >
@@ -2370,10 +2601,17 @@
       </div>
       <div class="disclaimer">
         <p>
-          OpenF1 is an unofficial project and is not associated in any way with
-          the Formula 1 companies. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE
-          WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trade marks of
-          Formula One Licensing B.V.
+          OpenF1 is an unofficial, community-operated project built for
+          educational and research purposes. It is not associated, affiliated,
+          endorsed, or sponsored by Formula One World Championship Limited,
+          Formula One Management, Formula One Licensing B.V., or any of their
+          subsidiaries. The marks F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE
+          WORLD CHAMPIONSHIP, GRAND PRIX, and related marks are trademarks of
+          Formula One Licensing B.V. All data provided by this platform is
+          aggregated from public sources and is intended solely for
+          non-commercial analysis and fan engagement. It is not intended to
+          replace official Formula 1 data feeds, broadcast systems, or licensed
+          commercial products.
         </p>
       </div>
     </footer>
