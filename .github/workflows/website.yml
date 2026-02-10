@@ -1,4 +1,4 @@
-name: "Deploy documentation"
+name: "Deploy website"
 on:
   push:
     branches: [main]
@@ -10,15 +10,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Checkout landing page
+        uses: actions/checkout@v3
+        with:
+          repository: br-g/openf1-landing-page
+          token: ${{ secrets.LANDING_PAGE_TOKEN }}
+          path: landing-page
+
       - name: Build Slate documentation
         run: |
-          mkdir -p ${{ github.workspace }}/build
+          mkdir -p ${{ github.workspace }}/build/docs
           docker run --rm \
           --user $(id -u):$(id -g) \
           --name slate \
-          -v ${{ github.workspace }}/build:/srv/slate/build \
+          -v ${{ github.workspace }}/build/docs:/srv/slate/build \
           -v ${{ github.workspace }}/documentation:/srv/slate/source \
           slatedocs/slate build
+
+      - name: Copy landing page
+        run: |
+          cp ${{ github.workspace }}/landing-page/index.html build/
+          cp ${{ github.workspace }}/landing-page/contact.html build/
 
       - name: Copy additional webpages
         run: |

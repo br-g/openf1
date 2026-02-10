@@ -43,6 +43,24 @@ def _convert_gmt_offset(offset_str: str) -> str:
     return f"{cleaned_offset}:00"
 
 
+def _normalize_session_type_and_name(
+    session_type: str, session_name: str
+) -> tuple[str, str]:
+    """
+    Replaces legacy session types and names with their modern equivalents, if necessary.
+    See https://docs.fastf1.dev/events.html#session-identifiers for background information.
+    """
+    match session_type:
+        case "Sprint Shootout":
+            # Normalizes pre-2024 "Sprint Qualifying" sessions
+            return "Qualifying", "Sprint Qualifying"
+        case "Sprint Qualifying":
+            # Normalizes pre-2024 "Sprint" sessions
+            return "Race", "Sprint"
+        case _:
+            return session_type, session_name
+
+
 def get_meetings(year: int | None = None) -> list[dict]:
     """Fetches list of meetings for a specific year or the latest season."""
     url = f"{BASE_URL}/editorial-eventlisting/events"
@@ -68,6 +86,10 @@ def get_meetings(year: int | None = None) -> list[dict]:
                 "circuit_key": int(event["circuitKey"]),
                 "circuit_short_name": event["circuitShortName"],
                 "circuit_type": event["circuitType"],
+                "circuit_info_url": (
+                    "https://api.multiviewer.app/api/v1/circuits/"
+                    + f"{event['circuitKey']}/{data['year']}"
+                ),
                 "circuit_image": event["circuitMediumImage"],
                 "gmt_offset": offset,
                 "date_start": _to_utc(event["meetingStartDate"], offset),
@@ -96,11 +118,15 @@ def get_sessions(year: int | None = None) -> list[dict]:
         timetable = _get_timetable(meeting["meeting_key"])
 
         for sess in timetable:
+            session_type, session_name = _normalize_session_type_and_name(
+                session_type=sess["sessionType"], session_name=sess["description"]
+            )
+
             sessions.append(
                 {
                     "session_key": sess["meetingSessionKey"],
-                    "session_type": sess["sessionType"],
-                    "session_name": sess["description"],
+                    "session_type": session_type,
+                    "session_name": session_name,
                     "date_start": _to_utc(sess["startTime"], meeting["gmt_offset"]),
                     "date_end": _to_utc(sess["endTime"], meeting["gmt_offset"]),
                     "meeting_key": meeting["meeting_key"],
