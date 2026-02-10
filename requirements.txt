@@ -3,7 +3,7 @@ aiomqtt==2.4.0
 beautifulsoup4==4.13.4
 cachetools==5.5.2
 fastapi==0.115.13
-fastf1_livetiming @ git+https://github.com/br-g/fastf1-livetiming.git#egg=fastf1_livetiming
+fastf1_livetiming @ git+https://github.com/br-g/fastf1-livetiming.git@auth2#egg=fastf1_livetiming
 google-cloud-storage==3.1.1
 loguru==0.7.3
 lxml==6.0.0
