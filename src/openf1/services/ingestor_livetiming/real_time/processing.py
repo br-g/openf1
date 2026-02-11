@@ -17,8 +17,8 @@ if "OPENF1_MQTT_URL" in os.environ:
     from openf1.util.mqtt import publish_messages_to_mqtt
 
 # Store keys values found in data
-_meeting_key = None
-_session_key = None
+_meeting_key = 1304
+_session_key = 11465
 
 
 def _parse_message(line: str) -> Message:
