@@ -262,6 +262,44 @@ def get_latest_session_info() -> dict:
         raise SystemError("Could not find any past or current session in MongoDB")
 
 
+@timed_cache(1800)  # Cache the output for 30 minutes
+def get_closest_session_info() -> dict:
+    """Returns the session closest to the current time"""
+    sessions = _get_mongo_db_sync()["sessions"]
+    now = datetime.now(timezone.utc)
+
+    # First, try to find an active session
+    active_session = sessions.find_one(
+        {"date_start": {"$lte": now}, "date_end": {"$gte": now}}
+    )
+
+    if active_session:
+        return active_session
+
+    # If no active session, find the closest one
+    # Get the most recent past session (by end time)
+    past_session = sessions.find_one(
+        {"date_end": {"$lt": now}}, sort=[("date_end", -1)]
+    )
+
+    # Get the nearest future session (by start time)
+    future_session = sessions.find_one(
+        {"date_start": {"$gt": now}}, sort=[("date_start", 1)]
+    )
+
+    # Return whichever is closer
+    if past_session and future_session:
+        past_diff = (now - past_session["date_end"]).total_seconds()
+        future_diff = (future_session["date_start"] - now).total_seconds()
+        return past_session if past_diff <= future_diff else future_session
+    elif past_session:
+        return past_session
+    elif future_session:
+        return future_session
+    else:
+        raise SystemError("Could not find any session in MongoDB")
+
+
 @lru_cache()
 def session_key_to_path(session_key: int) -> str | None:
     sessions = _get_mongo_db_sync()["sessions"]
