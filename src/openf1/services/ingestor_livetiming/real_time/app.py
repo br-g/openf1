@@ -23,7 +23,7 @@ async def main():
 
         tasks = []
 
-        temp_file_signalr = os.path.join(temp_dir, "data.txt")
+        temp_file_signalr = os.path.join(temp_dir, "signalr.txt")
         logger.info(f"Recording raw signalr data to '{temp_file_signalr}'")
         task_recording_signalr = asyncio.create_task(
             record_to_file(filepath=temp_file_signalr, topics=topics, timeout=TIMEOUT)
@@ -31,7 +31,7 @@ async def main():
         tasks.append(task_recording_signalr)
 
         if F1_TOKEN:
-            temp_file_signalrcore = os.path.join(temp_dir, "data.txt")
+            temp_file_signalrcore = os.path.join(temp_dir, "signalrcore.txt")
             logger.info(f"Recording raw signalrcore data to '{temp_file_signalrcore}'")
             task_recording_signalrcore = asyncio.create_task(
                 record_to_file(
@@ -75,8 +75,13 @@ async def main():
 
         # Ingest received data
         logger.info("Starting data ingestion")
-        task_ingest = asyncio.create_task(ingest_file(temp_file_signalr))
-        tasks.append(task_ingest)
+        task_ingest_signalr = asyncio.create_task(ingest_file(temp_file_signalr))
+        tasks.append(task_ingest_signalr)
+        if F1_TOKEN:
+            task_ingest_signalrcore = asyncio.create_task(
+                ingest_file(temp_file_signalrcore)
+            )
+            tasks.append(task_ingest_signalrcore)
 
         # Wait for the recording task to stop
         await asyncio.wait(
