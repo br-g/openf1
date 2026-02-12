@@ -26,7 +26,12 @@ async def main():
         temp_file_signalr = os.path.join(temp_dir, "signalr.txt")
         logger.info(f"Recording raw signalr data to '{temp_file_signalr}'")
         task_recording_signalr = asyncio.create_task(
-            record_to_file(filepath=temp_file_signalr, topics=topics, timeout=TIMEOUT)
+            record_to_file(
+                filepath=temp_file_signalr,
+                topics=topics,
+                timeout=TIMEOUT,
+                is_authenticated=False,
+            )
         )
         tasks.append(task_recording_signalr)
 
@@ -35,7 +40,10 @@ async def main():
             logger.info(f"Recording raw signalrcore data to '{temp_file_signalrcore}'")
             task_recording_signalrcore = asyncio.create_task(
                 record_to_file(
-                    filepath=temp_file_signalrcore, topics=topics, timeout=TIMEOUT
+                    filepath=temp_file_signalrcore,
+                    topics=topics,
+                    timeout=TIMEOUT,
+                    is_authenticated=True,
                 )
             )
             tasks.append(task_recording_signalrcore)
