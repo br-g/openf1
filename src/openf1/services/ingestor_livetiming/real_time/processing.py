@@ -61,10 +61,7 @@ def _process_message(message: Message) -> dict[str, list[Document]] | None:
             _session_key = closest_session["session_key"]
             logger.info(f"meeting key: {_meeting_key}, session key: {_session_key}")
         except Exception as e:
-            logger.error(
-                f"Failed to get session info from database: {e}. "
-                f"Cannot process message. Timepoint: {message.timepoint}"
-            )
+            logger.error(f"Failed to get session info from database: {e}.")
 
     if _meeting_key is None or _session_key is None:
         logger.error(
