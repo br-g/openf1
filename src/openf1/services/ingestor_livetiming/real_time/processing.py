@@ -7,7 +7,7 @@ from loguru import logger
 from openf1.services.ingestor_livetiming.core.decoding import decode
 from openf1.services.ingestor_livetiming.core.objects import Document, Message
 from openf1.services.ingestor_livetiming.core.processing.main import process_message
-from openf1.util.db import insert_data_async
+from openf1.util.db import get_closest_session_info, insert_data_async
 from openf1.util.misc import json_serializer, to_datetime
 from openf1.util.mqtt import initialize_mqtt
 
@@ -17,8 +17,8 @@ if "OPENF1_MQTT_URL" in os.environ:
     from openf1.util.mqtt import publish_messages_to_mqtt
 
 # Store keys values found in data
-_meeting_key = 1304
-_session_key = 11466
+_meeting_key = None
+_session_key = None
 
 
 def _parse_message(line: str) -> Message:
@@ -41,15 +41,35 @@ def _process_message(message: Message) -> dict[str, list[Document]] | None:
     global _meeting_key
     global _session_key
 
+    # Determine current session
     if message.topic == "SessionInfo":
-        _meeting_key = message.content["Meeting"]["Key"]
-        _session_key = message.content["Key"]
-        logger.info(f"meeting key: {_meeting_key}, session key: {_session_key}")
+        try:
+            _meeting_key = message.content["Meeting"]["Key"]
+            _session_key = message.content["Key"]
+            logger.info(f"meeting key: {_meeting_key}, session key: {_session_key}")
+        except Exception as e:
+            logger.warning(
+                f"Failed to extract meeting_key or session_key from SessionInfo: {e}. "
+                f"Message content: {message.content}"
+            )
 
-    if _meeting_key is None and _session_key is None:
-        logger.warning(
-            "meeting_key and session_key not yet received. "
-            f"Can't process message of topic '{message.topic}'."
+    # Fallback: use schedule from DB
+    if _meeting_key is None or _session_key is None:
+        try:
+            closest_session = get_closest_session_info()
+            _meeting_key = closest_session["meeting_key"]
+            _session_key = closest_session["session_key"]
+            logger.info(f"meeting key: {_meeting_key}, session key: {_session_key}")
+        except Exception as e:
+            logger.error(
+                f"Failed to get session info from database: {e}. "
+                f"Cannot process message. Timepoint: {message.timepoint}"
+            )
+
+    if _meeting_key is None or _session_key is None:
+        logger.error(
+            "No values for meeting_key or session_key."
+            f"Skipping message of topic '{message.topic}'."
         )
         return None
 
@@ -91,43 +111,70 @@ async def ingest_line(line: str):
             logger.warning("Inserting to MongoDB timed out. Skipping messages.")
 
 
-async def ingest_file(filepath: str):
-    """Ingests data from the specified file.
+async def ingest_files(filepaths: list[str]):
+    """Ingests data from the specified files.
 
-    This function first reads and processes all existing lines in the file.
+    This function first reads and processes all existing lines in each file sequentially.
     After processing existing content, it continuously watches for new lines
-    appended to the file and processes them in real-time.
+    appended to any of the files and processes them in real-time.
     """
     try:
         await initialize_mqtt()
 
-        with open(filepath, "r") as file:
-            # Read and ingest existing lines
+        # Open all files and keep them open
+        open_files = []
+        for filepath in filepaths:
+            try:
+                file = open(filepath, "r")
+                open_files.append((filepath, file))
+            except Exception:
+                logger.exception(f"Failed to open file: {filepath}")
+
+        if not open_files:
+            logger.error("No files could be opened")
+            return
+
+        # First, ingest existing content from each file
+        for filepath, file in open_files:
             lines = file.readlines()
             for line in lines:
                 try:
                     await ingest_line(line)
                 except Exception:
                     logger.exception(
-                        "Failed to ingest line, skipping to prevent crash. "
+                        f"Failed to ingest line from {filepath}, skipping to prevent crash. "
                         f"Line content: '{line.strip()}'"
                     )
 
             # Move to the end of the file
             file.seek(0, 2)
 
-            # Watch for new lines
-            while True:
+        # Watch for new lines in all files
+        while True:
+            found_data = False
+            for filepath, file in open_files:
                 try:
                     line = file.readline()
-                    if not line:
-                        await asyncio.sleep(0.1)  # Sleep a bit before trying again
-                        continue
-                    await ingest_line(line)
+                    if line:
+                        found_data = True
+                        await ingest_line(line)
                 except Exception:
                     logger.exception(
-                        "Failed to ingest line, skipping to prevent crash. "
-                        f"Line content: '{line.strip()}'"
+                        f"Failed to ingest line from {filepath}, skipping to prevent crash. "
+                        f"Line content: '{line.strip() if line else ''}'"
                     )
+
+            # If no data was found in any file, sleep briefly before checking again
+            if not found_data:
+                await asyncio.sleep(0.1)
+
     except Exception:
-        logger.exception(f"An unexpected error occurred while ingesting {filepath}")
+        logger.exception(
+            f"An unexpected error occurred while ingesting files: {filepaths}"
+        )
+    finally:
+        for filepath, file in open_files:
+            try:
+                file.close()
+            except Exception:
+                logger.exception(f"Failed to close file: {filepath}")

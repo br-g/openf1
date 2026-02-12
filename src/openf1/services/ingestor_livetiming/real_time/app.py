@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 from loguru import logger
 
 from openf1.services.ingestor_livetiming.core.objects import get_topics
-from openf1.services.ingestor_livetiming.real_time.processing import ingest_file
+from openf1.services.ingestor_livetiming.real_time.processing import ingest_files
 from openf1.services.ingestor_livetiming.real_time.recording import record_to_file
 from openf1.util.gcs import upload_to_gcs_periodically
 
@@ -75,13 +75,13 @@ async def main():
 
         # Ingest received data
         logger.info("Starting data ingestion")
-        task_ingest_signalr = asyncio.create_task(ingest_file(temp_file_signalr))
-        tasks.append(task_ingest_signalr)
-        if F1_TOKEN:
-            task_ingest_signalrcore = asyncio.create_task(
-                ingest_file(temp_file_signalrcore)
-            )
-            tasks.append(task_ingest_signalrcore)
+        temp_files = (
+            [temp_file_signalr, temp_file_signalrcore]
+            if F1_TOKEN
+            else [temp_file_signalr]
+        )
+        task_ingest = asyncio.create_task(ingest_files(temp_files))
+        tasks.append(task_ingest)
 
         # Wait for the recording task to stop
         await asyncio.wait(
