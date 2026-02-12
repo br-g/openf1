@@ -12,7 +12,7 @@ async def record_to_file(filepath: str, topics: list[str], timeout: int):
             command = (
                 ["python", "-m", "fastf1_livetiming", "save", filepath]
                 + sorted(list(topics))
-                + ["--timeout", str(timeout)]
+                + ["--auth", "--timeout", str(timeout)]
             )
             proc = await asyncio.create_subprocess_exec(*command)
 
