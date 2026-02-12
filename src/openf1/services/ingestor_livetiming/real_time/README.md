@@ -17,4 +17,4 @@ To also ingest live telemetry, provide an F1TV subscription token:
 export F1_TOKEN=...
 ```
 
-See [this guide](https://github.com/SoMuchForSubtlety/f1viewer/wiki/Getting-your-subscription-token) for how to obtain a token. Note that tokens typically expire after **4 days**.
+See [this guide](https://github.com/SoMuchForSubtlety/f1viewer/wiki/Getting-your-subscription-token) for how to obtain a token. Note that tokens typically expire after 4 days.
