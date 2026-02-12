@@ -118,9 +118,30 @@ async def ingest_files(filepaths: list[str]):
     try:
         await initialize_mqtt()
 
+        # Wait for all files to be created
+        logger.info("Waiting for recorder files to be created...")
+        max_wait = 60
+        wait_interval = 0.5
+        elapsed = 0
+
+        while elapsed < max_wait:
+            all_exist = all(os.path.exists(filepath) for filepath in filepaths)
+            if all_exist:
+                logger.info("All recorder files found")
+                break
+            await asyncio.sleep(wait_interval)
+            elapsed += wait_interval
+        else:
+            missing_files = [fp for fp in filepaths if not os.path.exists(fp)]
+            logger.error(f"Timeout waiting for files to be created: {missing_files}")
+
         # Open all files and keep them open
         open_files = []
         for filepath in filepaths:
+            if not os.path.exists(filepath):
+                logger.warning(f"Skipping non-existent file: {filepath}")
+                continue
+
             try:
                 file = open(filepath, "r")
                 open_files.append((filepath, file))
