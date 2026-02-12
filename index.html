@@ -791,9 +791,9 @@
 
       .projects-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 2rem;
-        max-width: 1100px;
+        max-width: 750px;
         margin: 0 auto;
       }
 
@@ -1890,11 +1890,12 @@
               target="_blank"
               class="project-card"
             >
-              <div class="project-thumbnail project-thumbnail-site">
-                <div class="project-site-preview">
-                  <span class="project-site-icon">🏎️</span>
-                  <span class="project-site-name">pitsngiggles.com</span>
-                </div>
+              <div class="project-thumbnail">
+                <img
+                  src="img/pitsngiggles.png"
+                  alt="Pits n' Giggles - Real-time sim racing analytics and race engineering dashboard for F1 games using OpenF1 API data"
+                  loading="lazy"
+                />
               </div>
               <div class="project-content">
                 <h3>Pits n' Giggles</h3>
@@ -1932,6 +1933,26 @@
                 <p>
                   A Unity-powered VR experience rendering live race circuits in
                   3D with real-time driver positions using GPS data.
+                </p>
+              </div>
+            </a>
+            <a
+              href="https://huggingface.co/spaces/d10g/f1commentator"
+              target="_blank"
+              class="project-card"
+            >
+              <div class="project-thumbnail">
+                <img
+                  src="img/f1commentator.png"
+                  alt="Reachy Mini F1 Commentator - AI-powered race commentary generator using OpenF1 API data on Hugging Face"
+                  loading="lazy"
+                />
+              </div>
+              <div class="project-content">
+                <h3>Reachy Mini F1 Commentator</h3>
+                <p>
+                  An AI-powered race commentary generator that creates
+                  real-time Formula 1 commentary using live data from OpenF1.
                 </p>
               </div>
             </a>
