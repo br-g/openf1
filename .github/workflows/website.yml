@@ -31,6 +31,7 @@ jobs:
         run: |
           cp ${{ github.workspace }}/landing-page/index.html build/
           cp ${{ github.workspace }}/landing-page/contact.html build/
+          cp -r ${{ github.workspace }}/landing-page/img build/
 
       - name: Copy additional webpages
         run: |
