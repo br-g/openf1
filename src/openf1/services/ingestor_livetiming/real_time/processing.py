@@ -7,7 +7,7 @@ from loguru import logger
 from openf1.services.ingestor_livetiming.core.decoding import decode
 from openf1.services.ingestor_livetiming.core.objects import Document, Message
 from openf1.services.ingestor_livetiming.core.processing.main import process_message
-from openf1.util.db import insert_data_async
+from openf1.util.db import get_closest_session_info, insert_data_async
 from openf1.util.misc import json_serializer, to_datetime
 from openf1.util.mqtt import initialize_mqtt
 
@@ -41,15 +41,32 @@ def _process_message(message: Message) -> dict[str, list[Document]] | None:
     global _meeting_key
     global _session_key
 
+    # Determine current session
     if message.topic == "SessionInfo":
-        _meeting_key = message.content["Meeting"]["Key"]
-        _session_key = message.content["Key"]
-        logger.info(f"meeting key: {_meeting_key}, session key: {_session_key}")
+        try:
+            _meeting_key = message.content["Meeting"]["Key"]
+            _session_key = message.content["Key"]
+            logger.info(f"meeting key: {_meeting_key}, session key: {_session_key}")
+        except Exception as e:
+            logger.warning(
+                f"Failed to extract meeting_key or session_key from SessionInfo: {e}. "
+                f"Message content: {message.content}"
+            )
 
-    if _meeting_key is None and _session_key is None:
-        logger.warning(
-            "meeting_key and session_key not yet received. "
-            f"Can't process message of topic '{message.topic}'."
+    # Fallback: use schedule from DB
+    if _meeting_key is None or _session_key is None:
+        try:
+            closest_session = get_closest_session_info()
+            _meeting_key = closest_session["meeting_key"]
+            _session_key = closest_session["session_key"]
+            logger.info(f"meeting key: {_meeting_key}, session key: {_session_key}")
+        except Exception as e:
+            logger.error(f"Failed to get session info from database: {e}.")
+
+    if _meeting_key is None or _session_key is None:
+        logger.error(
+            "No values for meeting_key or session_key."
+            f"Skipping message of topic '{message.topic}'."
         )
         return None
 
