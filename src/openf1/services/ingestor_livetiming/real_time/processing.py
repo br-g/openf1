@@ -18,7 +18,7 @@ if "OPENF1_MQTT_URL" in os.environ:
 
 # Store keys values found in data
 _meeting_key = 1304
-_session_key = 11466
+_session_key = 11467
 
 
 def _parse_message(line: str) -> Message:
