@@ -1,4 +1,5 @@
 import asyncio
+import random
 
 from loguru import logger
 
@@ -36,5 +37,7 @@ async def record_to_file(
                 "the recorder subprocess."
             )
 
-        logger.info("Waiting 15 seconds before restarting the recorder...")
-        await asyncio.sleep(15)
+        logger.info("Waiting before restarting the recorder...")
+        await asyncio.sleep(
+            15 + random.uniform(1, 5)
+        )  # Add random jitter to prevent synchronized retry loops

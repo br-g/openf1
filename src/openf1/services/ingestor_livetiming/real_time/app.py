@@ -36,6 +36,9 @@ async def main():
         tasks.append(task_recording_signalr)
 
         if F1_TOKEN:
+            # Stagger the start to prevent race conditions
+            await asyncio.sleep(10)
+
             temp_file_signalrcore = os.path.join(temp_dir, "signalrcore.txt")
             logger.info(f"Recording raw signalrcore data to '{temp_file_signalrcore}'")
             task_recording_signalrcore = asyncio.create_task(
