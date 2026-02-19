@@ -86,11 +86,7 @@ async def main():
 
         # Ingest received data
         logger.info("Starting data ingestion")
-        temp_files = (
-            [temp_file_signalr, temp_file_signalrcore]
-            if F1_TOKEN
-            else [temp_file_signalr]
-        )
+        temp_files = [temp_file_signalrcore] if F1_TOKEN else [temp_file_signalr]
         task_ingest = asyncio.create_task(ingest_files(temp_files))
         tasks.append(task_ingest)
 
