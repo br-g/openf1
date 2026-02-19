@@ -83,7 +83,7 @@ class DriversCollection(Collection):
             )
 
             for topic_key, collection_key in KEY_MAPPING.items():
-                if topic_key not in driver_content:
+                if driver_content.get(topic_key) is None:
                     continue
                 self._update_driver(
                     driver_number=driver_number,
