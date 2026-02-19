@@ -1,4 +1,5 @@
 import asyncio
+import os
 import random
 
 from loguru import logger
@@ -20,8 +21,31 @@ async def record_to_file(
             )
             proc = await asyncio.create_subprocess_exec(*command)
 
+            # Monitor task: wait 60 seconds and check if file is being written to
+            async def monitor_file_size():
+                try:
+                    await asyncio.sleep(60)
+                    if proc.returncode is None:  # If the process is still running
+                        if (
+                            not os.path.exists(filepath)
+                            or os.path.getsize(filepath) == 0
+                        ):
+                            logger.warning(
+                                f"File '{filepath}' is empty after 1 minute. "
+                                "Killing subprocess to trigger a restart."
+                            )
+                            try:
+                                proc.kill()
+                            except ProcessLookupError:
+                                pass
+                except asyncio.CancelledError:
+                    pass
+
+            monitor_task = asyncio.create_task(monitor_file_size())
+
             # Wait for the process to complete
             await proc.wait()
+            monitor_task.cancel()
 
             # Check if the process exited cleanly with an exit code of 0.
             if proc.returncode == 0:
@@ -39,5 +63,5 @@ async def record_to_file(
 
         logger.info("Waiting before restarting the recorder...")
         await asyncio.sleep(
-            15 + random.uniform(1, 5)
-        )  # Add random jitter to prevent synchronized retry loops
+            random.uniform(1, 5)
+        )  # Use random jitter to prevent synchronized retry loops
