@@ -5,18 +5,18 @@ import random
 from loguru import logger
 
 
-async def record_to_file(
-    filepath: str, topics: list[str], timeout: int, is_authenticated: bool
-):
+async def record_to_file(filepath: str, topics: list[str], timeout: int):
     """Records raw F1 data to a file, using a slightly modified version of the FastF1
     live timing module (https://github.com/br-g/fastf1-livetiming)
     """
+    F1_TOKEN = os.getenv("F1_TOKEN")
+
     while True:
         try:
             command = (
                 ["python", "-m", "fastf1_livetiming", "save", filepath]
                 + sorted(list(topics))
-                + (["--auth"] if is_authenticated else [])
+                + (["--auth"] if F1_TOKEN is not None else [])
                 + ["--timeout", str(timeout)]
             )
             proc = await asyncio.create_subprocess_exec(*command)

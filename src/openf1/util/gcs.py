@@ -26,12 +26,9 @@ async def upload_to_gcs_periodically(
     bucket: str,
     destination_key: Path,
     interval: timedelta,
-    offset: timedelta = timedelta(seconds=0),
 ):
     """Periodically uploads a file to Google Cloud Storage (GCS) at specified intervals"""
     loop = asyncio.get_running_loop()
-
-    await asyncio.sleep(offset.total_seconds())
 
     while True:
         try:

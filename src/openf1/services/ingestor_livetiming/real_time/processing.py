@@ -108,91 +108,43 @@ async def ingest_line(line: str):
             logger.warning("Inserting to MongoDB timed out. Skipping messages.")
 
 
-async def ingest_files(filepaths: list[str]):
-    """Ingests data from the specified files.
+async def ingest_file(filepath: str):
+    """Ingests data from the specified file.
 
-    This function first reads and processes all existing lines in each file sequentially.
+    This function first reads and processes all existing lines in the file.
     After processing existing content, it continuously watches for new lines
-    appended to any of the files and processes them in real-time.
+    appended to the file and processes them in real-time.
     """
     try:
         await initialize_mqtt()
 
-        # Wait for all files to be created
-        logger.info("Waiting for recorder files to be created...")
-        max_wait = 60
-        wait_interval = 0.5
-        elapsed = 0
-
-        while elapsed < max_wait:
-            all_exist = all(os.path.exists(filepath) for filepath in filepaths)
-            if all_exist:
-                logger.info("All recorder files found")
-                break
-            await asyncio.sleep(wait_interval)
-            elapsed += wait_interval
-        else:
-            missing_files = [fp for fp in filepaths if not os.path.exists(fp)]
-            logger.error(f"Timeout waiting for files to be created: {missing_files}")
-
-        # Open all files and keep them open
-        open_files = []
-        for filepath in filepaths:
-            if not os.path.exists(filepath):
-                logger.warning(f"Skipping non-existent file: {filepath}")
-                continue
-
-            try:
-                file = open(filepath, "r")
-                open_files.append((filepath, file))
-            except Exception:
-                logger.exception(f"Failed to open file: {filepath}")
-
-        if not open_files:
-            logger.error("No files could be opened")
-            return
-
-        # First, ingest existing content from each file
-        for filepath, file in open_files:
+        with open(filepath, "r") as file:
+            # Read and ingest existing lines
             lines = file.readlines()
             for line in lines:
                 try:
                     await ingest_line(line)
                 except Exception:
                     logger.exception(
-                        f"Failed to ingest line from {filepath}, skipping to prevent crash. "
+                        "Failed to ingest line, skipping to prevent crash. "
                         f"Line content: '{line.strip()}'"
                     )
 
             # Move to the end of the file
             file.seek(0, 2)
 
-        # Watch for new lines in all files
-        while True:
-            found_data = False
-            for filepath, file in open_files:
+            # Watch for new lines
+            while True:
                 try:
                     line = file.readline()
-                    if line:
-                        found_data = True
-                        await ingest_line(line)
+                    if not line:
+                        await asyncio.sleep(0.1)  # Sleep a bit before trying again
+                        continue
+                    await ingest_line(line)
                 except Exception:
                     logger.exception(
-                        f"Failed to ingest line from {filepath}, skipping to prevent crash. "
-                        f"Line content: '{line.strip() if line else ''}'"
+                        "Failed to ingest line, skipping to prevent crash. "
+                        f"Line content: '{line.strip()}'"
                     )
-
-            # If no data was found in any file, sleep briefly before checking again
-            if not found_data:
-                await asyncio.sleep(0.1)
-
     except Exception:
-        logger.exception(
-            f"An unexpected error occurred while ingesting files: {filepaths}"
-        )
-    finally:
-        for filepath, file in open_files:
-            try:
-                file.close()
-            except Exception:
-                logger.exception(f"Failed to close file: {filepath}")
+        logger.exception(f"An unexpected error occurred while ingesting {filepath}")
