@@ -315,7 +315,8 @@ fetch(
 
 ## Drivers
 
-Provides information about drivers for each session.
+Retrieve detailed information about the drivers participating in a specific session.
+Driver data is populated at the start of each session.
 
 ```shell
 curl "https://api.openf1.org/v1/drivers?driver_number=1&session_key=9158"
