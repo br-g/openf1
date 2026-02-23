@@ -83,18 +83,18 @@ fetch(
 
 ### Attributes
 
-| Name          | Description                                                                                                                                                                           |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| brake         | Whether the brake pedal is pressed (`100`) or not (`0`).                                                                                                                              |
-| date          | The UTC date and time, in ISO 8601 format.                                                                                                                                            |
-| driver_number | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
-| drs           | The Drag Reduction System (DRS) status (see mapping table below).                                                                                                                     |
-| meeting_key   | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
-| n_gear        | Current gear selection, ranging from 1 to 8. `0` indicates neutral or no gear engaged.                                                                                                |
-| rpm           | Revolutions per minute of the engine.                                                                                                                                                 |
-| session_key   | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
-| speed         | Velocity of the car in km/h.                                                                                                                                                          |
-| throttle      | Percentage of maximum engine power being used.                                                                                                                                        |
+| Name          | Description                                                                                                                                                                                          |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| brake         | Whether the brake pedal is pressed (`100`) or not (`0`).                                                                                                                                             |
+| date          | The UTC date and time, in ISO 8601 format.                                                                                                                                                           |
+| driver_number | The unique number assigned to an F1 driver for the season (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| drs           | The Drag Reduction System (DRS) status (see mapping table below).                                                                                                                                    |
+| meeting_key   | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                       |
+| n_gear        | Current gear selection, ranging from 1 to 8. `0` indicates neutral or no gear engaged.                                                                                                               |
+| rpm           | Revolutions per minute of the engine.                                                                                                                                                                |
+| session_key   | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                                       |
+| speed         | Velocity of the car in km/h.                                                                                                                                                                         |
+| throttle      | Percentage of maximum engine power being used.                                                                                                                                                       |
 
 <br /><br />
 
@@ -225,15 +225,15 @@ fetch(
 
 ### Attributes
 
-| Name             | Description                                                                                                                                                                           |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| driver_number    | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
-| meeting_key      | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
-| points_current   | Championship points during/after the race (depends on call timing).                                                                                                                   |
-| points_start     | Championship points before the race started.                                                                                                                                          |
-| position_current | Championship position during/after the race (depends on call timing).                                                                                                                 |
-| position_start   | Championship position before the race started.                                                                                                                                        |
-| session_key      | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
+| Name             | Description                                                                                                                                                                                          |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| driver_number    | The unique number assigned to an F1 driver for the season (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| meeting_key      | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                       |
+| points_current   | Championship points during/after the race (depends on call timing).                                                                                                                                  |
+| points_start     | Championship points before the race started.                                                                                                                                                         |
+| position_current | Championship position during/after the race (depends on call timing).                                                                                                                                |
+| position_start   | Championship position before the race started.                                                                                                                                                       |
+| session_key      | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                                       |
 
 ## Teams championship (beta)
 
@@ -384,20 +384,20 @@ fetch("https://api.openf1.org/v1/drivers?driver_number=1&session_key=9158")
 
 ### Attributes
 
-| Name                      | Description                                                                                                                                                                           |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| broadcast_name            | The driver's name, as displayed on TV.                                                                                                                                                |
-| country_code (deprecated) | A code that uniquely identifies the country. This field will be removed at the end of the 2026 season.                                                                                |
-| driver_number             | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
-| first_name                | The driver's first name.                                                                                                                                                              |
-| full_name                 | The driver's full name.                                                                                                                                                               |
-| headshot_url              | URL of the driver's face photo.                                                                                                                                                       |
-| last_name                 | The driver's last name.                                                                                                                                                               |
-| meeting_key               | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
-| name_acronym              | Three-letter acronym of the driver's name.                                                                                                                                            |
-| session_key               | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
-| team_colour               | The hexadecimal color value (RRGGBB) of the driver's team.                                                                                                                            |
-| team_name                 | Name of the driver's team.                                                                                                                                                            |
+| Name                      | Description                                                                                                                                                                                          |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| broadcast_name            | The driver's name, as displayed on TV.                                                                                                                                                               |
+| country_code (deprecated) | A code that uniquely identifies the country. This field will be removed at the end of the 2026 season.                                                                                               |
+| driver_number             | The unique number assigned to an F1 driver for the season (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| first_name                | The driver's first name.                                                                                                                                                                             |
+| full_name                 | The driver's full name.                                                                                                                                                                              |
+| headshot_url              | URL of the driver's face photo.                                                                                                                                                                      |
+| last_name                 | The driver's last name.                                                                                                                                                                              |
+| meeting_key               | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                       |
+| name_acronym              | Three-letter acronym of the driver's name.                                                                                                                                                           |
+| session_key               | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                                       |
+| team_colour               | The hexadecimal color value (RRGGBB) of the driver's team.                                                                                                                                           |
+| team_name                 | Name of the driver's team.                                                                                                                                                                           |
 
 ## Intervals
 
@@ -467,14 +467,14 @@ fetch(
 
 ### Attributes
 
-| Name          | Description                                                                                                                                                                           |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| date          | The UTC date and time, in ISO 8601 format.                                                                                                                                            |
-| driver_number | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
-| gap_to_leader | The time gap to the race leader in seconds, `+1 LAP` if lapped, or `null` for the race leader.                                                                                        |
-| interval      | The time gap to the car ahead in seconds, `+1 LAP` if lapped, or `null` for the race leader.                                                                                          |
-| meeting_key   | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
-| session_key   | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
+| Name          | Description                                                                                                                                                                                          |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| date          | The UTC date and time, in ISO 8601 format.                                                                                                                                                           |
+| driver_number | The unique number assigned to an F1 driver for the season (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| gap_to_leader | The time gap to the race leader in seconds, `+1 LAP` if lapped, or `null` for the race leader.                                                                                                       |
+| interval      | The time gap to the car ahead in seconds, `+1 LAP` if lapped, or `null` for the race leader.                                                                                                         |
+| meeting_key   | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                       |
+| session_key   | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                                       |
 
 ## Laps
 
@@ -553,24 +553,24 @@ fetch(
 
 ### Attributes
 
-| Name              | Description                                                                                                                                                                           |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| date_start        | The UTC starting date and time, in ISO 8601 format. This date is approximate.                                                                                                         |
-| driver_number     | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
-| duration_sector_1 | The time taken, in seconds, to complete the first sector of the lap.                                                                                                                  |
-| duration_sector_2 | The time taken, in seconds, to complete the second sector of the lap.                                                                                                                 |
-| duration_sector_3 | The time taken, in seconds, to complete the third sector of the lap.                                                                                                                  |
-| i1_speed          | The speed of the car, in km/h, at the first intermediate point on the track.                                                                                                          |
-| i2_speed          | The speed of the car, in km/h, at the second intermediate point on the track.                                                                                                         |
-| is_pit_out_lap    | A boolean value indicating whether the lap is an "out lap" from the pit (`true` if it is, `false` otherwise).                                                                         |
-| lap_duration      | The total time taken, in seconds, to complete the entire lap.                                                                                                                         |
-| lap_number        | The sequential number of the lap within the session (starts at 1).                                                                                                                    |
-| meeting_key       | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
-| segments_sector_1 | A list of values representing the "mini-sectors" within the first sector (see mapping table below).                                                                                   |
-| segments_sector_2 | A list of values representing the "mini-sectors" within the second sector (see mapping table below).                                                                                  |
-| segments_sector_3 | A list of values representing the "mini-sectors" within the third sector (see mapping table below).                                                                                   |
-| session_key       | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
-| st_speed          | The speed of the car, in km/h, at the speed trap, which is a specific point on the track where the highest speeds are usually recorded.                                               |
+| Name              | Description                                                                                                                                                                                          |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| date_start        | The UTC starting date and time, in ISO 8601 format. This date is approximate.                                                                                                                        |
+| driver_number     | The unique number assigned to an F1 driver for the season (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| duration_sector_1 | The time taken, in seconds, to complete the first sector of the lap.                                                                                                                                 |
+| duration_sector_2 | The time taken, in seconds, to complete the second sector of the lap.                                                                                                                                |
+| duration_sector_3 | The time taken, in seconds, to complete the third sector of the lap.                                                                                                                                 |
+| i1_speed          | The speed of the car, in km/h, at the first intermediate point on the track.                                                                                                                         |
+| i2_speed          | The speed of the car, in km/h, at the second intermediate point on the track.                                                                                                                        |
+| is_pit_out_lap    | A boolean value indicating whether the lap is an "out lap" from the pit (`true` if it is, `false` otherwise).                                                                                        |
+| lap_duration      | The total time taken, in seconds, to complete the entire lap.                                                                                                                                        |
+| lap_number        | The sequential number of the lap within the session (starts at 1).                                                                                                                                   |
+| meeting_key       | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                       |
+| segments_sector_1 | A list of values representing the "mini-sectors" within the first sector (see mapping table below).                                                                                                  |
+| segments_sector_2 | A list of values representing the "mini-sectors" within the second sector (see mapping table below).                                                                                                 |
+| segments_sector_3 | A list of values representing the "mini-sectors" within the third sector (see mapping table below).                                                                                                  |
+| session_key       | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                                       |
+| st_speed          | The speed of the car, in km/h, at the speed trap, which is a specific point on the track where the highest speeds are usually recorded.                                                              |
 
 <br /><br />
 
@@ -702,15 +702,15 @@ fetch(
 
 ### Attributes
 
-| Name          | Description                                                                                                                                                                           |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| date          | The UTC date and time, in ISO 8601 format.                                                                                                                                            |
-| driver_number | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
-| meeting_key   | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
-| session_key   | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
-| x             | The 'x' value in a 3D Cartesian coordinate system representing the current approximate location of the car on the track.                                                              |
-| y             | The 'y' value in a 3D Cartesian coordinate system representing the current approximate location of the car on the track.                                                              |
-| z             | The 'z' value in a 3D Cartesian coordinate system representing the current approximate location of the car on the track.                                                              |
+| Name          | Description                                                                                                                                                                                          |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| date          | The UTC date and time, in ISO 8601 format.                                                                                                                                                           |
+| driver_number | The unique number assigned to an F1 driver for the season (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| meeting_key   | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                       |
+| session_key   | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                                       |
+| x             | The 'x' value in a 3D Cartesian coordinate system representing the current approximate location of the car on the track.                                                                             |
+| y             | The 'y' value in a 3D Cartesian coordinate system representing the current approximate location of the car on the track.                                                                             |
+| z             | The 'z' value in a 3D Cartesian coordinate system representing the current approximate location of the car on the track.                                                                             |
 
 ## Meetings
 
@@ -965,16 +965,16 @@ fetch("https://api.openf1.org/v1/pit?session_key=9877&stop_duration<2.3")
 
 ### Attributes
 
-| Name                      | Description                                                                                                                                                                           |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| date                      | The UTC date and time, in ISO 8601 format.                                                                                                                                            |
-| driver_number             | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
-| lane_duration             | The time spent in the pit lane, in seconds.                                                                                                                                           |
-| lap_number                | The sequential number of the lap within the session (starts at 1).                                                                                                                    |
-| meeting_key               | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
-| pit_duration (deprecated) | Same as 'lane_duration'. This field will be removed at the end of the 2026 season.                                                                                                    |
-| session_key               | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
-| stop_duration             | The stationary pit stop time, in seconds. This field is only available from the 2024 US GP onwards.                                                                                   |
+| Name                      | Description                                                                                                                                                                                          |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| date                      | The UTC date and time, in ISO 8601 format.                                                                                                                                                           |
+| driver_number             | The unique number assigned to an F1 driver for the season (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| lane_duration             | The time spent in the pit lane, in seconds.                                                                                                                                                          |
+| lap_number                | The sequential number of the lap within the session (starts at 1).                                                                                                                                   |
+| meeting_key               | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                       |
+| pit_duration (deprecated) | Same as 'lane_duration'. This field will be removed at the end of the 2026 season.                                                                                                                   |
+| session_key               | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                                       |
+| stop_duration             | The stationary pit stop time, in seconds. This field is only available from the 2024 US GP onwards.                                                                                                  |
 
 ## Position
 
@@ -1050,13 +1050,13 @@ fetch(
 
 ### Attributes
 
-| Name          | Description                                                                                                                                                                           |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| date          | The UTC date and time, in ISO 8601 format.                                                                                                                                            |
-| driver_number | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
-| meeting_key   | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
-| position      | Position of the driver (starts at 1).                                                                                                                                                 |
-| session_key   | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
+| Name          | Description                                                                                                                                                                                          |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| date          | The UTC date and time, in ISO 8601 format.                                                                                                                                                           |
+| driver_number | The unique number assigned to an F1 driver for the season (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| meeting_key   | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                       |
+| position      | Position of the driver (starts at 1).                                                                                                                                                                |
+| session_key   | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                                       |
 
 ## Race control
 
@@ -1130,19 +1130,19 @@ fetch(
 
 ### Attributes
 
-| Name             | Description                                                                                                                                                                           |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| category         | The category of the event (`SessionStatus`, `CarEvent`, `Drs`, `Flag`, `SafetyCar`, ...).                                                                                             |
-| date             | The UTC date and time, in ISO 8601 format.                                                                                                                                            |
-| driver_number    | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
-| flag             | Type of flag displayed (`GREEN`, `YELLOW`, `DOUBLE YELLOW`, `CHEQUERED`, ...).                                                                                                        |
-| lap_number       | The sequential number of the lap within the session (starts at 1), in a race.                                                                                                         |
-| meeting_key      | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
-| message          | Description of the event or action.                                                                                                                                                   |
-| qualifying_phase | The specific phase (`1`, `2`, or `3`) if the session is a qualifying session.                                                                                                         |
-| scope            | The scope of the event (`Track`, `Driver`, `Sector`, ...).                                                                                                                            |
-| sector           | Segment ("mini-sector") of the track where the event occurred? (starts at 1).                                                                                                         |
-| session_key      | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
+| Name             | Description                                                                                                                                                                                          |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| category         | The category of the event (`SessionStatus`, `CarEvent`, `Drs`, `Flag`, `SafetyCar`, ...).                                                                                                            |
+| date             | The UTC date and time, in ISO 8601 format.                                                                                                                                                           |
+| driver_number    | The unique number assigned to an F1 driver for the season (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| flag             | Type of flag displayed (`GREEN`, `YELLOW`, `DOUBLE YELLOW`, `CHEQUERED`, ...).                                                                                                                       |
+| lap_number       | The sequential number of the lap within the session (starts at 1), in a race.                                                                                                                        |
+| meeting_key      | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                       |
+| message          | Description of the event or action.                                                                                                                                                                  |
+| qualifying_phase | The specific phase (`1`, `2`, or `3`) if the session is a qualifying session.                                                                                                                        |
+| scope            | The scope of the event (`Track`, `Driver`, `Sector`, ...).                                                                                                                                           |
+| sector           | Segment ("mini-sector") of the track where the event occurred? (starts at 1).                                                                                                                        |
+| session_key      | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                                       |
 
 ## Sessions
 
@@ -1331,18 +1331,18 @@ fetch("https://api.openf1.org/v1/session_result?session_key=7782&position%3C=3")
 
 ### Attributes
 
-| Name           | Description                                                                                                                                                                           |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| dnf            | Indicates whether the driver _Did Not Finish_ the race. This can be `true` only for qualifying and race sessions.                                                                     |
-| dns            | Indicates whether the driver _Did Not Start_ the race. This can be `true` only for qualifying and race sessions.                                                                      |
-| dsq            | Indicates whether the driver was disqualified.                                                                                                                                        |
-| driver_number  | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
-| duration       | Either the best lap time (for practice or qualifying), or the total race time (for races), in seconds. In qualifying, this is an array of three values for Q1, Q2, and Q3.            |
-| gap_to_leader  | The time gap to the session leader in seconds, or `+N LAP(S)` if the driver was lapped. In qualifying, this is an array of three values for Q1, Q2, and Q3.                           |
-| number_of_laps | Total number of laps completed during the session.                                                                                                                                    |
-| meeting_key    | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
-| position       | The driver’s final position at the end of the session.                                                                                                                                |
-| session_key    | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
+| Name           | Description                                                                                                                                                                                          |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| dnf            | Indicates whether the driver _Did Not Finish_ the race. This can be `true` only for qualifying and race sessions.                                                                                    |
+| dns            | Indicates whether the driver _Did Not Start_ the race. This can be `true` only for qualifying and race sessions.                                                                                     |
+| dsq            | Indicates whether the driver was disqualified.                                                                                                                                                       |
+| driver_number  | The unique number assigned to an F1 driver for the season (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| duration       | Either the best lap time (for practice or qualifying), or the total race time (for races), in seconds. In qualifying, this is an array of three values for Q1, Q2, and Q3.                           |
+| gap_to_leader  | The time gap to the session leader in seconds, or `+N LAP(S)` if the driver was lapped. In qualifying, this is an array of three values for Q1, Q2, and Q3.                                          |
+| number_of_laps | Total number of laps completed during the session.                                                                                                                                                   |
+| meeting_key    | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                       |
+| position       | The driver’s final position at the end of the session.                                                                                                                                               |
+| session_key    | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                                       |
 
 ## Starting grid
 
@@ -1422,13 +1422,13 @@ fetch("https://api.openf1.org/v1/starting_grid?session_key=7783&position%3C=3")
 
 ### Attributes
 
-| Name          | Description                                                                                                                                                                           |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| driver_number | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
-| lap_duration  | Duration, in seconds, of the qualifying lap.                                                                                                                                          |
-| meeting_key   | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
-| position      | Position on the grid.                                                                                                                                                                 |
-| session_key   | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
+| Name          | Description                                                                                                                                                                                          |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| driver_number | The unique number assigned to an F1 driver for the season (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| lap_duration  | Duration, in seconds, of the qualifying lap.                                                                                                                                                         |
+| meeting_key   | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                       |
+| position      | Position on the grid.                                                                                                                                                                                |
+| session_key   | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                                       |
 
 ## Stints
 
@@ -1508,16 +1508,16 @@ fetch("https://api.openf1.org/v1/stints?session_key=9165&tyre_age_at_start>=3")
 
 ### Attributes
 
-| Name              | Description                                                                                                                                                                           |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| compound          | The specific compound of tyre used during the stint (`SOFT`, `MEDIUM`, `HARD`, ...).                                                                                                  |
-| driver_number     | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
-| lap_end           | Number of the last completed lap in this stint.                                                                                                                                       |
-| lap_start         | Number of the initial lap in this stint (starts at 1).                                                                                                                                |
-| meeting_key       | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
-| session_key       | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
-| stint_number      | The sequential number of the stint within the session (starts at 1).                                                                                                                  |
-| tyre_age_at_start | The age of the tyres at the start of the stint, in laps completed.                                                                                                                    |
+| Name              | Description                                                                                                                                                                                          |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| compound          | The specific compound of tyre used during the stint (`SOFT`, `MEDIUM`, `HARD`, ...).                                                                                                                 |
+| driver_number     | The unique number assigned to an F1 driver for the season (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| lap_end           | Number of the last completed lap in this stint.                                                                                                                                                      |
+| lap_start         | Number of the initial lap in this stint (starts at 1).                                                                                                                                               |
+| meeting_key       | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                       |
+| session_key       | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                                       |
+| stint_number      | The sequential number of the stint within the session (starts at 1).                                                                                                                                 |
+| tyre_age_at_start | The age of the tyres at the start of the stint, in laps completed.                                                                                                                                   |
 
 ## Team radio
 
@@ -1591,13 +1591,13 @@ fetch("https://api.openf1.org/v1/team_radio?session_key=9158&driver_number=11")
 
 ### Attributes
 
-| Name          | Description                                                                                                                                                                           |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| date          | The UTC date and time, in ISO 8601 format.                                                                                                                                            |
-| driver_number | The unique number assigned to an F1 driver (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
-| meeting_key   | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                        |
-| recording_url | URL of the radio recording.                                                                                                                                                           |
-| session_key   | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                        |
+| Name          | Description                                                                                                                                                                                          |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| date          | The UTC date and time, in ISO 8601 format.                                                                                                                                                           |
+| driver_number | The unique number assigned to an F1 driver for the season (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| meeting_key   | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                       |
+| recording_url | URL of the radio recording.                                                                                                                                                                          |
+| session_key   | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                                       |
 
 ## Weather
 
