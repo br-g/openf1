@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Iterator
 
@@ -53,6 +53,8 @@ class IntervalsCollection(Collection):
     name = "intervals"
     source_topics = {"DriverRaceInfo"}
 
+    _last_gap: dict = field(default_factory=dict)
+
     def process_message(self, message: Message) -> Iterator[Interval]:
         for driver_number, data in message.content.items():
             try:
@@ -68,6 +70,16 @@ class IntervalsCollection(Collection):
 
             if gap_to_leader is None and interval is None:
                 continue
+
+            # The gap to leader stops being sent once a driver is lapped.
+            # Fix this using a cache.
+            if gap_to_leader is None and str(
+                self._last_gap.get(driver_number)
+            ).startswith("+"):
+                gap_to_leader = self._last_gap[driver_number]
+
+            if gap_to_leader is not None:
+                self._last_gap[driver_number] = gap_to_leader
 
             yield Interval(
                 meeting_key=self.meeting_key,
