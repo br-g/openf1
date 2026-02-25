@@ -9,10 +9,13 @@ from openf1.services.ingestor_livetiming.core.objects import (
 
 
 def process_message(
-    meeting_key: int, session_key: int, message: Message
+    meeting_key: int,
+    session_key: int,
+    message: Message,
 ) -> dict[str, list[Document]]:
     """Processes a message from a given topic and returns processed documents grouped
-    by collection"""
+    by collection. If at least one collection name is given, only those collections are used.
+    """
     # Select collections which could use this message
     selected_collections = get_topics_to_collections_mapping(
         meeting_key=meeting_key, session_key=session_key
@@ -34,9 +37,7 @@ def process_message(
 
 
 def process_messages(
-    meeting_key: int,
-    session_key: int,
-    messages: list[Message],
+    meeting_key: int, session_key: int, messages: list[Message]
 ) -> dict[str, list[Document]]:
     """Processes messages and returns the generated documents by collection"""
     docs_buf = defaultdict(dict)
