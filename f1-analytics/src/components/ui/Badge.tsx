@@ -4,9 +4,10 @@ interface BadgeProps {
   children: React.ReactNode
   variant?: 'default' | 'red' | 'green' | 'yellow' | 'blue' | 'outline'
   className?: string
+  style?: React.CSSProperties
 }
 
-export function Badge({ children, variant = 'default', className }: BadgeProps) {
+export function Badge({ children, variant = 'default', className, style }: BadgeProps) {
   const variants = {
     default: 'bg-white/10 text-white/80',
     red: 'bg-f1-red/20 text-f1-red',
@@ -17,7 +18,7 @@ export function Badge({ children, variant = 'default', className }: BadgeProps) 
   }
 
   return (
-    <span className={cn('inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium', variants[variant], className)}>
+    <span className={cn('inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium', variants[variant], className)} style={style}>
       {children}
     </span>
   )

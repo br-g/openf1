@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { Suspense, useState, useEffect, useMemo, useCallback } from 'react'
 import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
 import {
@@ -27,7 +27,15 @@ const AVAILABLE_YEARS = [
 
 type StandingsTab = 'drivers' | 'constructors'
 
-export default function SeasonPage() {
+export default function SeasonPageWrapper() {
+  return (
+    <Suspense>
+      <SeasonPage />
+    </Suspense>
+  )
+}
+
+function SeasonPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const initialYear = searchParams.get('year') || '2025'
