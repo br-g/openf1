@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0A0A0A;
+  --foreground: #F5F5F5;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2A2A2A #0A0A0A;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #0A0A0A;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #2A2A2A;
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60;
+  }
+
+  .text-gradient-red {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-f1-red to-red-400;
+  }
+
+  .glass {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+  }
+
+  .glass-dark {
+    @apply bg-f1-black/80 backdrop-blur-xl border border-white/5;
+  }
+
+  .glow-red {
+    box-shadow: 0 0 40px rgba(225, 6, 0, 0.15);
+  }
+
+  .card-hover {
+    @apply hover:border-white/10 hover:bg-f1-steel/30 transition-all duration-300;
+  }
+
+  .section-padding {
+    @apply px-4 sm:px-6 py-8 sm:py-12;
+  }
+
+  .grid-auto-fill {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+/* Recharts customization */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: rgba(255, 255, 255, 0.05);
+}
+
+.recharts-text {
+  fill: rgba(255, 255, 255, 0.4);
+  font-size: 11px;
+}
+
+.recharts-tooltip-wrapper {
+  outline: none;
+}
+
+/* Custom track map styling */
+.track-map path {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Compound dot styling */
+.compound-soft { color: #FF3333; }
+.compound-medium { color: #FFC700; }
+.compound-hard { color: #CCCCCC; }
+.compound-intermediate { color: #39B54A; }
+.compound-wet { color: #0067FF; }
