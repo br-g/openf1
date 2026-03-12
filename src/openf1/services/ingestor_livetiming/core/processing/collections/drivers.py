@@ -38,10 +38,11 @@ class Driver(Document):
     last_name: str | None = None
     headshot_url: str | None = None
     country_code: str | None = None
+    _index: int | None = None
 
     @property
     def unique_key(self) -> tuple:
-        return (self.session_key, self.driver_number)
+        return (self.session_key, self._index)
 
 
 @dataclass
@@ -67,7 +68,13 @@ class DriversCollection(Collection):
             self.updated_drivers.add(driver)
 
     def process_message(self, message: Message) -> Iterator[Driver]:
-        for driver_number, driver_content in message.content.items():
+        # Ensure all drivers are found
+        if len(message.content) < 20:
+            return
+
+        for index, (driver_number, driver_content) in enumerate(
+            list(message.content.items())
+        ):
             try:
                 driver_number = int(driver_number)
             except:
@@ -76,6 +83,14 @@ class DriversCollection(Collection):
             if not isinstance(driver_content, dict):
                 continue
 
+            if driver_content["FullName"] is None:
+                continue
+
+            self._update_driver(
+                driver_number=driver_number,
+                property="_index",
+                value=index,
+            )
             self._update_driver(
                 driver_number=driver_number,
                 property="driver_number",
