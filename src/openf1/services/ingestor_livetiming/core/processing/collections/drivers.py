@@ -83,7 +83,7 @@ class DriversCollection(Collection):
             if not isinstance(driver_content, dict):
                 continue
 
-            if driver_content["FullName"] is None:
+            if driver_content.get("FullName") is None:
                 continue
 
             self._update_driver(
