@@ -316,7 +316,6 @@ fetch(
 ## Drivers
 
 Retrieve detailed information about the drivers participating in a specific session.
-Driver data is populated at the start of each session.
 
 ```shell
 curl "https://api.openf1.org/v1/drivers?driver_number=1&session_key=9158"
@@ -1240,7 +1239,7 @@ fetch(
 
 ## Session result
 
-            Provides standings after a session.
+            Provides standings after a session. This data becomes available a few minutes after the official results are published on the official Formula 1 website.
 
 ```shell
 curl "https://api.openf1.org/v1/session_result?session_key=7782&position%3C=3"
@@ -1346,7 +1345,7 @@ fetch("https://api.openf1.org/v1/session_result?session_key=7782&position%3C=3")
 
 ## Starting grid
 
-            Provides the starting grid for the upcoming race.
+            Provides the starting grid for the upcoming race. This data becomes available a few minutes after the official results are published on the official Formula 1 website.
 
 ```shell
 curl "https://api.openf1.org/v1/starting_grid?session_key=7783&position%3C=3"
