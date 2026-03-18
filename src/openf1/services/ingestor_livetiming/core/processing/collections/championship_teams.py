@@ -14,6 +14,7 @@ class ChampionshipTeam(Document):
     session_key: int
     team_name: str
     _team_key: str
+    team_colour: str | None = None
     position_start: int | None = None
     position_current: int | None = None
     points_start: float | None = None
@@ -27,10 +28,26 @@ class ChampionshipTeam(Document):
 @dataclass
 class ChampionshipTeamCollection(Collection):
     name = "championship_teams"
-    source_topics = {"ChampionshipPrediction"}
+    source_topics = {"ChampionshipPrediction", "DriverList"}
     cache: dict = field(default_factory=dict)
+    team_colour_by_name: dict = field(default_factory=dict)
 
     def process_message(self, message: Message) -> Iterator[ChampionshipTeam]:
+        if message.topic == "DriverList":
+            for driver_data in message.content.values():
+                if not isinstance(driver_data, dict):
+                    continue
+                team_name = driver_data.get("TeamName")
+                team_colour = driver_data.get("TeamColour")
+                if team_name and team_colour:
+                    self.team_colour_by_name[team_name] = team_colour
+            # Back-fill teams already cached before DriverList arrived
+            for result in self.cache.values():
+                if result.team_colour is None and result.team_name in self.team_colour_by_name:
+                    result.team_colour = self.team_colour_by_name[result.team_name]
+                    yield result
+            return
+
         if "Teams" not in message.content:
             return
 
@@ -52,6 +69,9 @@ class ChampionshipTeamCollection(Collection):
                     team_name=team_name,
                     _team_key=team_key,
                 )
+
+            if team_name and team_name in self.team_colour_by_name:
+                result.team_colour = self.team_colour_by_name[team_name]
 
             if "CurrentPosition" in data and data["CurrentPosition"] > 0:
                 result.position_start = data["CurrentPosition"]
