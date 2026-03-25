@@ -14,7 +14,7 @@ name: Deploy E2E Test (success)
 run-name: "e2e test — deploy by @${{ github.actor }}"
 
 on:
-  push:
+  pull_request:
     branches: [ "main" ]
 
 jobs:
