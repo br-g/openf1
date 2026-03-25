@@ -1,0 +1,40 @@
+# Workflow de teste e2e para o slackbot-cbk-recovery.
+#
+# Copiar para .github/workflows/ do repositório de teste e configurar:
+#   - Um environment chamado "prd" com protection rule de aprovação manual
+#   - No config do bot: file: deploy_e2e_test.yaml / environment: prd
+#
+# Fluxo esperado no Slack:
+#   ⏳ Em andamento  → (20s de delay visível)
+#   🟠 Aguardando revisão  → (aguarda aprovação manual no GitHub)
+#   🔵 Aprovado — em andamento  → (10s de delay visível)
+#   ✅ Sucesso
+
+name: Deploy E2E Test (success)
+run-name: "e2e test — deploy by @${{ github.actor }}"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  pre-deploy:
+    name: Pre-deploy checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Simulating pre-deploy work
+        run: |
+          echo "Running pre-deploy checks..."
+          sleep 20
+          echo "Pre-deploy checks complete."
+
+  deploy:
+    name: Deploy to prd
+    runs-on: ubuntu-latest
+    needs: [pre-deploy]
+    environment: prd   # ← este campo dispara o workflow_job "waiting" (approval gate)
+    steps:
+      - name: Simulating deployment
+        run: |
+          echo "Approved! Deploying to production..."
+          sleep 10
+          echo "Deploy complete — SUCCESS."
