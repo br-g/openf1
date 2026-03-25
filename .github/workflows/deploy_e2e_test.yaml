@@ -14,7 +14,8 @@ name: Deploy E2E Test (success)
 run-name: "e2e test — deploy by @${{ github.actor }}"
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ "main" ]
 
 jobs:
   pre-deploy:
