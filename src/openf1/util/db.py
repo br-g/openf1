@@ -89,25 +89,31 @@ def _get_bounded_inequality_predicate_pairs(
     predicates: list[dict],
 ) -> list[tuple[dict, dict]]:
     """
-    Greedy matching algorithm for pairing predicates in the form {op: value}
-    where op is a MongoDB inequality operator such as "$gt", "$gte", "$lt", or "$lte".
+    Greedy algorithm for pairing predicates such that each pair represents a bounded interval.
+    Predicates that are not paired are ignored, and predicate pairs representing overlapping intervals are merged.
 
     Args:
         predicates: A list of inequality predicates without duplicates (i.e. no two predicates can have the same op and value).
+                    Predicates are in the form {<op>: <value>},
+                    where <op> is a MongoDB operator such as "$eq", "$gt", "$gte", "$lt", or "$lte",
+                    and <value> is a numeric value (e.g. int, float, datetime).
 
     Returns:
         A list of predicate pairs where the first predicate of the pair represents a lower bound ("$gt", "$gte"),
-        the second predicate of the pair represents an upper bound ("$lt", "$lte"),
-        and the value difference among all pairs is minimized (i.e. the value difference in each pair is as small as possible).
+        and the second predicate of the pair represents an upper bound ("$lt", "$lte").
 
     Examples:
         [] --> []
-        [{"$gt": 5}] --> []
-        [{"$gt": 10}, {"$lt": 5}] --> []
-        [{"$gt": 5}, {"$lt": 10}] --> [({"$gt": 5}, {"$lt": 10})]
-        [{"$gt": 5}, {"$lt": 10}, {"$lt": 12}] --> [({"$gt": 5}, {"$lt": 10})]
-        [{"$gt": 5}, {"$lt": 10}, {"$gt": 8}, {"$lt": 12}] --> [({"$gt": 5}, {"$lt": 10}), ({"$gt": 8}, {"$lt": 12})]
+        [{"$eq": 5}] --> []
+        [{"$gt": 5}] --> []                                                                 (unbounded interval)
+        [{"$gt": 10}, {"$lt": 5}] --> []                                                    (unbounded intervals)
+        [{"$gt": 5}, {"$lt": 10}] --> [({"$gt": 5}, {"$lt": 10})]                           (bounded interval)
+        [{"$gt": 5}, {"$lt": 10}, {"$lt": 12}] --> [({"$gt": 5}, {"$lt": 10})]              (bounded interval with unbounded interval)
+        [{"$gt": 5}, {"$lt": 10}, {"$gt": 8}, {"$lt": 12}] --> [({"$gt": 5}, {"$lt": 12})]  (bounded intervals merged due to overlap)
     """
+    if not predicates:
+        return []
+
     lower_bound_predicates = [
         predicate
         for predicate in predicates
@@ -119,12 +125,12 @@ def _get_bounded_inequality_predicate_pairs(
         if "$lt" in predicate or "$lte" in predicate
     ]
 
-    # Sort predicates in reverse order for some minor optimization
+    # Sort predicates in descending order so we can pop from list ends
     lower_bound_predicates.sort(
-        key=lambda predicate: _get_predicate_value(predicate), reverse=True
+        key=lambda predicate: _get_predicate_op_and_value(predicate)[1], reverse=True
     )
     upper_bound_predicates.sort(
-        key=lambda predicate: _get_predicate_value(predicate), reverse=True
+        key=lambda predicate: _get_predicate_op_and_value(predicate)[1], reverse=True
     )
 
     bounded_ineq_predicate_pairs = []
@@ -133,15 +139,27 @@ def _get_bounded_inequality_predicate_pairs(
     while lower_bound_predicates and upper_bound_predicates:
         lower_bound_predicate = lower_bound_predicates.pop()
 
-        # Check each upper bound predicate starting from the smallest valued predicate
-        # If the lower bound predicate is <= the upper bound predicate, a pair has been found
+        # Check potential upper bound predicates starting from the smallest predicate
         closest_upper_bound_predicate = None
         for i in reversed(range(len(upper_bound_predicates))):
-            if _get_predicate_value(lower_bound_predicate) <= _get_predicate_value(
+            lower_op, lower_value = _get_predicate_op_and_value(lower_bound_predicate)
+            upper_op, upper_value = _get_predicate_op_and_value(
                 upper_bound_predicates[i]
-            ):
+            )
+
+            if not lower_op or not upper_op or not lower_value or not upper_value:
+                # This shouldn't ever happen, recover anyway
+                continue
+
+            if lower_value < upper_value:
+                # Pair found
                 closest_upper_bound_predicate = upper_bound_predicates.pop(i)
                 break
+            if lower_value == upper_value:
+                if lower_op == "$gte" and upper_op == "$lte":
+                    # Special case: when values are equal and ops are >= and <=, this is a bounded pair consisting of a single value
+                    closest_upper_bound_predicate = upper_bound_predicates.pop(i)
+                    break
 
         # Terminate early if no suitable upper bound predicate exists (no more pairs can be made)
         if closest_upper_bound_predicate is None:
@@ -151,14 +169,70 @@ def _get_bounded_inequality_predicate_pairs(
             (lower_bound_predicate, closest_upper_bound_predicate)
         )
 
-    return bounded_ineq_predicate_pairs
+    if not bounded_ineq_predicate_pairs:
+        return []
+
+    # Merge overlapping pairs, first sorting pairs by lower bound, then upper bound
+    bounded_ineq_predicate_pairs.sort(
+        key=lambda pair: (
+            _get_predicate_op_and_value(pair[0])[1],
+            _get_predicate_op_and_value(pair[1])[1],
+        )
+    )
+    merged_bounded_ineq_predicate_pairs = []
+    curr_pair = bounded_ineq_predicate_pairs[0]
+
+    for next_pair in bounded_ineq_predicate_pairs[1:]:
+        curr_upper_op, curr_upper_value = _get_predicate_op_and_value(curr_pair[1])
+        next_lower_op, next_lower_value = _get_predicate_op_and_value(next_pair[0])
+
+        if (
+            not curr_upper_op
+            or not next_lower_op
+            or not curr_upper_value
+            or not next_lower_value
+        ):
+            continue
+
+        if curr_upper_value > next_lower_value:
+            # Extend upper bound of current pair
+            curr_pair = (curr_pair[0], next_pair[1])
+            continue
+        if curr_upper_value < next_lower_value:
+            # For integer values, if values differ by 1 and both ops contain an equality =, this is considered an overlapping pair
+            if (
+                isinstance(curr_upper_value, int)
+                and isinstance(next_lower_value, int)
+                and curr_upper_value + 1 == next_lower_value
+                and curr_upper_op == "$lte"
+                and next_lower_op == "$gte"
+            ):
+                curr_pair = (curr_pair[0], next_pair[1])
+                continue
+            # Fall through to no overlap path
+        if curr_upper_value == next_lower_value:
+            if next_lower_op == "$gte" or curr_upper_op == "$lte":
+                # Special case: when values are equal and we have either a >= or <= op, this is considered an overlapping pair
+                curr_pair = (curr_pair[0], next_pair[1])
+                continue
+            # Fall through to no overlap path
+
+        # No overlap, pairs overlapping the current pair are all merged
+        merged_bounded_ineq_predicate_pairs.append(curr_pair)
+        curr_pair = next_pair
+
+    merged_bounded_ineq_predicate_pairs.append(curr_pair)
+
+    return merged_bounded_ineq_predicate_pairs
 
 
-def _get_predicate_value(predicate: dict) -> Any:
+def _get_predicate_op_and_value(predicate: dict) -> tuple[str | None, Any | None]:
     """
-    Returns the first value in a predicate if it exists, otherwise returns None.
+    Returns a tuple of a predicate op (key) and value if it exists, otherwise returns (None, None).
     """
-    return next((value for value in predicate.values()), None)
+    key = next((key for key in predicate.keys()), None)
+    value = next((value for value in predicate.values()), None)
+    return key, value
 
 
 def _get_unique_predicates(predicates: list[dict]) -> list[dict]:
@@ -187,7 +261,8 @@ def _generate_query_predicate(filters: dict[str, list[dict]]) -> dict:
 
     Examples:
         A query string "position=1&position=3" returns documents with position equal to 1 OR 3
-        A query string "position>=4&position<=7&position>=10&position<=15" returns documents with position between 4 and 7 OR 10 and 15)
+        A query string "position>=4&position<=7&position>=5&position<=15" returns documents with position between 4 and 15 (overlapping intervals are merged)
+        A query string "position>=4&position<=7&position>=10&position<=15" returns documents with position between 4 and 7 OR 10 and 15
         A query string "position=1&position=3&position>=4&position<=7&position>=10&position<=15" returns documents matching either of the above criteria
     """
     query_predicates = defaultdict(list)
