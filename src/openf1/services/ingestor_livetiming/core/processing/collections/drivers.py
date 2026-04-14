@@ -77,7 +77,7 @@ class DriversCollection(Collection):
         ):
             try:
                 driver_number = int(driver_number)
-            except:
+            except Exception:
                 continue
 
             if not isinstance(driver_content, dict):
