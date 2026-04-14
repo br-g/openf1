@@ -258,6 +258,8 @@ def get_latest_session_info() -> dict:
 
     if latest_session:
         return latest_session
+    elif not latest_session.any():
+        return get_closest_session_info()
     else:
         raise SystemError("Could not find any past or current session in MongoDB")
 
