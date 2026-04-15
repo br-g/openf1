@@ -19,7 +19,6 @@ def _p(op: str, value: Any):
         ([_p("$gt", 5)], []),
         ([_p("$lt", 5)], []),
         ([_p("$gt", 10), _p("$lt", 5)], []),
-
         # Bounded pairs (unordered)
         (
             [_p("$lt", 10), _p("$gt", 5)],
@@ -32,9 +31,8 @@ def _p(op: str, value: Any):
         # Single-value bounded pair
         (
             [_p("$gte", 5), _p("$lte", 5)],
-            [(_p("$gte", 5), _p("$lte", 5))],  
+            [(_p("$gte", 5), _p("$lte", 5))],
         ),
-
         # Bounded pairs ignoring unpaired predicates
         (
             [_p("$gt", 5), _p("$lt", 10), _p("$lt", 12)],
@@ -44,37 +42,31 @@ def _p(op: str, value: Any):
             [_p("$gt", 5), _p("$lt", 3), _p("$lt", 10)],
             [(_p("$gt", 5), _p("$lt", 10))],
         ),
-
         # Overlapping pairs
         (
             [_p("$gt", 5), _p("$lt", 10), _p("$gt", 8), _p("$lt", 12)],
             [(_p("$gt", 5), _p("$lt", 12))],
         ),
-
         # Overlapping pairs, boundary case
         (
             [_p("$gte", 4), _p("$lte", 7), _p("$gte", 7), _p("$lte", 10)],
             [(_p("$gte", 4), _p("$lte", 10))],
         ),
-
         # Overlapping pairs, integer adjacency
         (
             [_p("$gte", 4), _p("$lte", 7), _p("$gte", 8), _p("$lte", 10)],
             [(_p("$gte", 4), _p("$lte", 10))],
         ),
-
         # Non-overlapping pairs, boundary case
         (
             [_p("$gt", 1), _p("$lt", 5), _p("$gt", 5), _p("$lt", 8)],
             [(_p("$gt", 1), _p("$lt", 5)), (_p("$gt", 5), _p("$lt", 8))],
         ),
-
         # Float
         (
             [_p("$gt", 1.5), _p("$lt", 2.5), _p("$gt", 2.0), _p("$lt", 3.5)],
             [(_p("$gt", 1.5), _p("$lt", 3.5))],
         ),
-
         # Datetime
         (
             [
