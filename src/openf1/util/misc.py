@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import dataclasses
 import time
 from datetime import datetime, timedelta
 from enum import Enum
@@ -191,8 +192,8 @@ def hash_obj(obj):
         return tuple(hash_obj(v) for v in obj)
     elif isinstance(obj, datetime):
         return obj.isoformat()
-    elif isinstance(obj, dataclass):
-        return obj.__hash__()  # This should be fine assuming dataclasses are frozen
+    elif dataclasses.is_dataclass(obj):
+        return hash(dataclasses.astuple(obj))
     else:
         # Assume obj is hashable
         return obj
