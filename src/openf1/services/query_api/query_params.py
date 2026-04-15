@@ -173,7 +173,12 @@ def query_params_to_mongo_filters(
     query_params: dict[str, list[QueryParam]],
 ) -> dict[str, list[MongoPredicate]]:
     return {
-        key: [MongoPredicate(op=param.op, value=param.value) for param in params]
+        key: [
+            MongoPredicate(
+                op=COMPARISON_OPERATORS_TO_MONGO[param.op], value=param.value
+            )
+            for param in params
+        ]
         for key, params in query_params.items()
     }
 

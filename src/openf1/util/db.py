@@ -238,7 +238,7 @@ def _get_unique_predicates(predicates: list[MongoPredicate]) -> list[MongoPredic
         hashed_predicate = hash_obj(predicate)
 
         if hashed_predicate not in seen_predicates:
-            filtered_predicates.append(hashed_predicate)
+            filtered_predicates.append(predicate)
             seen_predicates.add(hashed_predicate)
 
     return filtered_predicates
