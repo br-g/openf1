@@ -1,8 +1,9 @@
+from dataclasses import dataclass
+from enum import Enum
 import os
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from functools import lru_cache
-from typing import Any
 
 from bson.codec_options import CodecOptions
 from loguru import logger
@@ -27,6 +28,25 @@ _MAX_QUERY_TIME_MS = 5000
 
 _client_sync = None
 _client_async = None
+
+
+class MongoOp(str, Enum):
+    EQ = "$eq"
+    GTE = "$gte"
+    LTE = "$lte"
+    GT = "$gt"
+    LT = "$lt"
+    AND = "$and"
+    OR = "$or"
+
+
+@dataclass(frozen=True)
+class MongoPredicate:
+    op: MongoOp
+    value: str | int | float | datetime
+
+    def to_dict(self) -> dict[MongoOp, str | int | float | datetime]:
+        return {self.op: self.value}
 
 
 def _get_mongo_client_sync():
@@ -56,7 +76,7 @@ def _get_mongo_db_async():
 
 
 async def get_documents(
-    collection_name: str, filters: dict[str, list[dict]]
+    collection_name: str, filters: dict[str, list[MongoPredicate]]
 ) -> list[dict]:
     """Retrieves documents from a specified MongoDB collection, applies filters,
     and sorts.
@@ -86,17 +106,15 @@ async def get_documents(
 
 
 def _get_bounded_inequality_predicate_pairs(
-    predicates: list[dict],
-) -> list[tuple[dict, dict]]:
+    predicates: list[MongoPredicate],
+) -> list[tuple[MongoPredicate, MongoPredicate]]:
     """
     Greedy algorithm for pairing predicates such that each pair represents a bounded interval.
     Predicates that are not paired are ignored, and predicate pairs representing overlapping intervals are merged.
 
     Args:
         predicates: A list of inequality predicates without duplicates (i.e. no two predicates can have the same op and value).
-                    Predicates are in the form {<op>: <value>},
-                    where <op> is a MongoDB operator such as "$eq", "$gt", "$gte", "$lt", or "$lte",
-                    and <value> is a numeric value (e.g. int, float, datetime).
+                    Predicates have a MongoDB operator such as "$eq", "$gt", "$gte", "$lt", or "$lte", and a numeric value (e.g. int, float, datetime).
 
     Returns:
         A list of predicate pairs where the first predicate of the pair represents a lower bound ("$gt", "$gte"),
@@ -117,21 +135,17 @@ def _get_bounded_inequality_predicate_pairs(
     lower_bound_predicates = [
         predicate
         for predicate in predicates
-        if "$gt" in predicate or "$gte" in predicate
+        if predicate.op in (MongoOp.GT, MongoOp.GTE)
     ]
     upper_bound_predicates = [
         predicate
         for predicate in predicates
-        if "$lt" in predicate or "$lte" in predicate
+        if predicate.op in (MongoOp.LT, MongoOp.LTE)
     ]
 
     # Sort predicates in descending order so we can pop from list ends
-    lower_bound_predicates.sort(
-        key=lambda predicate: _get_predicate_op_and_value(predicate)[1], reverse=True
-    )
-    upper_bound_predicates.sort(
-        key=lambda predicate: _get_predicate_op_and_value(predicate)[1], reverse=True
-    )
+    lower_bound_predicates.sort(key=lambda predicate: predicate.value, reverse=True)
+    upper_bound_predicates.sort(key=lambda predicate: predicate.value, reverse=True)
 
     bounded_ineq_predicate_pairs = []
 
@@ -142,21 +156,17 @@ def _get_bounded_inequality_predicate_pairs(
         # Check potential upper bound predicates starting from the smallest predicate
         closest_upper_bound_predicate = None
         for i in reversed(range(len(upper_bound_predicates))):
-            lower_op, lower_value = _get_predicate_op_and_value(lower_bound_predicate)
-            upper_op, upper_value = _get_predicate_op_and_value(
-                upper_bound_predicates[i]
-            )
+            upper_bound_predicate = upper_bound_predicates[i]
 
-            if not lower_op or not upper_op or not lower_value or not upper_value:
-                # This shouldn't ever happen, recover anyway
-                continue
-
-            if lower_value < upper_value:
+            if lower_bound_predicate.value < upper_bound_predicate.value:
                 # Pair found
                 closest_upper_bound_predicate = upper_bound_predicates.pop(i)
                 break
-            if lower_value == upper_value:
-                if lower_op == "$gte" and upper_op == "$lte":
+            if lower_bound_predicate.value == upper_bound_predicate.value:
+                if (
+                    lower_bound_predicate.op == MongoOp.GTE
+                    and upper_bound_predicate.op == MongoOp.LTE
+                ):
                     # Special case: when values are equal and ops are >= and <=, this is a bounded pair consisting of a single value
                     closest_upper_bound_predicate = upper_bound_predicates.pop(i)
                     break
@@ -173,47 +183,38 @@ def _get_bounded_inequality_predicate_pairs(
         return []
 
     # Merge overlapping pairs, first sorting pairs by lower bound, then upper bound
-    bounded_ineq_predicate_pairs.sort(
-        key=lambda pair: (
-            _get_predicate_op_and_value(pair[0])[1],
-            _get_predicate_op_and_value(pair[1])[1],
-        )
-    )
+    bounded_ineq_predicate_pairs.sort(key=lambda pair: (pair[0].value, pair[1].value))
     merged_bounded_ineq_predicate_pairs = []
     curr_pair = bounded_ineq_predicate_pairs[0]
 
     for next_pair in bounded_ineq_predicate_pairs[1:]:
-        curr_upper_op, curr_upper_value = _get_predicate_op_and_value(curr_pair[1])
-        next_lower_op, next_lower_value = _get_predicate_op_and_value(next_pair[0])
+        curr_lower_bound_predicate, curr_upper_bound_predicate = curr_pair
+        next_lower_bound_predicate, next_upper_bound_predicate = next_pair
 
-        if (
-            not curr_upper_op
-            or not next_lower_op
-            or not curr_upper_value
-            or not next_lower_value
-        ):
-            continue
-
-        if curr_upper_value > next_lower_value:
+        if curr_upper_bound_predicate.value > next_lower_bound_predicate.value:
             # Extend upper bound of current pair
-            curr_pair = (curr_pair[0], next_pair[1])
+            curr_pair = (curr_lower_bound_predicate, next_upper_bound_predicate)
             continue
-        if curr_upper_value < next_lower_value:
+        if curr_upper_bound_predicate.value < next_lower_bound_predicate.value:
             # For integer values, if values differ by 1 and both ops contain an equality =, this is considered an overlapping pair
             if (
-                isinstance(curr_upper_value, int)
-                and isinstance(next_lower_value, int)
-                and curr_upper_value + 1 == next_lower_value
-                and curr_upper_op == "$lte"
-                and next_lower_op == "$gte"
+                isinstance(curr_upper_bound_predicate.value, int)
+                and isinstance(next_lower_bound_predicate.value, int)
+                and curr_upper_bound_predicate.value + 1
+                == next_lower_bound_predicate.value
+                and curr_upper_bound_predicate.op == MongoOp.LTE
+                and next_lower_bound_predicate.op == MongoOp.GTE
             ):
-                curr_pair = (curr_pair[0], next_pair[1])
+                curr_pair = (curr_lower_bound_predicate, next_upper_bound_predicate)
                 continue
             # Fall through to no overlap path
-        if curr_upper_value == next_lower_value:
-            if next_lower_op == "$gte" or curr_upper_op == "$lte":
+        if curr_upper_bound_predicate.value == next_lower_bound_predicate.value:
+            if (
+                next_lower_bound_predicate.op == MongoOp.GTE
+                or curr_upper_bound_predicate.op == MongoOp.LTE
+            ):
                 # Special case: when values are equal and we have either a >= or <= op, this is considered an overlapping pair
-                curr_pair = (curr_pair[0], next_pair[1])
+                curr_pair = (curr_lower_bound_predicate, next_upper_bound_predicate)
                 continue
             # Fall through to no overlap path
 
@@ -226,33 +227,24 @@ def _get_bounded_inequality_predicate_pairs(
     return merged_bounded_ineq_predicate_pairs
 
 
-def _get_predicate_op_and_value(predicate: dict) -> tuple[str | None, Any | None]:
+def _get_unique_predicates(predicates: list[MongoPredicate]) -> list[MongoPredicate]:
     """
-    Returns a tuple of a predicate op (key) and value if it exists, otherwise returns (None, None).
-    """
-    key = next((key for key in predicate.keys()), None)
-    value = next((value for value in predicate.values()), None)
-    return key, value
-
-
-def _get_unique_predicates(predicates: list[dict]) -> list[dict]:
-    """
-    Returns a list of predicates in the form {op: value} where no two predicates have the same op and the same value.
+    Returns a list of unique predicates where no two predicates have the same op and the same value.
     """
     seen_predicates = set()
-    filtered_predicates = []
+    filtered_predicates: list[MongoPredicate] = []
 
     for predicate in predicates:
         hashed_predicate = hash_obj(predicate)
 
         if hashed_predicate not in seen_predicates:
-            filtered_predicates.append(predicate)
+            filtered_predicates.append(hashed_predicate)
             seen_predicates.add(hashed_predicate)
 
     return filtered_predicates
 
 
-def _generate_query_predicate(filters: dict[str, list[dict]]) -> dict:
+def _generate_query_predicate(filters: dict[str, list[MongoPredicate]]) -> dict:
     """
     Returns a MongoDB query predicate that supports:
         - repeated query params
@@ -271,7 +263,7 @@ def _generate_query_predicate(filters: dict[str, list[dict]]) -> dict:
         filtered_predicates = _get_unique_predicates(predicates)
 
         eq_predicates = [
-            predicate for predicate in filtered_predicates if "$eq" in predicate
+            predicate for predicate in filtered_predicates if predicate.op == MongoOp.EQ
         ]
 
         bounded_ineq_predicate_pairs = _get_bounded_inequality_predicate_pairs(
@@ -295,20 +287,29 @@ def _generate_query_predicate(filters: dict[str, list[dict]]) -> dict:
         # Predicates for the same query param are joined with logical OR except for bounded pairs (logical AND)
         inner_predicate = defaultdict(list)
         if eq_predicates:
-            inner_predicate["$or"].append(
-                {"$or": [{key: predicate} for predicate in eq_predicates]}
+            inner_predicate[MongoOp.OR].append(
+                {
+                    MongoOp.OR: [
+                        {key: predicate.to_dict()} for predicate in eq_predicates
+                    ]
+                }
             )
         if unbounded_ineq_predicates:
-            inner_predicate["$or"].append(
-                {"$or": [{key: predicate} for predicate in unbounded_ineq_predicates]}
+            inner_predicate[MongoOp.OR].append(
+                {
+                    MongoOp.OR: [
+                        {key: predicate.to_dict()}
+                        for predicate in unbounded_ineq_predicates
+                    ]
+                }
             )
         if bounded_ineq_predicate_pairs:
-            inner_predicate["$or"].append(
+            inner_predicate[MongoOp.OR].append(
                 {
-                    "$or": [
+                    MongoOp.OR: [
                         {
-                            "$and": [
-                                {key: predicate}
+                            MongoOp.AND: [
+                                {key: predicate.to_dict()}
                                 for predicate in bounded_ineq_predicate_pair
                             ]
                         }
@@ -318,7 +319,7 @@ def _generate_query_predicate(filters: dict[str, list[dict]]) -> dict:
             )
 
         # Predicates for different query params are joined with logical AND
-        query_predicates["$and"].append(dict(inner_predicate))
+        query_predicates[MongoOp.AND].append(dict(inner_predicate))
 
     return dict(query_predicates)
 
@@ -328,7 +329,7 @@ def get_latest_session_info() -> dict:
     sessions = _get_mongo_db_sync()["sessions"]
     threshold = datetime.now(timezone.utc) + timedelta(seconds=60)
     latest_session = sessions.find_one(
-        {"date_start": {"$lte": threshold}}, sort=[("date_start", -1)]
+        {"date_start": {MongoOp.LTE: threshold}}, sort=[("date_start", -1)]
     )
 
     if latest_session:
@@ -345,7 +346,7 @@ def get_closest_session_info() -> dict:
 
     # First, try to find an active session
     active_session = sessions.find_one(
-        {"date_start": {"$lte": now}, "date_end": {"$gte": now}}
+        {"date_start": {MongoOp.LTE: now}, "date_end": {MongoOp.GTE: now}}
     )
 
     if active_session:
@@ -354,12 +355,12 @@ def get_closest_session_info() -> dict:
     # If no active session, find the closest one
     # Get the most recent past session (by end time)
     past_session = sessions.find_one(
-        {"date_end": {"$lt": now}}, sort=[("date_end", -1)]
+        {"date_end": {MongoOp.LT: now}}, sort=[("date_end", -1)]
     )
 
     # Get the nearest future session (by start time)
     future_session = sessions.find_one(
-        {"date_start": {"$gt": now}}, sort=[("date_start", 1)]
+        {"date_start": {MongoOp.GT: now}}, sort=[("date_start", 1)]
     )
 
     # Return whichever is closer

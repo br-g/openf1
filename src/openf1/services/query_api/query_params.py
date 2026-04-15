@@ -6,6 +6,7 @@ from enum import Enum
 from dateutil.parser import parse as parse_date
 from pydantic import BaseModel
 
+from openf1.util.db import MongoOp, MongoPredicate
 from openf1.util.schedule import get_latest_meeting_key, get_latest_session_key
 from openf1.util.type_casting import cast
 
@@ -20,11 +21,11 @@ class ComparisonOperator(str, Enum):
 
 
 COMPARISON_OPERATORS_TO_MONGO = {
-    ComparisonOperator.GTE: "$gte",
-    ComparisonOperator.LTE: "$lte",
-    ComparisonOperator.EQ: "$eq",
-    ComparisonOperator.GT: "$gt",
-    ComparisonOperator.LT: "$lt",
+    ComparisonOperator.GTE: MongoOp.GTE,
+    ComparisonOperator.LTE: MongoOp.LTE,
+    ComparisonOperator.EQ: MongoOp.EQ,
+    ComparisonOperator.GT: MongoOp.GT,
+    ComparisonOperator.LT: MongoOp.LT,
 }
 
 
@@ -91,23 +92,35 @@ def _adjust_time_param(param: QueryParam) -> list[QueryParam]:
     """
     adjusted_params = []
 
-    if param.op == ">":
+    if param.op == ComparisonOperator.GT:
         adjusted_params.append(
             QueryParam(
-                field=param.field, op=">=", value=param.value + timedelta(days=1)
+                field=param.field,
+                op=ComparisonOperator.GTE,
+                value=param.value + timedelta(days=1),
             )
         )
-    elif param.op == "<":
+    elif param.op == ComparisonOperator.LT:
         adjusted_params.append(param)
-    elif param.op in {"=", ">=", "<="}:
-        if param.op in {"=", ">="}:
-            adjusted_params.append(
-                QueryParam(field=param.field, op=">=", value=param.value)
-            )
-        if param.op in {"=", "<="}:
+    elif param.op in {
+        ComparisonOperator.EQ,
+        ComparisonOperator.GTE,
+        ComparisonOperator.LTE,
+    }:
+        if param.op in {ComparisonOperator.EQ, ComparisonOperator.GTE}:
             adjusted_params.append(
                 QueryParam(
-                    field=param.field, op="<", value=param.value + timedelta(days=1)
+                    field=param.field,
+                    op=ComparisonOperator.GTE,
+                    value=param.value,
+                )
+            )
+        if param.op in {ComparisonOperator.EQ, ComparisonOperator.LTE}:
+            adjusted_params.append(
+                QueryParam(
+                    field=param.field,
+                    op=ComparisonOperator.LT,
+                    value=param.value + timedelta(days=1),
                 )
             )
 
@@ -158,11 +171,9 @@ def parse_query_params(
 
 def query_params_to_mongo_filters(
     query_params: dict[str, list[QueryParam]],
-) -> dict[str, list[dict]]:
+) -> dict[str, list[MongoPredicate]]:
     return {
-        key: [
-            {COMPARISON_OPERATORS_TO_MONGO[param.op]: param.value} for param in params
-        ]
+        key: [MongoPredicate(op=param.op, value=param.value) for param in params]
         for key, params in query_params.items()
     }
 
