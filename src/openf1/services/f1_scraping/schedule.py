@@ -95,6 +95,7 @@ def get_meetings(year: int | None = None) -> list[dict]:
                 "date_start": _to_utc(event["meetingStartDate"], offset),
                 "date_end": _to_utc(event["meetingEndDate"], offset),
                 "year": int(data["year"]),
+                "is_cancelled": False,  # to be manually flipped to True in the (rare) case of cancellation
             }
         )
 
@@ -138,6 +139,7 @@ def get_sessions(year: int | None = None) -> list[dict]:
                     "location": meeting["location"],
                     "gmt_offset": meeting["gmt_offset"],
                     "year": meeting["year"],
+                    "is_cancelled": False,  # to be manually flipped to True in the (rare) case of cancellation
                 }
             )
 
