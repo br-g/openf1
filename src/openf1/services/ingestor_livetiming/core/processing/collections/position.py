@@ -40,5 +40,5 @@ class PositionCollection(Collection):
                     date=message.timepoint,
                     position=data["Line"],
                 )
-            except:
+            except Exception:
                 pass
