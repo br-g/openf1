@@ -194,7 +194,6 @@ def _get_t0(session_url: str) -> datetime:
             t0_candidates.append(timepoint - session_time)
 
     t0_estimate = max(t0_candidates)
-    t0_estimate = pytz.utc.localize(t0_estimate)
 
     return t0_estimate
 

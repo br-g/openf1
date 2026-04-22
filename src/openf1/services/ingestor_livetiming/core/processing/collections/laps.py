@@ -203,8 +203,6 @@ class LapsCollection(Collection):
 
             for item in status_series:
                 date = to_datetime(item.get("Utc"))
-                if date is not None:
-                    date = pytz.utc.localize(date)
                 status = item.get("SessionStatus")
 
                 if date is not None and status == "Started":
