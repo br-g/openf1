@@ -4,8 +4,6 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Iterator
 
-import pytz
-
 from openf1.services.ingestor_livetiming.core.objects import (
     Collection,
     Document,

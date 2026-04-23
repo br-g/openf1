@@ -3,7 +3,6 @@ import re
 from datetime import datetime, timedelta
 from functools import lru_cache
 
-import pytz
 import requests
 import typer
 from loguru import logger
