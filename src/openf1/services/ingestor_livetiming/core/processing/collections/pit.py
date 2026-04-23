@@ -39,7 +39,7 @@ class PitCollection(Collection):
             for driver_number, data in message.content["PitTimes"].items():
                 try:
                     driver_number = int(driver_number)
-                except:
+                except Exception:
                     continue
 
                 if isinstance(data, dict):
@@ -58,22 +58,22 @@ class PitCollection(Collection):
                         timestamp = pit_info["Timestamp"]
                         date = to_datetime(timestamp)
                         date = pytz.utc.localize(date)
-                    except:
+                    except Exception:
                         date = None
 
                     try:
                         lap_number = int(pit_info["PitStop"]["Lap"])
-                    except:
+                    except Exception:
                         continue
 
                     try:
                         lane_duration = float(pit_info["PitStop"]["PitLaneTime"])
-                    except:
+                    except Exception:
                         lane_duration = None
 
                     try:
                         stop_duration = float(pit_info["PitStop"]["PitStopTime"])
-                    except:
+                    except Exception:
                         stop_duration = None
 
                     pit = Pit(
@@ -96,7 +96,7 @@ class PitCollection(Collection):
             for driver_number, data in message.content["PitTimes"].items():
                 try:
                     driver_number = int(driver_number)
-                except:
+                except Exception:
                     continue
 
                 if not isinstance(data, dict):
@@ -104,12 +104,12 @@ class PitCollection(Collection):
 
                 try:
                     lane_duration = float(data["Duration"])
-                except:
+                except Exception:
                     lane_duration = None
 
                 try:
                     lap_number = int(data["Lap"])
-                except:
+                except Exception:
                     continue
 
                 pit = Pit(

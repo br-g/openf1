@@ -40,25 +40,25 @@ class CarDataCollection(Collection):
             try:
                 date = to_datetime(entry["Utc"])
                 date = pytz.utc.localize(date)
-            except:
+            except Exception:
                 continue
 
             try:
                 cars = entry["Cars"]
                 assert isinstance(cars, dict)
-            except:
+            except Exception:
                 continue
 
             for driver_number, data in cars.items():
                 try:
                     driver_number = int(driver_number)
-                except:
+                except Exception:
                     continue
 
                 try:
                     channels = data["Channels"]
                     assert isinstance(channels, dict)
-                except:
+                except Exception:
                     continue
 
                 yield CarData(

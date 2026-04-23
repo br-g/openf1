@@ -89,7 +89,7 @@ class StintsCollection(Collection):
             for driver_number, data in message.content["Lines"].items():
                 try:
                     driver_number = int(driver_number)
-                except:
+                except Exception:
                     continue
 
                 if not isinstance(data, dict):
@@ -108,7 +108,7 @@ class StintsCollection(Collection):
                     for stint_number, stint_data in zip(stints_number, stints_data):
                         try:
                             stint_number = int(stint_number) + 1
-                        except:
+                        except Exception:
                             continue
 
                         if stint_number not in self.stints[driver_number]:
@@ -145,7 +145,7 @@ class StintsCollection(Collection):
             for driver_number, data in message.content["Lines"].items():
                 try:
                     driver_number = int(driver_number)
-                except:
+                except Exception:
                     continue
 
                 if not isinstance(data, dict):

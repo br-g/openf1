@@ -59,7 +59,7 @@ class IntervalsCollection(Collection):
         for driver_number, data in message.content.items():
             try:
                 driver_number = int(driver_number)
-            except:
+            except Exception:
                 continue
 
             if not isinstance(data, dict):

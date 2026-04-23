@@ -228,7 +228,7 @@ class LapsCollection(Collection):
             elif self.is_session_started and message.topic == "TimingData":
                 try:
                     driver_number = int(driver_number)
-                except:
+                except Exception:
                     continue
 
                 if not isinstance(data, dict):
@@ -238,7 +238,7 @@ class LapsCollection(Collection):
                     lap_time = data.get("LastLapTime", {}).get("Value")
                     if isinstance(lap_time, str):
                         lap_time = to_timedelta(lap_time)
-                except:
+                except Exception:
                     lap_time = None
 
                 if isinstance(lap_time, timedelta):
@@ -255,7 +255,7 @@ class LapsCollection(Collection):
                     for sector_number_s, sector_data in sectors.items():
                         try:
                             sector_number = int(sector_number_s) + 1
-                        except:
+                        except Exception:
                             continue
 
                         if not isinstance(sector_data, dict):
@@ -264,7 +264,7 @@ class LapsCollection(Collection):
                         if "Value" in sector_data:
                             try:
                                 duration = float(sector_data["Value"])
-                            except:
+                            except Exception:
                                 duration = None
                             if duration is not None:
                                 self._update_lap(
@@ -284,7 +284,7 @@ class LapsCollection(Collection):
                                 ) in segments_data.items():
                                     try:
                                         segment_number = int(segment_number)
-                                    except:
+                                    except Exception:
                                         continue
                                     if not isinstance(segment_data, dict):
                                         continue
@@ -307,7 +307,7 @@ class LapsCollection(Collection):
                         if label == "ST" or label.startswith("I"):
                             try:
                                 value = int(speed_data.get("Value"))
-                            except:
+                            except Exception:
                                 continue
                             self._update_lap(
                                 driver_number=driver_number,
