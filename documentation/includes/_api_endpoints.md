@@ -1527,6 +1527,10 @@ fetch("https://api.openf1.org/v1/stints?session_key=9165&tyre_age_at_start>=3")
             Provides a collection of radio exchanges between Formula 1 drivers and their respective teams during sessions.
             Please note that only a limited selection of communications are included, not the complete record of radio interactions.
 
+<aside class="notice">
+  Availability notice: Team radio is not released by F1 for every session. Coverage has decreased significantly starting in 2026, with most events providing no radio data at all. This is a limitation on F1's side and outside our control.
+</aside>
+
 ```shell
 curl "https://api.openf1.org/v1/team_radio?session_key=9158&driver_number=11"
 ```
