@@ -14,3 +14,4 @@ To get started, please review our <a href="https://github.com/br-g/openf1/blob/m
 - <a href="https://github.com/eepzii" target="_blank">@eepzii</a>
 - <a href="https://github.com/Nik-code" target="_blank">@Nik-code</a>
 - <a href="https://github.com/bordanattila" target="_blank">@bordanattila</a>
+- <a href="https://github.com/rjwhitmer" target="_blank">@rjwhitmer</a>
