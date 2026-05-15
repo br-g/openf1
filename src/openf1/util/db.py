@@ -105,9 +105,9 @@ async def get_documents(
     return cleaned_results
 
 
-def _get_bounded_inequality_predicate_pairs(
+def _get_inequality_predicate_pairs(
     predicates: list[MongoPredicate],
-) -> list[tuple[MongoPredicate, MongoPredicate]]:
+) -> tuple[list[tuple[MongoPredicate, MongoPredicate]], list[MongoPredicate]]:
     """
     Greedy algorithm for pairing predicates such that each pair represents a bounded interval.
     Predicates that are not paired are ignored, and predicate pairs representing overlapping intervals are merged.
@@ -117,21 +117,24 @@ def _get_bounded_inequality_predicate_pairs(
                     Predicates have a MongoDB operator such as "$eq", "$gt", "$gte", "$lt", or "$lte", and a numeric value (e.g. int, float, datetime).
 
     Returns:
-        A list of predicate pairs where the first predicate of the pair represents a lower bound ("$gt", "$gte"),
-        and the second predicate of the pair represents an upper bound ("$lt", "$lte").
+        A tuple:
+        - A list of predicate pairs where the first predicate of the pair represents a lower bound ("$gt", "$gte"),
+            and the second predicate of the pair represents an upper bound ("$lt", "$lte").
+        - A list of unpaired predicates (unbounded).
 
     Examples:
-        [] --> []
-        [{"$eq": 5}] --> []
-        [{"$gt": 5}] --> []                                                                 (unbounded interval)
-        [{"$gt": 10}, {"$lt": 5}] --> []                                                    (unbounded intervals)
-        [{"$gt": 5}, {"$lt": 10}] --> [({"$gt": 5}, {"$lt": 10})]                           (bounded interval)
-        [{"$gt": 5}, {"$lt": 10}, {"$lt": 12}] --> [({"$gt": 5}, {"$lt": 10})]              (bounded interval with unbounded interval)
-        [{"$gt": 5}, {"$lt": 10}, {"$gt": 8}, {"$lt": 12}] --> [({"$gt": 5}, {"$lt": 12})]  (bounded intervals merged due to overlap)
+        [] --> [], []                                                                                   (empty predicates)
+        [{"$eq": 5}] --> [], []                                                                         (equality predicates are ignored)
+        [{"$gt": 5}] --> [], [{"$gt": 5}]                                                               (unbounded interval)
+        [{"$gt": 10}, {"$lt": 5}] --> [], [{"$gt": 10}, {"$lt": 5}]                                     (unbounded intervals)
+        [{"$gt": 5}, {"$lt": 10}] --> [({"$gt": 5}, {"$lt": 10})], []                                   (bounded interval)
+        [{"$gt": 5}, {"$lt": 10}, {"$lt": 12}] --> [({"$gt": 5}, {"$lt": 10})], [{"$lt": 12}]           (bounded interval with unbounded interval)
+        [{"$gt": 5}, {"$lt": 10}, {"$gt": 8}, {"$lt": 12}] --> [({"$gt": 5}, {"$lt": 12})], []          (bounded intervals merged due to overlap)
     """
     if not predicates:
-        return []
+        return [], []
 
+    # Filter out equality predicates
     lower_bound_predicates = [
         predicate
         for predicate in predicates
@@ -148,6 +151,9 @@ def _get_bounded_inequality_predicate_pairs(
     upper_bound_predicates.sort(key=lambda predicate: predicate.value, reverse=True)
 
     bounded_ineq_predicate_pairs = []
+
+    unbounded_ineq_predicate_pairs = []
+    lower_bound_unpaired_predicates = []
 
     # Repeat pairing until either predicate list is exhausted
     while lower_bound_predicates and upper_bound_predicates:
@@ -173,14 +179,23 @@ def _get_bounded_inequality_predicate_pairs(
 
         # Terminate early if no suitable upper bound predicate exists (no more pairs can be made)
         if closest_upper_bound_predicate is None:
+            # Keep track of the popped lower bound unpaired predicate
+            lower_bound_unpaired_predicates.append(lower_bound_predicate)
             break
 
         bounded_ineq_predicate_pairs.append(
             (lower_bound_predicate, closest_upper_bound_predicate)
         )
 
+    # Collect remaining unpaired predicates
+    unbounded_ineq_predicate_pairs.extend(
+        lower_bound_unpaired_predicates + lower_bound_predicates
+    )
+    unbounded_ineq_predicate_pairs.extend(upper_bound_predicates)
+
     if not bounded_ineq_predicate_pairs:
-        return []
+        # All predicates are unbounded (no valid pairs found)
+        return [], unbounded_ineq_predicate_pairs
 
     # Merge overlapping pairs, first sorting pairs by lower bound, then upper bound
     bounded_ineq_predicate_pairs.sort(key=lambda pair: (pair[0].value, pair[1].value))
@@ -224,7 +239,7 @@ def _get_bounded_inequality_predicate_pairs(
 
     merged_bounded_ineq_predicate_pairs.append(curr_pair)
 
-    return merged_bounded_ineq_predicate_pairs
+    return merged_bounded_ineq_predicate_pairs, unbounded_ineq_predicate_pairs
 
 
 def _get_unique_predicates(predicates: list[MongoPredicate]) -> list[MongoPredicate]:
@@ -266,22 +281,10 @@ def _generate_query_predicate(filters: dict[str, list[MongoPredicate]]) -> dict:
             predicate for predicate in filtered_predicates if predicate.op == MongoOp.EQ
         ]
 
-        bounded_ineq_predicate_pairs = _get_bounded_inequality_predicate_pairs(
-            filtered_predicates
-        )
-
-        # Predicates that are neither paired nor equality predicates are unbounded inequality predicates
-        bounded_ineq_predicates = [
-            predicate
-            for predicate_pair in bounded_ineq_predicate_pairs
-            for predicate in predicate_pair
-        ]
-        unbounded_ineq_predicates = [
-            predicate
-            for predicate in filtered_predicates
-            if predicate not in bounded_ineq_predicates
-            and predicate not in eq_predicates
-        ]
+        (
+            bounded_ineq_predicate_pairs,
+            unbounded_ineq_predicates,
+        ) = _get_inequality_predicate_pairs(filtered_predicates)
 
         # Guaranteed to have at least one predicate at this stage
         # Predicates for the same query param are joined with logical OR except for bounded pairs (logical AND)
