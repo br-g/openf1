@@ -110,7 +110,7 @@ def _get_inequality_predicate_pairs(
 ) -> tuple[list[tuple[MongoPredicate, MongoPredicate]], list[MongoPredicate]]:
     """
     Greedy algorithm for pairing predicates such that each pair represents a bounded interval.
-    Predicates that are not paired are ignored, and predicate pairs representing overlapping intervals are merged.
+    Predicate pairs representing overlapping intervals are merged.
 
     Args:
         predicates: A list of inequality predicates without duplicates (i.e. no two predicates can have the same op and value).
@@ -120,7 +120,7 @@ def _get_inequality_predicate_pairs(
         A tuple:
         - A list of predicate pairs where the first predicate of the pair represents a lower bound ("$gt", "$gte"),
             and the second predicate of the pair represents an upper bound ("$lt", "$lte").
-        - A list of unpaired predicates (unbounded).
+        - A list of unpaired predicates.
 
     Examples:
         [] --> [], []                                                                                   (empty predicates)
