@@ -41,7 +41,7 @@ class LocationCollection(Collection):
                 timestamp = content["Timestamp"]
                 date = to_datetime(timestamp)
                 date = pytz.utc.localize(date)
-            except:
+            except Exception:
                 continue
 
             entries = content.get("Entries")
@@ -51,7 +51,7 @@ class LocationCollection(Collection):
             for driver_number, data in entries.items():
                 try:
                     driver_number = int(driver_number)
-                except:
+                except Exception:
                     continue
 
                 if not isinstance(data, dict):

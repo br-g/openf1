@@ -31,15 +31,59 @@ class Pit(Document):
 @dataclass
 class PitCollection(Collection):
     name = "pit"
-    source_topics = {"PitLaneTimeCollection", "PitStopSeries"}
+    source_topics = {"PitLaneTimeCollection", "PitStop", "PitStopSeries"}
     pits: dict = field(default_factory=dict)
 
+    _pitstop_last_lap = None
+    _pitstopseries_last_lap = None
+
     def process_message(self, message: Message) -> Iterator[Pit]:
-        if message.topic == "PitStopSeries":
+        if message.topic == "PitStop":
+            date = message.timepoint
+
+            try:
+                driver_number = int(message.content["RacingNumber"])
+            except Exception:
+                return
+
+            try:
+                lap_number = int(message.content["Lap"])
+                self._pitstop_last_lap = lap_number
+            except Exception:
+                lap_number = self._pitstop_last_lap
+            if lap_number is None:
+                return
+
+            try:
+                lane_duration = float(message.content["PitLaneTime"])
+            except Exception:
+                lane_duration = None
+
+            try:
+                stop_duration = float(message.content["PitStopTime"])
+            except Exception:
+                stop_duration = None
+
+            pit = Pit(
+                meeting_key=self.meeting_key,
+                session_key=self.session_key,
+                driver_number=driver_number,
+                date=date,
+                pit_duration=lane_duration,
+                lane_duration=lane_duration,
+                stop_duration=stop_duration,
+                lap_number=lap_number,
+            )
+
+            self.pits[pit.unique_key] = pit
+            yield pit
+
+        # Fallback 1: use collection "PitStopSeries" in case "PitStop" is not available.
+        elif message.topic == "PitStopSeries":
             for driver_number, data in message.content["PitTimes"].items():
                 try:
                     driver_number = int(driver_number)
-                except:
+                except Exception:
                     continue
 
                 if isinstance(data, dict):
@@ -58,22 +102,25 @@ class PitCollection(Collection):
                         timestamp = pit_info["Timestamp"]
                         date = to_datetime(timestamp)
                         date = pytz.utc.localize(date)
-                    except:
+                    except Exception:
                         date = None
 
                     try:
                         lap_number = int(pit_info["PitStop"]["Lap"])
-                    except:
+                        self._pitstopseries_last_lap = lap_number
+                    except Exception:
+                        lap_number = self._pitstopseries_last_lap
+                    if lap_number is None:
                         continue
 
                     try:
                         lane_duration = float(pit_info["PitStop"]["PitLaneTime"])
-                    except:
+                    except Exception:
                         lane_duration = None
 
                     try:
                         stop_duration = float(pit_info["PitStop"]["PitStopTime"])
-                    except:
+                    except Exception:
                         stop_duration = None
 
                     pit = Pit(
@@ -86,17 +133,18 @@ class PitCollection(Collection):
                         stop_duration=stop_duration,
                         lap_number=lap_number,
                     )
+                    if pit.unique_key not in self.pits:
+                        self.pits[pit.unique_key] = pit
+                        yield pit
 
-                    self.pits[pit.unique_key] = pit
-                    yield pit
-
-        # Fallback: use collection "PitLaneTimeCollection" in case "PitStopSeries" is not available.
+        # Fallback 2: use collection "PitLaneTimeCollection" in case "PitStop" and
+        # "PitStopSeries" are not available.
         # "PitLaneTimeCollection" has less details and is less accurate.
         elif message.topic == "PitLaneTimeCollection":
             for driver_number, data in message.content["PitTimes"].items():
                 try:
                     driver_number = int(driver_number)
-                except:
+                except Exception:
                     continue
 
                 if not isinstance(data, dict):
@@ -104,12 +152,12 @@ class PitCollection(Collection):
 
                 try:
                     lane_duration = float(data["Duration"])
-                except:
+                except Exception:
                     lane_duration = None
 
                 try:
                     lap_number = int(data["Lap"])
-                except:
+                except Exception:
                     continue
 
                 pit = Pit(

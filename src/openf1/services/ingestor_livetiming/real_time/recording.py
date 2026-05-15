@@ -6,7 +6,7 @@ from loguru import logger
 
 
 async def record_to_file(filepath: str, topics: list[str], timeout: int):
-    """Records raw F1 data to a file, using a slightly modified version of the FastF1
+    """Records raw F1 data to a file, using a modified version of the FastF1
     live timing module (https://github.com/br-g/fastf1-livetiming)
     """
     F1_TOKEN = os.getenv("F1_TOKEN")
@@ -21,17 +21,17 @@ async def record_to_file(filepath: str, topics: list[str], timeout: int):
             )
             proc = await asyncio.create_subprocess_exec(*command)
 
-            # Monitor task: wait 60 seconds and check if file is being written to
+            # Monitor task: wait 5 minutes and check if file is being written to
             async def monitor_file_size():
                 try:
-                    await asyncio.sleep(60)
+                    await asyncio.sleep(300)
                     if proc.returncode is None:  # If the process is still running
                         if (
                             not os.path.exists(filepath)
                             or os.path.getsize(filepath) == 0
                         ):
                             logger.warning(
-                                f"File '{filepath}' is empty after 1 minute. "
+                                f"File '{filepath}' is empty after 5 minutes. "
                                 "Killing subprocess to trigger a restart."
                             )
                             try:

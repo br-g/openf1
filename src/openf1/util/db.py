@@ -329,7 +329,8 @@ def get_latest_session_info() -> dict:
     sessions = _get_mongo_db_sync()["sessions"]
     threshold = datetime.now(timezone.utc) + timedelta(seconds=60)
     latest_session = sessions.find_one(
-        {"date_start": {MongoOp.LTE: threshold}}, sort=[("date_start", -1)]
+        {"date_start": {MongoOp.LTE: threshold}, "is_cancelled": {"$eq": False}},
+        sort=[("date_start", -1)],
     )
 
     if latest_session:
@@ -355,12 +356,14 @@ def get_closest_session_info() -> dict:
     # If no active session, find the closest one
     # Get the most recent past session (by end time)
     past_session = sessions.find_one(
-        {"date_end": {MongoOp.LT: now}}, sort=[("date_end", -1)]
+        {"date_end": {MongoOp.LT: now}, "is_cancelled": {"$eq": False}},
+        sort=[("date_end", -1)],
     )
 
     # Get the nearest future session (by start time)
     future_session = sessions.find_one(
-        {"date_start": {MongoOp.GT: now}}, sort=[("date_start", 1)]
+        {"date_start": {MongoOp.GT: now}, "is_cancelled": {"$eq": False}},
+        sort=[("date_start", 1)],
     )
 
     # Return whichever is closer

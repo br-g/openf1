@@ -774,6 +774,7 @@ fetch("https://api.openf1.org/v1/meetings?year=2026&country_name=Singapore")
     "date_end": "2026-10-11T14:00:00+00:00",
     "date_start": "2026-10-09T09:30:00+00:00",
     "gmt_offset": "08:00:00",
+    "is_cancelled": false,
     "location": "Marina Bay",
     "meeting_key": 1296,
     "meeting_name": "Singapore Grand Prix",
@@ -803,6 +804,7 @@ fetch("https://api.openf1.org/v1/meetings?year=2026&country_name=Singapore")
 | date_end              | The UTC ending date and time, in ISO 8601 format.                                                                                                                                                                                                                 |
 | date_start            | The UTC starting date and time, in ISO 8601 format.                                                                                                                                                                                                               |
 | gmt_offset            | The difference in hours and minutes between local time at the location of the event and Greenwich Mean Time (GMT).                                                                                                                                                |
+| is_cancelled          | A boolean indicating whether the meeting has been cancelled.                                                                                                                                                                                                      |
 | location              | The city or geographical location where the event takes place.                                                                                                                                                                                                    |
 | meeting_key           | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                                                                                    |
 | meeting_name          | The name of the meeting.                                                                                                                                                                                                                                          |
@@ -1204,6 +1206,7 @@ fetch(
     "date_end": "2023-07-29T15:35:00+00:00",
     "date_start": "2023-07-29T15:05:00+00:00",
     "gmt_offset": "02:00:00",
+    "is_cancelled": false,
     "location": "Spa-Francorchamps",
     "meeting_key": 1216,
     "session_key": 9140,
@@ -1230,6 +1233,7 @@ fetch(
 | date_end           | The UTC ending date and time, in ISO 8601 format.                                                                  |
 | date_start         | The UTC starting date and time, in ISO 8601 format.                                                                |
 | gmt_offset         | The difference in hours and minutes between local time at the location of the event and Greenwich Mean Time (GMT). |
+| is_cancelled       | A boolean indicating whether the session has been cancelled.                                                       |
 | location           | The city or geographical location where the event takes place.                                                     |
 | meeting_key        | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                     |
 | session_key        | The unique identifier for the session. Use `latest` to identify the latest or current session.                     |
@@ -1522,6 +1526,10 @@ fetch("https://api.openf1.org/v1/stints?session_key=9165&tyre_age_at_start>=3")
 
             Provides a collection of radio exchanges between Formula 1 drivers and their respective teams during sessions.
             Please note that only a limited selection of communications are included, not the complete record of radio interactions.
+
+<aside class="notice">
+  Availability notice: Team radio is not released by F1 for every session. Coverage has decreased significantly starting in 2026, with most events providing no radio data at all. This is a limitation on F1's side and outside our control.
+</aside>
 
 ```shell
 curl "https://api.openf1.org/v1/team_radio?session_key=9158&driver_number=11"
