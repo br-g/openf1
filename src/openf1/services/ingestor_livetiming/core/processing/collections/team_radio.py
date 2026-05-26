@@ -33,41 +33,49 @@ class TeamRadioCollection(Collection):
     source_topics = {"SessionInfo", "TeamRadio"}
 
     session_path: str = field(default=None)
+    pending_messages: list[Message] = field(default_factory=list)
 
     def process_message(self, message: Message) -> Iterator[TeamRadio]:
         if message.topic == "SessionInfo":
             self.session_path = message.content["Path"]
+            for pending in self.pending_messages:
+                yield from self._process_team_radio(pending)
+            self.pending_messages.clear()
 
         elif message.topic == "TeamRadio":
             if self.session_path is None:
+                self.pending_messages.append(message)
                 return
 
-            captures = message.content["Captures"]
-            if isinstance(captures, dict):
-                captures = captures.values()
+            yield from self._process_team_radio(message)
 
-            for capture in captures:
-                try:
-                    driver_number = int(capture["RacingNumber"])
-                except Exception:
-                    continue
+    def _process_team_radio(self, message: Message) -> Iterator[TeamRadio]:
+        captures = message.content["Captures"]
+        if isinstance(captures, dict):
+            captures = captures.values()
 
-                try:
-                    date = to_datetime(capture["Utc"])
-                    date = pytz.utc.localize(date)
-                except Exception:
-                    date = None
+        for capture in captures:
+            try:
+                driver_number = int(capture["RacingNumber"])
+            except Exception:
+                continue
 
-                try:
-                    path = capture["Path"]
-                    assert isinstance(path, str)
-                except Exception:
-                    continue
+            try:
+                date = to_datetime(capture["Utc"])
+                date = pytz.utc.localize(date)
+            except Exception:
+                date = None
 
-                yield TeamRadio(
-                    meeting_key=self.meeting_key,
-                    session_key=self.session_key,
-                    driver_number=driver_number,
-                    date=date,
-                    recording_url=BASE_URL + self.session_path + path,
-                )
+            try:
+                path = capture["Path"]
+                assert isinstance(path, str)
+            except Exception:
+                continue
+
+            yield TeamRadio(
+                meeting_key=self.meeting_key,
+                session_key=self.session_key,
+                driver_number=driver_number,
+                date=date,
+                recording_url=BASE_URL + self.session_path + path,
+            )
