@@ -8,6 +8,7 @@ MEETING_KEY_ALLOCATIONS = {
     # 1286: ["C3", "C4", "C5"], # Monaco 2026 example
 }
 
+
 def append_c_codes_to_stints(stints_results: list[dict]) -> list[dict]:
     """
     Takes the raw /stints API output and appends the `compound_c_code` property
@@ -17,13 +18,13 @@ def append_c_codes_to_stints(stints_results: list[dict]) -> list[dict]:
     for stint in stints_results:
         meeting_key = stint.get("meeting_key")
         compound = stint.get("compound")
-        
+
         # Default to None so the API consumer knows we don't have the C-Code
         stint["compound_c_code"] = None
-        
+
         if meeting_key in MEETING_KEY_ALLOCATIONS and compound:
-            allocation = MEETING_KEY_ALLOCATIONS[meeting_key] # [HARD, MEDIUM, SOFT]
-            
+            allocation = MEETING_KEY_ALLOCATIONS[meeting_key]  # [HARD, MEDIUM, SOFT]
+
             compound_upper = str(compound).upper()
             if compound_upper == "HARD":
                 stint["compound_c_code"] = allocation[0]
@@ -31,5 +32,5 @@ def append_c_codes_to_stints(stints_results: list[dict]) -> list[dict]:
                 stint["compound_c_code"] = allocation[1]
             elif compound_upper == "SOFT":
                 stint["compound_c_code"] = allocation[2]
-                
+
     return stints_results
