@@ -8,10 +8,10 @@ from loguru import logger
 from openf1.services.ingestor_livetiming.core.objects import get_topics
 from openf1.services.ingestor_livetiming.real_time.processing import ingest_file
 from openf1.services.ingestor_livetiming.real_time.recording import record_to_file
-from openf1.util.gcs import upload_to_gcs_periodically
+from openf1.util.storage import upload_to_object_storage_periodically
 
 TIMEOUT = 5400  # Terminate job if no data received for 90 minutes (in seconds)
-GCS_BUCKET = os.getenv("OPENF1_INGESTOR_LIVETIMING_GCS_BUCKET_RAW")
+STORAGE_BUCKET_NAME = os.getenv("OPENF1_INGESTOR_LIVETIMING_STORAGE_BUCKET_RAW")
 
 
 async def main():
@@ -31,15 +31,15 @@ async def main():
         )
         tasks.append(task_recording)
 
-        if GCS_BUCKET:
-            # Save received raw data to GCS, for debugging
-            logger.info("Starting periodic GCS upload of raw data")
-            gcs_filekey = datetime.now(timezone.utc).strftime("%Y/%m/%d/%H:%M:%S.txt")
+        if STORAGE_BUCKET_NAME:
+            # Save received raw data to cloud storage, for debugging
+            logger.info("Starting periodic storage upload of raw data")
+            filekey = datetime.now(timezone.utc).strftime("%Y/%m/%d/%H:%M:%S.txt")
             task_upload_raw = asyncio.create_task(
-                upload_to_gcs_periodically(
+                upload_to_object_storage_periodically(
                     filepath=temp.name,
-                    bucket=GCS_BUCKET,
-                    destination_key=gcs_filekey,
+                    bucket=STORAGE_BUCKET_NAME,
+                    destination_key=filekey,
                     interval=timedelta(seconds=60),
                 )
             )
