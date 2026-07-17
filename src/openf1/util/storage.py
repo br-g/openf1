@@ -58,4 +58,6 @@ async def upload_to_object_storage_periodically(
                 str(destination_key),
             )
         except Exception:
-            logger.exception("An unexpected error occurred while uploading to object storage")
+            logger.exception(
+                "An unexpected error occurred while uploading to object storage"
+            )
