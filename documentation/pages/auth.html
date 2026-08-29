@@ -521,8 +521,8 @@ access_token = "YOUR_ACCESS_TOKEN"
 mqtt_broker = "mqtt.openf1.org"
 mqtt_port = 8883
 
-# Optional: Provide a username. Can be an email or any non-empty string.
-mqtt_username = "your_username_or_email@example.com"
+# Provide your OpenF1 API username (email address)
+mqtt_username = "YOUR_USERNAME"
 
 def on_connect(client, userdata, flags, rc, properties=None):
     if rc == 0:
@@ -564,7 +564,7 @@ const accessToken = "YOUR_ACCESS_TOKEN";
 const websocketUrl = "wss://mqtt.openf1.org:8084/mqtt";
 
 const options = {
-    username: "your_username_or_email@example.com", // Optional, can be any string
+    username: "YOUR_USERNAME", // Provide your OpenF1 API username (email address)
     password: accessToken // Access token is used as the password
 };
 
