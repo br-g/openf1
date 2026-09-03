@@ -56,3 +56,25 @@ Run the following commands in the repository’s root directory to check for iss
 ruff --format=github --ignore=E501 --target-version=py310 .
 black --check --diff --color .
 ```
+
+## Testing
+
+To test your code, you have several options:
+
+1. Using `uv`:
+```bash
+uv venv
+uv pip install -r testing_requirements.txt
+uv pip install -e .
+uv run --no-project pytest
+```
+
+2. Using `python` and `pip`:
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r testing_requirements.txt
+pip install -e .
+pytest
+```

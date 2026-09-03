@@ -21,3 +21,7 @@ dynamic = ["dependencies", "optional-dependencies"]
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
 optional-dependencies.test = { file = ["testing_requirements.txt"] }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
