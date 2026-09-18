@@ -1,0 +1,1046 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Manage your OpenF1 subscription, find your API credentials, and fix the most common authentication issues."
+    />
+    <meta property="og:title" content="Your account | OpenF1 API" />
+    <meta
+      property="og:description"
+      content="Manage or cancel your OpenF1 subscription, retrieve your API credentials, and troubleshoot authentication."
+    />
+    <meta property="twitter:card" content="summary_large_image" />
+    <title>Your account | OpenF1 API</title>
+    <link
+      type="image/png"
+      sizes="32x32"
+      rel="icon"
+      href="https://storage.googleapis.com/openf1-public/images/favicon.png"
+    />
+    <style>
+      :root {
+        --bg-color: #0f1115;
+        --surface-color: #161b22;
+        --primary-color: #e10600;
+        --text-color: #ffffff;
+        --text-secondary: #8b949e;
+        --accent-color: #ffffff;
+        --border-color: #30363d;
+        --success-color: #27c93f;
+        --font-main:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+        --font-mono:
+          "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
+          monospace;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: var(--font-main);
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+
+      body.menu-open {
+        overflow: hidden;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+        transition: 0.2s;
+      }
+
+      /* Navigation */
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1.5rem;
+        height: 64px;
+        border-bottom: 1px solid var(--border-color);
+        position: sticky;
+        top: 0;
+        background-color: rgba(15, 17, 21, 0.8);
+        backdrop-filter: saturate(180%) blur(10px);
+        -webkit-backdrop-filter: saturate(180%) blur(10px);
+        z-index: 100;
+      }
+
+      .nav-left {
+        display: flex;
+        gap: 0.25rem;
+        align-items: center;
+      }
+
+      .logo {
+        font-weight: 800;
+        font-size: 1.35rem;
+        letter-spacing: 0.2px;
+        padding-right: 1.5rem;
+        margin-right: 0.5rem;
+      }
+
+      .logo span {
+        color: var(--primary-color);
+      }
+
+      .nav-link {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        font-weight: 400;
+        padding: 0.5rem 0.875rem;
+        border-radius: 6px;
+        transition:
+          color 0.15s,
+          background-color 0.15s;
+      }
+
+      .nav-link:hover {
+        color: var(--text-color);
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      .nav-right {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      /* Mobile menu button */
+      .mobile-menu-btn {
+        display: none;
+        background: transparent;
+        border: none;
+        color: var(--text-secondary);
+        padding: 0.5rem;
+        cursor: pointer;
+      }
+
+      .mobile-menu-btn:hover {
+        color: var(--text-color);
+      }
+
+      /* Mobile menu overlay */
+      .mobile-menu {
+        display: none;
+        position: fixed;
+        top: 64px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--bg-color);
+        z-index: 99;
+        padding: 2rem;
+        overflow-y: auto;
+      }
+
+      .mobile-menu.active {
+        display: block;
+      }
+
+      .mobile-menu-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .mobile-menu-links a {
+        color: var(--text-color);
+        font-size: 1rem;
+        padding: 1rem;
+        border-radius: 6px;
+        transition: background-color 0.15s;
+      }
+
+      .mobile-menu-links a:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      .mobile-menu-divider {
+        height: 1px;
+        background: var(--border-color);
+        margin: 1rem 0;
+      }
+
+      /* Main Content */
+      .container {
+        max-width: 780px;
+        margin: 0 auto;
+        padding: 4rem 2rem 5rem;
+      }
+
+      .page-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+      }
+
+      .page-header h1 {
+        font-size: 2.75rem;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+        font-weight: 500;
+        background: linear-gradient(to right, #fff, #a5a5a5);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .page-header p {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        max-width: 560px;
+        margin: 0 auto;
+      }
+
+      /* Quick links */
+      .quick-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 3.5rem;
+      }
+
+      .quick-links a {
+        border: 1px solid var(--border-color);
+        background: var(--surface-color);
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+        padding: 0.4rem 0.85rem;
+        border-radius: 999px;
+      }
+
+      .quick-links a:hover {
+        color: var(--text-color);
+        border-color: var(--text-secondary);
+      }
+
+      /* Sections */
+      section {
+        background: var(--surface-color);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        scroll-margin-top: 84px;
+      }
+
+      section h2 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+
+      section h2 .emoji {
+        font-size: 1.15rem;
+      }
+
+      section h3 {
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin: 1.75rem 0 0.5rem;
+      }
+
+      section p {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+      }
+
+      section p:last-child,
+      section ul:last-child {
+        margin-bottom: 0;
+      }
+
+      section ul {
+        list-style: none;
+        margin-bottom: 1rem;
+      }
+
+      section ul li {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        padding-left: 1.25rem;
+        position: relative;
+        margin-bottom: 0.6rem;
+      }
+
+      section ul li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0.65em;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--text-secondary);
+      }
+
+      section ol {
+        counter-reset: steps;
+        list-style: none;
+        margin-bottom: 1rem;
+      }
+
+      section ol li {
+        counter-increment: steps;
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        padding-left: 2rem;
+        position: relative;
+        margin-bottom: 0.75rem;
+      }
+
+      section ol li::before {
+        content: counter(steps);
+        position: absolute;
+        left: 0;
+        top: 0.1em;
+        width: 1.4rem;
+        height: 1.4rem;
+        border-radius: 50%;
+        background: var(--bg-color);
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      section li strong,
+      section p strong {
+        color: var(--text-color);
+        font-weight: 600;
+      }
+
+      section a:not(.btn):not(.copy-btn) {
+        color: var(--text-color);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+      }
+
+      section a:not(.btn):not(.copy-btn):hover {
+        color: var(--primary-color);
+        border-bottom-color: var(--primary-color);
+      }
+
+      code {
+        font-family: var(--font-mono);
+        font-size: 0.85em;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        padding: 0.1em 0.35em;
+        color: var(--text-color);
+        white-space: nowrap;
+      }
+
+      /* Buttons */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.7rem 1.15rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition:
+          background-color 0.15s,
+          border-color 0.15s;
+      }
+
+      .btn-primary {
+        background: #751613;
+        border: 1px solid #b82622;
+        color: #fff;
+      }
+
+      .btn-primary:hover {
+        background: #8b1a17;
+      }
+
+      .btn-secondary {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+      }
+
+      .btn-secondary:hover {
+        border-color: var(--text-secondary);
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+      }
+
+      /* Code block */
+      .code-block {
+        position: relative;
+        background: var(--bg-color);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        margin-bottom: 1rem;
+      }
+
+      .code-block pre {
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        line-height: 1.7;
+        color: #d4d4d4;
+        padding: 1.1rem 1.25rem;
+        overflow-x: auto;
+      }
+
+      .code-block .placeholder {
+        color: #e8a33d;
+      }
+
+      .copy-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: var(--surface-color);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        border-radius: 5px;
+        font-size: 0.7rem;
+        font-family: var(--font-main);
+        padding: 0.3rem 0.55rem;
+        cursor: pointer;
+        transition: 0.15s;
+      }
+
+      .copy-btn:hover {
+        color: var(--text-color);
+        border-color: var(--text-secondary);
+      }
+
+      /* Callout */
+      .callout {
+        display: flex;
+        gap: 0.75rem;
+        background: rgba(225, 6, 0, 0.06);
+        border: 1px solid rgba(225, 6, 0, 0.35);
+        border-radius: 6px;
+        padding: 0.9rem 1.1rem;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+      }
+
+      .callout.neutral {
+        background: rgba(255, 255, 255, 0.03);
+        border-color: var(--border-color);
+      }
+
+      .callout:last-child {
+        margin-bottom: 0;
+      }
+
+      /* Limits table */
+      .limits {
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 1rem;
+      }
+
+      .limits-row {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 1rem;
+        padding: 0.8rem 1.1rem;
+        font-size: 0.9rem;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .limits-row:last-child {
+        border-bottom: none;
+      }
+
+      .limits-row span:first-child {
+        color: var(--text-secondary);
+      }
+
+      .limits-row span:last-child {
+        color: var(--text-color);
+        font-weight: 500;
+        font-family: var(--font-mono);
+        font-size: 0.85rem;
+      }
+
+      .limits-row.head {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .limits-row.head span {
+        color: var(--text-color);
+        font-family: var(--font-main);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-weight: 600;
+      }
+
+      /* Footer */
+      footer {
+        padding: 4rem 2rem;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 2fr repeat(3, 1fr);
+        gap: 3rem;
+      }
+
+      .footer-brand {
+        max-width: 280px;
+      }
+
+      .footer-brand .logo {
+        margin-bottom: 1rem;
+      }
+
+      .footer-brand p {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+      }
+
+      .footer-column h4 {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-color);
+        margin-bottom: 1.25rem;
+      }
+
+      .footer-column a {
+        display: block;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        padding: 0.4rem 0;
+      }
+
+      .footer-column a:hover {
+        color: var(--text-color);
+      }
+
+      .footer-bottom {
+        max-width: 1200px;
+        margin: 3rem auto 0;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border-color);
+        text-align: center;
+      }
+
+      .footer-bottom p {
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+      }
+
+      .footer-bottom a {
+        color: var(--text-secondary);
+      }
+
+      .footer-bottom a:hover {
+        color: var(--text-color);
+        text-decoration: underline;
+      }
+
+      .disclaimer {
+        max-width: 1200px;
+        margin: 2rem auto 0;
+        text-align: center;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        opacity: 0.7;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .container {
+          padding: 3rem 1.25rem 4rem;
+        }
+
+        .page-header h1 {
+          font-size: 2rem;
+        }
+
+        section {
+          padding: 1.5rem 1.25rem;
+        }
+
+        .limits-row {
+          grid-template-columns: 1fr;
+          gap: 0.15rem;
+        }
+
+        .nav-link {
+          display: none;
+        }
+
+        .mobile-menu-btn {
+          display: flex;
+        }
+
+        .footer-content {
+          grid-template-columns: 1fr;
+        }
+
+        .footer-brand {
+          grid-column: span 1;
+          max-width: 100%;
+        }
+      }
+
+      @media (max-width: 1024px) and (min-width: 769px) {
+        .footer-content {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .footer-brand {
+          grid-column: span 2;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav>
+      <div class="nav-left">
+        <a href="/" class="logo">Open<span>F1</span></a>
+        <a href="/#features" class="nav-link">Features</a>
+        <a href="docs#api-endpoints" class="nav-link">Docs</a>
+        <a href="contact" class="nav-link">Contact</a>
+        <a href="/#sponsorship" class="nav-link">Get access</a>
+      </div>
+      <div class="nav-right">
+        <button class="mobile-menu-btn" aria-label="Open menu">
+          <svg
+            width="24"
+            height="24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M3 12h18M3 6h18M3 18h18" />
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-menu-links">
+        <a href="/#features">Features</a>
+        <a href="/#sponsorship">Get access</a>
+        <a href="docs#api-endpoints">Docs</a>
+        <div class="mobile-menu-divider"></div>
+        <a href="https://github.com/br-g/openf1" target="_blank">GitHub</a>
+        <a href="contact">Contact</a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+      <div class="page-header">
+        <h1>Your account</h1>
+        <p>
+          Manage your subscription, find your API credentials, and fix the most
+          common issues, all in one place.
+        </p>
+      </div>
+
+      <div class="quick-links">
+        <a href="#subscription">Subscription &amp; billing</a>
+        <a href="#credentials">My credentials</a>
+        <a href="#usage">Using the API</a>
+        <a href="#token-issues">Token not working</a>
+        <a href="#limits">Rate limits</a>
+        <a href="#credits">Credits</a>
+      </div>
+
+      <!-- Subscription -->
+      <section id="subscription">
+        <h2><span class="emoji">💳</span>Manage or cancel your subscription</h2>
+        <p>
+          Billing is handled by Stripe. Payment method, invoices and
+          cancellation are all in the billing portal.
+        </p>
+        <div class="btn-row">
+          <a
+            href="https://billing.stripe.com/p/login/4gMfZgdkx5Oj4yYfFVcEw00"
+            target="_blank"
+            rel="noopener"
+            class="btn btn-primary"
+          >
+            Open the billing portal
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+        <ul>
+          <li>
+            Use the <strong>email address you paid with</strong>. Stripe emails
+            you a one-time code, so there is no password to remember.
+          </li>
+          <li>
+            Cancelling takes effect at the end of the current billing period,
+            and your credentials keep working until then.
+          </li>
+          <li>
+            The billing portal does <strong>not</strong> show your API
+            credentials. Those were sent to you by email (see below).
+          </li>
+        </ul>
+      </section>
+
+      <!-- Credentials -->
+      <section id="credentials">
+        <h2><span class="emoji">🔑</span>Where are my API credentials?</h2>
+        <p>
+          Your <strong>username and password</strong> were emailed to you right
+          after you signed up. To find that email:
+        </p>
+        <ol>
+          <li>Search your mailbox for <code>OpenF1</code>.</li>
+          <li>
+            Check your spam, junk and promotions folders. This is where it ends
+            up most of the time.
+          </li>
+          <li>
+            Make sure you are looking in the mailbox of the address you used at
+            checkout.
+          </li>
+        </ol>
+        <p>
+          Still nothing? <a href="contact">Contact us</a> with the email address
+          you paid with and we will re-send some new credentials.
+        </p>
+      </section>
+
+      <!-- Usage -->
+      <section id="usage">
+        <h2>
+          <span class="emoji">🚀</span>How do I use the API with my credentials?
+        </h2>
+        <p>Authenticated access works in three steps:</p>
+        <ol>
+          <li>
+            Exchange your username and password for an access token at
+            <code>https://api.openf1.org/token</code>.
+          </li>
+          <li>
+            Send that token with every request, as an
+            <code>Authorization: Bearer &lt;token&gt;</code> header.
+          </li>
+          <li>
+            Tokens expire after <strong>1 hour</strong>, so request a new one
+            when it does.
+          </li>
+        </ol>
+        <div class="btn-row">
+          <a href="auth.html" class="btn btn-secondary">
+            Read the authentication guide
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+        <div class="callout neutral">
+          <span>💡</span>
+          <span
+            >The guide has copy-paste examples in cURL, Python and JavaScript.
+            Pasting it into ChatGPT or Claude alongside your own code is a fast
+            way to get a working integration.</span
+          >
+        </div>
+      </section>
+
+      <!-- Token issues -->
+      <section id="token-issues">
+        <h2><span class="emoji">🛠️</span>I can't get a token</h2>
+        <p>
+          Before contacting us or opening an issue, please run this command,
+          replacing <code>YOUR_USERNAME</code> and <code>YOUR_PASSWORD</code>.
+          It tells us (and you) whether the problem is your credentials or your
+          code.
+        </p>
+        <div class="code-block">
+          <button class="copy-btn" data-copy-target="token-cmd">Copy</button>
+          <pre id="token-cmd">curl -X POST "https://api.openf1.org/token" \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "username=<span class="placeholder">YOUR_USERNAME</span>&amp;password=<span class="placeholder">YOUR_PASSWORD</span>"</pre>
+        </div>
+
+        <h3>If it returns an <code>access_token</code></h3>
+        <p>
+          Your credentials are fine and the problem is on the client side. The
+          usual culprits: sending JSON instead of
+          <code>application/x-www-form-urlencoded</code>, using
+          <code>GET</code> instead of <code>POST</code>, reusing a token older
+          than an hour, or forgetting the <code>Bearer</code> prefix in the
+          <code>Authorization</code> header.
+        </p>
+
+        <h3>If it returns an error</h3>
+        <ul>
+          <li>
+            Check you are using the
+            <strong>username from the signup email</strong>, not your email
+            address.
+          </li>
+          <li>
+            Re-type the credentials by hand. Copy-pasting often adds a trailing
+            space, a line break, or auto-capitalises the first letter.
+          </li>
+          <li>
+            Confirm your subscription is still active in the
+            <a href="#subscription">billing portal</a>.
+          </li>
+        </ul>
+        <div class="callout">
+          <span>⚠️</span>
+          <span
+            >Still failing? <a href="contact">Contact us</a> and include the
+            exact command you ran and the full response.
+            <strong>Never post your password</strong> in a public GitHub issue.
+            Replace it with <code>YOUR_PASSWORD</code>.</span
+          >
+        </div>
+      </section>
+
+      <!-- Limits -->
+      <section id="limits">
+        <h2><span class="emoji">📊</span>Rate limits</h2>
+        <p>As an authenticated user, you get:</p>
+        <div class="limits">
+          <div class="limits-row head">
+            <span>Resource</span>
+            <span>Limit</span>
+          </div>
+          <div class="limits-row">
+            <span>REST API (per second)</span>
+            <span>6 req/s</span>
+          </div>
+          <div class="limits-row">
+            <span>REST API (per minute)</span>
+            <span>60 req/min</span>
+          </div>
+          <div class="limits-row">
+            <span>MQTT / WebSocket connections</span>
+            <span>10 concurrent</span>
+          </div>
+        </div>
+        <p>
+          That is double the free-tier REST limits. If you hit them, cache
+          responses and back off before retrying rather than looping on errors.
+          For live data, prefer MQTT or WebSocket over polling.
+        </p>
+      </section>
+
+      <!-- Credits -->
+      <section id="credits">
+        <h2><span class="emoji">❤️</span>Do I need to credit OpenF1?</h2>
+        <p>
+          No, credits are not required in your project. They are always
+          appreciated though, and a link back to
+          <a href="https://openf1.org" target="_blank" rel="noopener"
+            >openf1.org</a
+          >
+          helps other people find the API. :)
+        </p>
+      </section>
+
+      <!-- Still stuck -->
+      <section id="help">
+        <h2><span class="emoji">💬</span>Still need help?</h2>
+        <p>
+          Technical questions and bug reports are best asked in public, so
+          others with the same problem can find the answer. Anything about
+          billing or credentials should come to us directly.
+        </p>
+        <div class="btn-row">
+          <a href="contact" class="btn btn-primary">
+            Contact us
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </a>
+          <a
+            href="https://github.com/br-g/openf1/discussions"
+            target="_blank"
+            rel="noopener"
+            class="btn btn-secondary"
+          >
+            GitHub Discussions
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="logo">Open<span>F1</span></div>
+          <p>
+            The open-source API for real-time and historical Formula 1 data.
+            Built by the community, for the community.
+          </p>
+        </div>
+        <div class="footer-column">
+          <h4>Platform</h4>
+          <a href="docs#api-endpoints">API reference</a>
+          <a href="/#features">Features</a>
+          <a href="/#sponsorship">Access &amp; Support</a>
+        </div>
+        <div class="footer-column">
+          <h4>Community</h4>
+          <a href="https://github.com/br-g/openf1" target="_blank">GitHub</a>
+          <a href="https://github.com/br-g/openf1/discussions" target="_blank"
+            >Discussions</a
+          >
+          <a
+            href="https://github.com/br-g/openf1/blob/main/CONTRIBUTING.md"
+            target="_blank"
+            >Contributing</a
+          >
+        </div>
+        <div class="footer-column">
+          <h4>Support</h4>
+          <a href="/#faq">FAQ</a>
+          <a href="account">Your account</a>
+          <a href="contact">Contact</a>
+          <a href="https://www.buymeacoffee.com/openf1" target="_blank"
+            >Donate</a
+          >
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>
+          © <span id="current-year"></span> OpenF1. Licensed under
+          <a
+            href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+            target="_blank"
+            >CC BY-NC-SA 4.0</a
+          >.
+        </p>
+      </div>
+      <div class="disclaimer">
+        <p>
+          OpenF1 is an unofficial, community-operated project built for
+          educational and research purposes. It is not associated, affiliated,
+          endorsed, or sponsored by Formula One World Championship Limited,
+          Formula One Management, Formula One Licensing B.V., or any of their
+          subsidiaries. The marks F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE
+          WORLD CHAMPIONSHIP, GRAND PRIX, and related marks are trademarks of
+          Formula One Licensing B.V. All data provided by this platform is
+          aggregated from public sources and is intended solely for
+          non-commercial analysis and fan engagement. It is not intended to
+          replace official Formula 1 data feeds, broadcast systems, or licensed
+          commercial products.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      // Mobile menu toggle
+      const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
+      const mobileMenu = document.getElementById("mobileMenu");
+
+      mobileMenuBtn.addEventListener("click", () => {
+        const isActive = mobileMenu.classList.toggle("active");
+        if (isActive) {
+          document.body.classList.add("menu-open");
+        } else {
+          document.body.classList.remove("menu-open");
+        }
+      });
+
+      // Close mobile menu when clicking on a link
+      document.querySelectorAll(".mobile-menu-links a").forEach((link) => {
+        link.addEventListener("click", () => {
+          mobileMenu.classList.remove("active");
+          document.body.classList.remove("menu-open");
+        });
+      });
+
+      // Copy-to-clipboard for code blocks
+      document.querySelectorAll(".copy-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const target = document.getElementById(
+            btn.dataset.copyTarget,
+          ).innerText;
+          try {
+            await navigator.clipboard.writeText(target);
+            btn.textContent = "Copied!";
+          } catch (e) {
+            btn.textContent = "Press ⌘/Ctrl+C";
+          }
+          setTimeout(() => {
+            btn.textContent = "Copy";
+          }, 2000);
+        });
+      });
+
+      // Set current year
+      document.getElementById("current-year").textContent =
+        new Date().getFullYear();
+    </script>
+  </body>
+</html>
