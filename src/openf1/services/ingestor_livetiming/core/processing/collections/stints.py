@@ -128,7 +128,16 @@ class StintsCollection(Collection):
                                 property="compound",
                                 value=stint_data["Compound"],
                             )
-                        if "TotalLaps" in stint_data:
+                        if stint_data.get("StartLaps") is not None:
+                            # `StartLaps` is the tyre age at fitting. F1 often corrects
+                            # it just after the stint first appears, so always apply it.
+                            self._update_stint(
+                                driver_number=driver_number,
+                                stint_number=stint_number,
+                                property="tyre_age_at_start",
+                                value=stint_data["StartLaps"],
+                            )
+                        elif "TotalLaps" in stint_data:
                             stint = self.stints[driver_number][stint_number]
                             if stint.tyre_age_at_start is None:
                                 self._update_stint(
