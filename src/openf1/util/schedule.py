@@ -1,4 +1,5 @@
 import json
+import os
 from functools import lru_cache
 
 import requests
@@ -230,7 +231,10 @@ def get_schedule(year: int) -> dict:
     """Fetches the Formula 1 race schedule for a specified year (past sessions only)"""
     BASE_URL = "https://livetiming.formula1.com/static"
     url = join_url(BASE_URL, f"{year}/Index.json")
-    response = requests.get(url)
+    response = requests.get(
+        url, headers={"Authorization": f"Bearer {os.environ['F1_TOKEN']}"}
+    )
+    response.raise_for_status()
     content_json = response.content
     content_dict = json.loads(content_json)
 

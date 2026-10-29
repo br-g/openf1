@@ -1,5 +1,13 @@
 # Fetching and ingesting historical livetiming data
 
+Set `F1_TOKEN` to an F1TV subscription token:
+
+```bash
+export F1_TOKEN=...
+```
+
+See [this guide](https://github.com/SoMuchForSubtlety/f1viewer/wiki/Getting-your-subscription-token) for how to obtain a token. Note that tokens typically expire after 4 days.
+
 ### Get schedule
 
 To fetch the raw sessions schedule for the 2024 season:
