@@ -1,4 +1,5 @@
 import json
+import os
 import re
 from datetime import datetime, timedelta
 from functools import lru_cache
@@ -22,7 +23,7 @@ from openf1.util.schedule import get_meeting_keys
 from openf1.util.schedule import get_schedule as _get_schedule
 from openf1.util.schedule import get_session_keys
 
-cli = typer.Typer()
+cli = typer.Typer(pretty_exceptions_show_locals=False)
 
 # Flag to determine if the script is being run from the command line
 _is_called_from_cli = False
@@ -68,7 +69,10 @@ def get_session_url(year: int, meeting_key: int, session_key: int) -> str:
 def _list_topics(session_url: str) -> list[str]:
     """Returns all the available raw data filenames for the session"""
     index_url = join_url(session_url, "Index.json")
-    index_response = requests.get(index_url)
+    index_response = requests.get(
+        index_url, headers={"Authorization": f"Bearer {os.environ['F1_TOKEN']}"}
+    )
+    index_response.raise_for_status()
     index_content = json.loads(index_response.content)
 
     filenames = [v["StreamPath"] for v in index_content["Feeds"].values()]
@@ -98,7 +102,12 @@ def list_topics(
 def _get_topic_content(session_url: str, topic: str) -> list[str]:
     topic_filename = f"{topic}.jsonStream"
     url_topic = join_url(session_url, topic_filename)
-    topic_content = requests.get(url_topic).text.split("\r\n")
+    response = requests.get(
+        url_topic, headers={"Authorization": f"Bearer {os.environ['F1_TOKEN']}"}
+    )
+    response.raise_for_status()
+    response.encoding = "utf-8-sig"
+    topic_content = response.text.split("\r\n")
     return topic_content
 
 
