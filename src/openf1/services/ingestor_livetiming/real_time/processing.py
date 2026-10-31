@@ -41,7 +41,10 @@ def _process_message(message: Message) -> dict[str, list[Document]] | None:
     global _meeting_key
     global _session_key
 
-    # Determine current session
+    # Determine current session from incoming live data.
+    # Currently disabled: mismatch in live data observed for FP3 of Mexico 2026,
+    # leading to service disruption.
+    """
     if message.topic == "SessionInfo":
         try:
             _meeting_key = message.content["Meeting"]["Key"]
@@ -52,6 +55,7 @@ def _process_message(message: Message) -> dict[str, list[Document]] | None:
                 f"Failed to extract meeting_key or session_key from SessionInfo: {e}. "
                 f"Message content: {message.content}"
             )
+    """
 
     # Fallback: use schedule from DB
     if _meeting_key is None or _session_key is None:
