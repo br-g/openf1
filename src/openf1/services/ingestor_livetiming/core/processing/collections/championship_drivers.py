@@ -26,10 +26,23 @@ class ChampionshipDriver(Document):
 @dataclass
 class ChampionshipDriverCollection(Collection):
     name = "championship_drivers"
-    source_topics = {"ChampionshipPrediction"}
+    source_topics = {
+        "ChampionshipPrediction",
+        "SessionInfo",
+    }
     cache: dict = field(default_factory=dict)
+    is_session_a_race: bool | None = None
 
     def process_message(self, message: Message) -> Iterator[ChampionshipDriver]:
+        if message.topic == "SessionInfo":
+            self.is_session_a_race = message.content["Type"].lower() == "race"
+            return
+
+        # Sometimes, wrong championship data is sent during practice or qualifying
+        # sessions (example: qualifying at Mexico 2026), which needs to be discarded.
+        if self.is_session_a_race is False:
+            return
+
         if "Drivers" not in message.content:
             return
 
