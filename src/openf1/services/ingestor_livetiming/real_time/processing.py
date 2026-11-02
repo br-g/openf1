@@ -74,6 +74,16 @@ def _process_message(message: Message) -> dict[str, list[Document]] | None:
         )
         return None
 
+    # Sometimes, details of another session are sent (example: FP3 at Mexico 2026)
+    if message.topic == "SessionInfo":
+        info_key = message.content.get("Key")
+        if info_key is not None and info_key != _session_key:
+            logger.warning(
+                f"Ignoring SessionInfo for session {info_key}: "
+                f"ingesting session {_session_key}"
+            )
+            return None
+
     docs_by_collection = process_message(
         meeting_key=_meeting_key,
         session_key=_session_key,
