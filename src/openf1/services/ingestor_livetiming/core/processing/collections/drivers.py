@@ -68,13 +68,7 @@ class DriversCollection(Collection):
             self.updated_drivers.add(driver)
 
     def process_message(self, message: Message) -> Iterator[Driver]:
-        # Ensure all drivers are found
-        if len(message.content) < 20:
-            return
-
-        for index, (driver_number, driver_content) in enumerate(
-            list(message.content.items())
-        ):
+        for driver_number, driver_content in list(message.content.items()):
             try:
                 driver_number = int(driver_number)
             except Exception:
@@ -86,11 +80,13 @@ class DriversCollection(Collection):
             if driver_content.get("FullName") is None:
                 continue
 
-            self._update_driver(
-                driver_number=driver_number,
-                property="_index",
-                value=index,
-            )
+            # F1 can split the list across messages, so number drivers as first seen
+            if driver_number not in self.drivers:
+                self._update_driver(
+                    driver_number=driver_number,
+                    property="_index",
+                    value=len(self.drivers),
+                )
             self._update_driver(
                 driver_number=driver_number,
                 property="driver_number",
