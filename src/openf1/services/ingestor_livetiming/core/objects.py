@@ -4,11 +4,9 @@ structured documents and organizing them into collections.
 cf. https://github.com/br-g/openf1/blob/main/src/openf1/services/ingestor_livetiming/README.md
 """
 
-import asyncio
 import importlib
 import inspect
 import sys
-import time
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from dataclasses import dataclass
@@ -16,30 +14,6 @@ from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
 from typing import Iterator
-
-_id_lock = asyncio.Lock()
-_last_id = 0
-
-
-def _generate_mongo_id_sync() -> int:
-    """Generates a unique, monotonically increasing ID based on time"""
-    global _last_id
-    time_ms = time.time_ns() // 1_000_000
-    if time_ms <= _last_id:
-        time_ms = _last_id + 1
-    _last_id = time_ms
-    return time_ms
-
-
-async def _generate_mongo_id_async() -> int:
-    """Generates a unique, monotonically increasing ID based on time"""
-    global _last_id
-    time_ms = time.time_ns() // 1_000_000
-    async with _id_lock:
-        if time_ms <= _last_id:
-            time_ms = _last_id + 1
-        _last_id = time_ms
-    return time_ms
 
 
 @dataclass
@@ -70,19 +44,17 @@ class Document(ABC):
         return id_
 
     def to_mongo_doc_sync(self) -> dict:
-        """Converts the Document instance to a dictionary, adding '_key' and
-        '_id' properties to help retrieving the right documents are query time"""
+        """Converts the Document instance to a dictionary and adds '_key' for
+        document identity at query time. MongoDB will generate '_id'."""
         mongo_doc = self.__dict__
         mongo_doc["_key"] = self._get_key_str()
-        mongo_doc["_id"] = _generate_mongo_id_sync()
         return mongo_doc
 
     async def to_mongo_doc_async(self) -> dict:
-        """Converts the Document instance to a dictionary, adding '_key' and
-        '_id' properties to help retrieving the right documents are query time"""
+        """Converts the Document instance to a dictionary and adds '_key' for
+        document identity at query time. MongoDB will generate '_id'."""
         mongo_doc = self.__dict__
         mongo_doc["_key"] = self._get_key_str()
-        mongo_doc["_id"] = await _generate_mongo_id_async()
         return mongo_doc
 
     def __eq__(self, other):
