@@ -98,7 +98,8 @@ class StintsCollection(Collection):
                 stints_data = data.get("Stints")
                 if stints_data:
                     if isinstance(stints_data, list):
-                        stints_number = [0] * len(stints_data)
+                        # A keyframe lists every stint so far, in order
+                        stints_number = list(range(len(stints_data)))
                     elif isinstance(stints_data, dict):
                         stints_number = sorted(list(stints_data.keys()))
                         stints_data = [v for _, v in sorted(list(stints_data.items()))]
