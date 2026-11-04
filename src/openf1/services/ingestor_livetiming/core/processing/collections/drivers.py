@@ -80,12 +80,19 @@ class DriversCollection(Collection):
             if driver_content.get("FullName") is None:
                 continue
 
-            # F1 can split the list across messages, so number drivers as first seen
+            # F1 can split the list across messages, so index by the driver's Line,
+            # unless another driver already holds that index
             if driver_number not in self.drivers:
+                taken = {driver._index for driver in self.drivers.values()}
+                line = driver_content.get("Line")
+                if isinstance(line, int) and line - 1 not in taken:
+                    index = line - 1
+                else:
+                    index = max(taken, default=-1) + 1
                 self._update_driver(
                     driver_number=driver_number,
                     property="_index",
-                    value=len(self.drivers),
+                    value=index,
                 )
             self._update_driver(
                 driver_number=driver_number,
