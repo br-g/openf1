@@ -265,13 +265,19 @@ def get_latest_session_info() -> dict:
 
 @timed_cache(1800)  # Cache the output for 30 minutes
 def get_closest_session_info() -> dict:
-    """Returns the session closest to the current time"""
+    """Returns the session closest to 30 minutes from now."""
     sessions = _get_mongo_db_sync()["sessions"]
-    now = datetime.now(timezone.utc)
+
+    # The live ingestor resolves its session once, on its first message, and is
+    # launched 90 minutes before a session. Gaps between sessions are often 150
+    # minutes, so without the shift the switch-over (75 minutes before) would pick
+    # the previous session. The shift keeps the pick correct while gaps exceed
+    # 120 minutes.
+    time_ref = datetime.now(timezone.utc) + timedelta(minutes=30)
 
     # First, try to find an active session
     active_session = sessions.find_one(
-        {"date_start": {"$lte": now}, "date_end": {"$gte": now}}
+        {"date_start": {"$lte": time_ref}, "date_end": {"$gte": time_ref}}
     )
 
     if active_session:
@@ -280,20 +286,20 @@ def get_closest_session_info() -> dict:
     # If no active session, find the closest one
     # Get the most recent past session (by end time)
     past_session = sessions.find_one(
-        {"date_end": {"$lt": now}, "is_cancelled": {"$eq": False}},
+        {"date_end": {"$lt": time_ref}, "is_cancelled": {"$eq": False}},
         sort=[("date_end", -1)],
     )
 
     # Get the nearest future session (by start time)
     future_session = sessions.find_one(
-        {"date_start": {"$gt": now}, "is_cancelled": {"$eq": False}},
+        {"date_start": {"$gt": time_ref}, "is_cancelled": {"$eq": False}},
         sort=[("date_start", 1)],
     )
 
     # Return whichever is closer
     if past_session and future_session:
-        past_diff = (now - past_session["date_end"]).total_seconds()
-        future_diff = (future_session["date_start"] - now).total_seconds()
+        past_diff = (time_ref - past_session["date_end"]).total_seconds()
+        future_diff = (future_session["date_start"] - time_ref).total_seconds()
         return past_session if past_diff <= future_diff else future_session
     elif past_session:
         return past_session
