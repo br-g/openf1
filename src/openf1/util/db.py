@@ -265,12 +265,14 @@ def get_latest_session_info() -> dict:
 
 @timed_cache(1800)  # Cache the output for 30 minutes
 def get_closest_session_info() -> dict:
-    """Returns the session closest to the current time"""
+    """Returns the session closest to 30 minutes from now."""
     sessions = _get_mongo_db_sync()["sessions"]
 
-    # Shift the reference time forward by 30 minutes. The ingestor starts 90 minutes
-    # before a session, and sessions are often 150 minutes apart. This helps associate
-    # data that arrives earlier than expected with the upcoming session.
+    # The live ingestor resolves its session once, on its first message, and is
+    # launched 90 minutes before a session. Gaps between sessions are often 150
+    # minutes, so without the shift the switch-over (75 minutes before) would pick
+    # the previous session. The shift keeps the pick correct while gaps exceed
+    # 120 minutes.
     time_ref = datetime.now(timezone.utc) + timedelta(minutes=30)
 
     # First, try to find an active session
