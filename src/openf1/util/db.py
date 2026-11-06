@@ -267,11 +267,15 @@ def get_latest_session_info() -> dict:
 def get_closest_session_info() -> dict:
     """Returns the session closest to the current time"""
     sessions = _get_mongo_db_sync()["sessions"]
-    now = datetime.now(timezone.utc)
+
+    # Shift the reference time forward by 30 minutes. The ingestor starts 90 minutes
+    # before a session, and sessions are often 150 minutes apart. This helps associate
+    # data that arrives earlier than expected with the upcoming session.
+    time_ref = datetime.now(timezone.utc) + timedelta(minutes=30)
 
     # First, try to find an active session
     active_session = sessions.find_one(
-        {"date_start": {"$lte": now}, "date_end": {"$gte": now}}
+        {"date_start": {"$lte": time_ref}, "date_end": {"$gte": time_ref}}
     )
 
     if active_session:
@@ -280,20 +284,20 @@ def get_closest_session_info() -> dict:
     # If no active session, find the closest one
     # Get the most recent past session (by end time)
     past_session = sessions.find_one(
-        {"date_end": {"$lt": now}, "is_cancelled": {"$eq": False}},
+        {"date_end": {"$lt": time_ref}, "is_cancelled": {"$eq": False}},
         sort=[("date_end", -1)],
     )
 
     # Get the nearest future session (by start time)
     future_session = sessions.find_one(
-        {"date_start": {"$gt": now}, "is_cancelled": {"$eq": False}},
+        {"date_start": {"$gt": time_ref}, "is_cancelled": {"$eq": False}},
         sort=[("date_start", 1)],
     )
 
     # Return whichever is closer
     if past_session and future_session:
-        past_diff = (now - past_session["date_end"]).total_seconds()
-        future_diff = (future_session["date_start"] - now).total_seconds()
+        past_diff = (time_ref - past_session["date_end"]).total_seconds()
+        future_diff = (future_session["date_start"] - time_ref).total_seconds()
         return past_session if past_diff <= future_diff else future_session
     elif past_session:
         return past_session
