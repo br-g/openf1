@@ -234,8 +234,6 @@ class LapsCollection(Collection):
                 if not isinstance(data, dict):
                     continue
 
-                # Sometimes, a driver's first message arrives mid-session. Its lap
-                # time can't be placed, and its PitOut is sent even when false.
                 lap_count = data.get("NumberOfLaps")
                 if driver_number not in self.laps and isinstance(lap_count, int):
                     first_lap = lap_count + 1 if self.is_session_a_race else lap_count
