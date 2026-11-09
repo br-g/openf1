@@ -966,16 +966,16 @@ fetch("https://api.openf1.org/v1/pit?session_key=9877&stop_duration<2.3")
 
 ### Attributes
 
-| Name                      | Description                                                                                                                                                                                          |
-| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| date                      | The UTC date and time, in ISO 8601 format.                                                                                                                                                           |
-| driver_number             | The unique number assigned to an F1 driver for the season (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
-| lane_duration             | The time spent in the pit lane, in seconds.                                                                                                                                                          |
-| lap_number                | The sequential number of the lap within the session (starts at 1).                                                                                                                                   |
-| meeting_key               | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                       |
-| pit_duration (deprecated) | Same as 'lane_duration'. This field will be removed at the end of the 2026 season.                                                                                                                   |
-| session_key               | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                                       |
-| stop_duration             | The stationary pit stop time, in seconds. This field is only available from the 2024 US GP onwards.                                                                                                  |
+| Name                      | Description                                                                                                                                                                                                                                                      |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| date                      | The UTC date and time, in ISO 8601 format.                                                                                                                                                                                                                       |
+| driver_number             | The unique number assigned to an F1 driver for the season (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>).                                                             |
+| lane_duration             | The time spent in the pit lane, in seconds.                                                                                                                                                                                                                      |
+| lap_number                | The sequential number of the lap within the session (starts at 1).                                                                                                                                                                                               |
+| meeting_key               | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                                                                                   |
+| pit_duration (deprecated) | Same as 'lane_duration'. This field will be removed at the end of the 2026 season.                                                                                                                                                                               |
+| session_key               | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                                                                                                   |
+| stop_duration             | The time the car remains stationary during a pit stop, in seconds. Available from the 2024 US Grand Prix onwards. From the 2026 season, this value may be unavailable during live sessions but is typically populated within a few hours after the session ends. |
 
 ## Position
 
