@@ -238,7 +238,11 @@ class LapsCollection(Collection):
                 if driver_number not in self.laps and isinstance(lap_count, int):
                     first_lap = lap_count + 1 if self.is_session_a_race else lap_count
                     if first_lap > 2:
-                        data = {k: v for k, v in data.items() if k != "LastLapTime"}
+                        data = {
+                            k: v
+                            for k, v in data.items()
+                            if k not in ("LastLapTime", "Sectors")
+                        }
                         if data.get("PitOut") is False:
                             del data["PitOut"]
                         self._add_lap(driver_number=driver_number, lap_number=first_lap)
