@@ -398,6 +398,40 @@ fetch("https://api.openf1.org/v1/drivers?driver_number=1&session_key=9158")
 | team_colour               | The hexadecimal color value (RRGGBB) of the driver's team.                                                                                                                                           |
 | team_name                 | Name of the driver's team.                                                                                                                                                                           |
 
+## Driver status
+
+Provides the official retired and stopped status flags for each driver throughout a session.
+
+```shell
+curl "https://api.openf1.org/v1/driver_status?session_key=latest&driver_number=1"
+```
+
+> Output:
+
+```json
+[
+  {
+    "date": "2026-07-12T14:32:10.123000+00:00",
+    "driver_number": 1,
+    "meeting_key": 1290,
+    "retired": false,
+    "session_key": 11300,
+    "stopped": false
+  }
+]
+```
+
+### Attributes
+
+| Name          | Description                                                                                                                                                                                          |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| date          | The UTC date and time, in ISO 8601 format.                                                                                                                                                           |
+| driver_number | The unique number assigned to an F1 driver for the season (cf. <a href="https://en.wikipedia.org/wiki/List_of_Formula_One_driver_numbers#Formula_One_driver_numbers" target="_blank">Wikipedia</a>). |
+| meeting_key   | The unique identifier for the meeting. Use `latest` to identify the latest or current meeting.                                                                                                       |
+| retired       | Whether the driver has officially retired from the session; `null` until a value is received.                                                                                                        |
+| session_key   | The unique identifier for the session. Use `latest` to identify the latest or current session.                                                                                                       |
+| stopped       | Whether the driver has officially stopped; `null` until a value is received.                                                                                                                         |
+
 ## Intervals
 
             Fetches real-time interval data between drivers and their gap to the race leader.
