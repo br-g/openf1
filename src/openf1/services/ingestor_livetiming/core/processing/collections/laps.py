@@ -257,11 +257,8 @@ class LapsCollection(Collection):
                                 if {"I1": 1, "I2": 2}.get(label, 0) <= len(completed)
                             }
 
-                        data = {
-                            k: v
-                            for k, v in data.items()
-                            if k not in ("LastLapTime", "Sectors", "Speeds")
-                        }
+                        dropped = ("LastLapTime", "NumberOfLaps", "Sectors", "Speeds")
+                        data = {k: v for k, v in data.items() if k not in dropped}
                         data["Sectors"] = dict(enumerate(completed))
                         if isinstance(speeds, dict):
                             data["Speeds"] = speeds
