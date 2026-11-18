@@ -1,0 +1,13 @@
+# Sessions replayed by tools/replay.py: YEAR MEETING_KEY SESSION_KEY, then what each one covers
+2026 1298 11399  # Mexico City FP3: timing starts mid-session; DriverList split across two messages
+2026 1298 11400  # Mexico City Qualifying
+2026 1298 11404  # Mexico City Race: F1's archive ends on lap 56 of 71, with no chequered flag
+2026 1304 11467  # Pre-season testing day 3: timing starts mid-session; drivers join late
+2025 1262 9966   # Spain FP3: timing starts mid-session
+2025 1268 9905   # Italy FP1: a second, 30-driver DriverList mid-session
+2025 1273 9864   # Brazil Sprint
+2025 1277 9947   # Britain Race: wet, safety cars
+2024 1239 9549   # Austria Sprint: a driver's DriverList entry arrives 9 minutes in
+2024 1231 9488   # Australia Race: 19 cars; session added by hand in schedule.py
+2024 1236 9523   # Monaco Race: red flag on lap 1
+2023 1221 9298   # Qatar Sprint Shootout: DriverList split across two messages
