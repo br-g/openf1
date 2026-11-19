@@ -237,7 +237,13 @@ class LapsCollection(Collection):
                 lap_count = data.get("NumberOfLaps")
                 if driver_number not in self.laps and isinstance(lap_count, int):
                     first_lap = lap_count + 1 if self.is_session_a_race else lap_count
+                    # The car's first message arrives mid-session: start it on its
+                    # current lap, and keep only the data that belongs to that lap
                     if first_lap > 2:
+                        # A car fills its sectors in order, and F1 empties the later
+                        # slots as the next lap goes on. So the filled slots before the
+                        # first empty one are this lap's, and three filled slots are all
+                        # the previous lap's.
                         sectors = data.get("Sectors")
                         if isinstance(sectors, dict):
                             sectors = [sectors.get(str(i)) for i in range(3)]
@@ -249,6 +255,9 @@ class LapsCollection(Collection):
                         if len(completed) == 3:
                             completed = []
 
+                        # I1 and I2 are in sectors 1 and 2. A car that pits before
+                        # reaching one sends no new reading, so keep it only if its
+                        # sector was kept.
                         speeds = data.get("Speeds")
                         if isinstance(speeds, dict):
                             speeds = {
@@ -257,11 +266,15 @@ class LapsCollection(Collection):
                                 if {"I1": 1, "I2": 2}.get(label, 0) <= len(completed)
                             }
 
+                        # LastLapTime is the previous lap's. NumberOfLaps would set the
+                        # lap's start to now, but the lap began earlier, at a time the
+                        # feed doesn't give.
                         dropped = ("LastLapTime", "NumberOfLaps", "Sectors", "Speeds")
                         data = {k: v for k, v in data.items() if k not in dropped}
                         data["Sectors"] = dict(enumerate(completed))
                         if isinstance(speeds, dict):
                             data["Speeds"] = speeds
+                        # Any PitOut, even false, would mark this a pit-out lap
                         if data.get("PitOut") is False:
                             del data["PitOut"]
                         self._add_lap(driver_number=driver_number, lap_number=first_lap)
