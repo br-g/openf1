@@ -18,6 +18,7 @@ from openf1.services.query_api.query_params import (
     query_params_to_mongo_filters,
 )
 from openf1.util.db import get_documents
+from openf1.util.tyre_allocation import append_c_codes_to_stints
 
 rate_limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
@@ -90,6 +91,11 @@ async def _process_request(request: Request, path: str) -> list[dict] | Response
         results = await get_documents(
             collection_name=collection, filters=mongodb_filter
         )
+
+        # Inject Pirelli C-Codes into stints payload for Issue #412
+        if collection == "stints":
+            results = append_c_codes_to_stints(results)
+
         save_to_cache(path=path, query_params=query_params, results=results)
 
     return (
