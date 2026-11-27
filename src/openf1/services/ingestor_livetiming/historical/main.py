@@ -221,10 +221,13 @@ def get_t0(year: int, meeting_key: int, session_key: int) -> datetime:
 def _get_messages(session_url: str, topics: list[str], t0: datetime) -> list[Message]:
     messages = []
     for topic in topics:
-        raw_content = _get_topic_content(
-            session_url=session_url,
-            topic=topic,
-        )
+        try:
+            raw_content = _get_topic_content(session_url=session_url, topic=topic)
+        except requests.HTTPError as exc:
+            if exc.response is None or exc.response.status_code != 403:
+                raise
+            logger.error(f"Skipping unavailable topic {topic}: {exc}")
+            continue
         messages += _parse_and_decode_topic_content(
             topic=topic,
             topic_raw_content=raw_content,
