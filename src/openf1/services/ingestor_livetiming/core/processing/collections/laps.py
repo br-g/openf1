@@ -50,6 +50,7 @@ class LapsCollection(Collection):
     is_session_started: bool = False
     is_session_a_race: bool | None = None
     chequered_flag_date: datetime | None = None
+    first_timepoint: datetime | None = None
     laps: defaultdict = field(default_factory=lambda: defaultdict(list))
     updated_laps: set = field(default_factory=set)  # laps updated since last message
 
@@ -95,6 +96,8 @@ class LapsCollection(Collection):
         if (
             is_end_of_lap
             and current_lap.date_start is not None
+            # The opening burst replays each lap in order, so nothing in it is late
+            and timepoint != self.first_timepoint
             and timepoint - current_lap.date_start < timedelta(seconds=10)
         ):
             # Sometimes, some extra data is sent at the beginning of a session. Skip it.
@@ -188,6 +191,14 @@ class LapsCollection(Collection):
         )
 
     def process_message(self, message: Message) -> Iterator[Lap]:
+        # Some archives open with a burst of messages all timed at the first instant,
+        # replaying each car's earlier laps in order. Their timing isn't real, so they
+        # don't set lap start times, and none of their values count as late. This only
+        # applies to the first instant: later on, F1 can send a late sector 3 time at
+        # the exact millisecond the next lap starts.
+        if self.first_timepoint is None:
+            self.first_timepoint = message.timepoint
+
         if message.topic == "SessionInfo":
             self.is_session_a_race = message.content["Type"].lower() == "race"
             return
@@ -346,7 +357,12 @@ class LapsCollection(Collection):
                             driver_number=driver_number,
                             lap_number=lap_number,
                         )
-                    if current_lap.date_start is None:
+                    # A lap replayed in the opening burst began at a time the feed
+                    # doesn't give
+                    if (
+                        current_lap.date_start is None
+                        and message.timepoint != self.first_timepoint
+                    ):
                         self._update_lap(
                             driver_number=driver_number,
                             property="date_start",
