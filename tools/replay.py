@@ -224,7 +224,9 @@ class _Version:
             ).stdout
             self.src.parent.mkdir(parents=True)
             subprocess.run(
-                ["tar", "-x", "-C", str(self.src.parent)], input=archive, check=True
+                ["tar", "-x", "-f", "-", "-C", str(self.src.parent)],
+                input=archive,
+                check=True,
             )
 
     def _run(self, *args: str):
